@@ -1,0 +1,194 @@
+/* Arctic Bird 0.3.8 — общие цвета внутренних документов.
+ * Импортируется из userChrome И userContent: отдельные документы
+ * не наследуют CSS-переменные главного окна. Смысловые цвета ошибок,
+ * предупреждений и календарей не заменяются. */
+@-moz-document url("chrome://messenger/content/messenger.xhtml"),
+  url-prefix("about:3pane"), url-prefix("about:message"),
+  url-prefix("about:addressbook"), url-prefix("about:preferences"),
+  url-prefix("about:accountsettings"), url-prefix("about:addons"),
+  url-prefix("chrome://messenger/content/msgAccountCentral.xhtml"),
+  url-prefix("chrome://messenger/content/addressbook/"),
+  url-prefix("chrome://messenger/content/preferences/"),
+  url("chrome://messenger/content/AccountManager.xhtml"),
+  url-prefix("chrome://messenger/content/am-"),
+  url-prefix("chrome://calendar/content/"),
+  url("chrome://messenger/content/messengercompose/messengercompose.xhtml") {
+  @media screen and (forced-colors: none) and (prefers-contrast: no-preference) {
+    :root {
+      color-scheme: var(--f11-color-scheme) !important;
+      font-family: var(--f11-font) !important;
+      --layout-background-0: var(--f11-paper) !important;
+      --layout-background-1: var(--f11-shell) !important;
+      --layout-background-2: var(--f11-hover) !important;
+      --layout-background-3: var(--f11-raised) !important;
+      --layout-background-4: var(--f11-pressed) !important;
+      --layout-color-0: var(--f11-text) !important;
+      --layout-color-1: var(--f11-text) !important;
+      --layout-color-2: var(--f11-secondary) !important;
+      --layout-color-3: var(--f11-secondary) !important;
+      --layout-border-0: var(--f11-line) !important;
+      --layout-border-1: var(--f11-control-line) !important;
+      --layout-border-2: var(--f11-control-line) !important;
+      /* Актуальные toolkit-токены, в том числе для страниц настроек.
+       * Смысловые токены ошибок/предупреждений не переопределяем. */
+      --background-color-canvas: var(--f11-paper) !important;
+      --background-color-box: var(--f11-raised) !important;
+      --text-color: var(--f11-text) !important;
+      --text-color-deemphasized: var(--f11-secondary) !important;
+      --in-content-page-background: var(--f11-paper) !important;
+      --in-content-page-color: var(--f11-text) !important;
+      --in-content-box-background: var(--f11-raised) !important;
+      --in-content-box-border-color: var(--f11-line) !important;
+      --in-content-text-color: var(--f11-text) !important;
+      --in-content-deemphasized-text: var(--f11-secondary) !important;
+      --in-content-accent-color: var(--f11-accent) !important;
+      --in-content-primary-button-background: var(--f11-accent) !important;
+      --in-content-primary-button-text-color: var(--f11-on-accent) !important;
+      --lwt-accent-color: var(--f11-shell) !important;
+      --lwt-accent-color-inactive: var(--f11-shell) !important;
+      /* В Thunderbird 158 рамка и бейджи читают lwt-frame;
+       * Betterbird 153 использует прежнее имя lwt-accent-color. */
+      --lwt-frame: var(--f11-shell) !important;
+      --lwt-frame-inactive: var(--f11-shell) !important;
+      --lwt-text-color: var(--f11-text) !important;
+      --toolbar-background-color: var(--f11-shell) !important;
+      --toolbar-text-color: var(--f11-text) !important;
+      --toolbar-field-color: var(--f11-text) !important;
+      --toolbar-field-text-color-focus: var(--f11-text) !important;
+      --toolbar-field-background-color: var(--f11-field) !important;
+      --toolbar-field-focus-border-color: var(--f11-accent) !important;
+      --selected-item-color: var(--f11-accent) !important;
+      --selected-item-text-color: var(--f11-on-accent) !important;
+      --primary: var(--f11-accent) !important;
+      --focus-outline-color: var(--f11-accent) !important;
+      --button-border-radius: var(--f11-radius) !important;
+      --button-text-color: var(--f11-text) !important;
+      --button-background-color: var(--f11-raised) !important;
+      --button-hover-background-color: var(--f11-hover) !important;
+      --button-active-background-color: var(--f11-pressed) !important;
+      --button-border-color: var(--f11-line) !important;
+      --button-border-color-hover: var(--f11-line) !important;
+      --button-border-color-active: var(--f11-line) !important;
+      --button-border-color-disabled: var(--f11-line) !important;
+      --button-background-color-disabled: var(--f11-raised) !important;
+      --button-text-color-disabled: var(--f11-secondary) !important;
+      --button-background-color-hover: var(--f11-hover) !important;
+      --button-background-color-active: var(--f11-pressed) !important;
+      --button-primary-background-color: var(--f11-accent) !important;
+      --button-primary-text-color: var(--f11-on-accent) !important;
+      --button-primary-hover-background-color: color-mix(in srgb, var(--f11-accent) 90%, light-dark(black, white)) !important;
+      --button-primary-active-background-color: color-mix(in srgb, var(--f11-accent) 80%, light-dark(black, white)) !important;
+      --button-primary-border-color: transparent !important;
+      --button-link-text-color: var(--f11-accent) !important;
+      --input-border-color: var(--f11-control-line) !important;
+      --input-text-border-radius: var(--f11-radius) !important;
+      --input-search-border-radius: var(--f11-radius) !important;
+      --sidebar-background-color: var(--f11-sidebar) !important;
+      --sidebar-background: var(--f11-sidebar) !important;
+      --sidebar-text-color: var(--f11-text) !important;
+      --sidebar-color: var(--f11-text) !important;
+      --sidebar-border-color: var(--f11-line) !important;
+      --sidebar-border: var(--f11-line) !important;
+      --spaces-bg-color: var(--f11-sidebar) !important;
+      --spaces-bg-image: none !important;
+      --spaces-button-active-bg-color: var(--f11-selection) !important;
+      --spaces-button-active-text-color: var(--f11-text) !important;
+      --search-bar-color: var(--f11-text) !important;
+      --search-bar-background: var(--f11-field) !important;
+      --search-bar-focus-background: var(--f11-paper) !important;
+      --search-bar-border-color: var(--f11-line) !important;
+      --search-field-placeholder: var(--f11-secondary) !important;
+      --tree-view-bg: var(--f11-paper) !important;
+      --tree-view-color: var(--f11-text) !important;
+      --tree-pane-background: var(--f11-paper) !important;
+      --unread-color: var(--f11-text) !important;
+      --new-subject-color: var(--f11-accent) !important;
+      --listbox-hover: var(--f11-hover) !important;
+      --listbox-selected-bg: var(--f11-selection-idle) !important;
+      --listbox-focused-selected-bg: var(--f11-selection) !important;
+      --listbox-selected-color: var(--f11-text) !important;
+      --listbox-focused-selected-color: var(--f11-text) !important;
+      --tree-view-header-hover-bg: var(--f11-hover) !important;
+      --tree-view-header-hover-active-bg: var(--f11-pressed) !important;
+      --listbox-border-radius: var(--f11-radius) !important;
+      --list-container-border: transparent !important;
+      --list-container-border-hover: transparent !important;
+      --list-container-border-selected: transparent !important;
+      --list-container-border-selected-current: transparent !important;
+      --list-container-border-selected-focused: transparent !important;
+      --list-container-border-selected-current-focused: transparent !important;
+      --list-container-background-hover: var(--f11-hover) !important;
+      --list-container-background-selected: var(--f11-selection-idle) !important;
+      --list-container-background-selected-current: var(--f11-selection-idle) !important;
+      --list-container-background-selected-focused: var(--f11-selection) !important;
+      --list-container-background-selected-current-focused: var(--f11-selection) !important;
+      --treeitem-background-hover: var(--f11-hover) !important;
+      --treeitem-background-selected: var(--f11-selection-idle) !important;
+      --treeitem-background-active: var(--f11-selection) !important;
+      --treeitem-text-active: var(--f11-text) !important;
+      --tree-card-background: var(--f11-paper) !important;
+      --tree-card-border: var(--f11-list-border) !important;
+      --tree-card-border-hover: var(--f11-list-border) !important;
+      --tree-card-border-focus: var(--f11-list-border) !important;
+      --tree-card-border-selected: var(--f11-list-border) !important;
+      --tree-card-border-selected-unfocused: var(--f11-list-border) !important;
+      --tree-card-background-current: var(--f11-hover) !important;
+      --tree-card-background-selected: var(--f11-selection) !important;
+      --tree-card-background-selected-current: var(--f11-selection) !important;
+      --tree-card-background-current-unfocused: var(--f11-hover) !important;
+      --tree-card-background-selected-unfocused: var(--f11-selection-idle) !important;
+      --tree-card-background-selected-current-unfocused: var(--f11-selection-idle) !important;
+      --tree-card-background-selected-current-unfocused-hover: var(--f11-selection) !important;
+      --tree-focus-outline: transparent !important;
+      --chrome-content-separator-color: var(--f11-line) !important;
+      --toolbarseparator-color: var(--f11-line) !important;
+      --panel-separator-color: var(--f11-line) !important;
+    
+      --border-color: var(--f11-line) !important;
+      --color-surface-base: var(--f11-paper) !important;
+      --color-surface-lower: var(--f11-sidebar) !important;
+      --color-surface-subtle: var(--f11-shell) !important;
+      --color-surface-raised: var(--f11-raised) !important;
+      --color-surface-border: var(--f11-line) !important;
+      --color-text-base: var(--f11-text) !important;
+      --color-text-secondary: var(--f11-secondary) !important;
+      --color-accent-primary: var(--f11-accent) !important;
+      --color-accent-primary-selected: var(--f11-selection) !important;
+      --color-accent-primary-selected-unfocused: var(--f11-selection-idle) !important;
+      --button-text-color-hover: var(--f11-text) !important;
+      --button-text-color-active: var(--f11-text) !important;
+      --input-background-color: var(--f11-field) !important;
+      --input-color: var(--f11-text) !important;
+      --input-border-color: var(--f11-line) !important;
+      --background-color-list-item-hover: var(--f11-hover) !important;
+      --text-color-list-item-hover: var(--f11-text) !important;
+      --link-color: var(--f11-accent) !important;
+      --link-color-hover: var(--f11-accent) !important;
+      --icon-color: var(--f11-secondary) !important;
+      --in-content-focus-outline-color: var(--f11-accent) !important;
+      --in-content-button-background: var(--f11-raised) !important;
+      --in-content-button-background-hover: var(--f11-hover) !important;
+      --in-content-button-background-active: var(--f11-pressed) !important;
+      --in-content-button-text-color: var(--f11-text) !important;
+      --in-content-box-background-odd: var(--f11-shell) !important;
+      --in-content-item-hover: var(--f11-hover) !important;
+      --in-content-item-selected: var(--f11-selection) !important;
+      --in-content-item-selected-text: var(--f11-text) !important;
+      --in-content-table-background: var(--f11-paper) !important;
+      --in-content-table-border-color: var(--f11-line) !important;
+    }
+    /* Старые toolbarbutton и локальные палитры календаря не используют
+     * новые --button-*; задаём их на самих контейнерах переопределений. */
+    :root, #messageHeader, #headingWrapper,
+    #calendar-task-details-container, #unifinder-searchBox, #today-pane-panel {
+      --toolbarbutton-background-color-hover: var(--f11-hover) !important;
+      --toolbarbutton-background-color-active: var(--f11-pressed) !important;
+      --toolbarbutton-hover-bordercolor: var(--f11-line) !important;
+      --toolbarbutton-active-bordercolor: var(--f11-line) !important;
+      --toolbarbutton-header-bordercolor: var(--f11-line) !important;
+      --toolbarbutton-hover-boxshadow: none !important;
+      --toolbarbutton-active-boxshadow: none !important;
+      --toolbarbutton-checked-background: var(--f11-selection-idle) !important;
+    }
+  }
+}

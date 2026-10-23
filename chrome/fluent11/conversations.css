@@ -1,0 +1,73 @@
+/* Необязательный адаптер Thunderbird Conversations.
+ * Работает, когда дополнение использует chrome://conversations/.
+ * Селекторы сверены с его исходниками; shadow roots, не раскрывающие
+ * нужных частей, и HTML в iframe письма сюда не входят.
+ * Импортируется из userChrome.css И userContent.css.
+ * Печать и вложенные HTML-письма не затрагиваются. */
+@-moz-document url-prefix("chrome://conversations/") {
+  @media screen and (forced-colors: none) and (prefers-contrast: no-preference) {
+    :root {
+      color-scheme: var(--f11-color-scheme) !important;
+      --application-background-color: var(--f11-paper) !important;
+      --application-foreground-color: var(--f11-text) !important;
+      --dull-foreground-color: var(--f11-secondary) !important;
+      --email-address-dull-color: var(--f11-secondary) !important;
+      --border-color: var(--f11-line) !important;
+    }
+    body {
+      background-color: var(--f11-paper) !important;
+      color: var(--f11-text) !important;
+      font-family: var(--f11-font) !important;
+    }
+    .conversationHeaderWrapper { box-shadow: none !important; }
+    .conversationHeader {
+      background-color: var(--f11-paper) !important;
+      color: var(--f11-text) !important;
+      border-bottom-color: var(--f11-line) !important;
+    }
+    /* Высота закреплённого заголовка остаётся штатной: дополнение
+     * использует её при программной прокрутке к сообщению. */
+    .conversationHeader div.subject { font-weight: 600 !important; }
+    .message {
+      border-color: var(--f11-line) !important;
+      border-radius: var(--f11-card-radius) !important;
+      background-color: var(--f11-paper) !important;
+      color: var(--f11-text) !important;
+    }
+    .message:focus { border-color: var(--f11-accent) !important; }
+    .messageHeader { color: var(--f11-text) !important; }
+    .smallEmail, .snippet, .date { color: var(--f11-secondary) !important; }
+    .actions-button {
+      border-radius: var(--f11-radius) !important;
+      color: var(--f11-secondary) !important;
+    }
+    .actions-button:is(:hover, :focus-visible) {
+      color: var(--f11-text) !important;
+      background-color: var(--f11-hover) !important;
+    }
+    .actions-button.unread { color: var(--f11-accent) !important; }
+    .quickReply:not(.disabled) {
+      background-color: var(--f11-paper) !important;
+      border-top-color: var(--f11-line) !important;
+    }
+    .replyBox, .headerEntry, .textAreaWrapper > textarea {
+      background-color: var(--f11-field) !important;
+      color: var(--f11-text) !important;
+      border-color: var(--f11-control-line) !important;
+      border-radius: var(--f11-radius) !important;
+    }
+    .headerEntry > input { background-color: transparent !important; color: inherit !important; }
+    .headerField label { color: var(--f11-secondary) !important; background: transparent !important; }
+    .buttons > button.send {
+      background-color: var(--f11-accent) !important;
+      color: var(--f11-on-accent) !important;
+      border-color: transparent !important;
+      border-radius: var(--f11-radius) !important;
+    }
+    .buttons > button.discard { color: var(--f11-text) !important; }
+    :is(button, input, textarea, .replyBox):focus-visible {
+      outline: 2px solid var(--f11-accent) !important;
+      outline-offset: 2px !important;
+    }
+  }
+}

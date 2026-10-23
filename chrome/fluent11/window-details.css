@@ -1,0 +1,118 @@
+/* Arctic Bird 0.3.8 — меню пространств и спокойная строка состояния. */
+@-moz-document url("chrome://messenger/content/messenger.xhtml") {
+  @media screen and (forced-colors: none) and (prefers-contrast: no-preference) {
+    #spacesButtonMenuPopup, #spacesToolbarAddonsPopup {
+      color-scheme: var(--f11-color-scheme) !important;
+      color: var(--f11-text) !important;
+      background-color: var(--f11-raised) !important;
+      --panel-background: var(--f11-raised) !important;
+      --panel-color: var(--f11-text) !important;
+      --panel-border-color: var(--f11-line) !important;
+      --arrowpanel-background: var(--f11-raised) !important;
+      --arrowpanel-color: var(--f11-text) !important;
+      --menu-color: var(--f11-text) !important;
+      --menu-background-color: var(--f11-raised) !important;
+      --menuitem-hover-background-color: var(--f11-hover) !important;
+    }
+    :is(#spacesButtonMenuPopup, #spacesToolbarAddonsPopup) menuitem:not([disabled="true"]) {
+      color: var(--f11-text) !important;
+    }
+    :is(#spacesButtonMenuPopup, #spacesToolbarAddonsPopup) menuitem:is([_moz-menuactive="true"], :hover) {
+      background-color: var(--f11-hover) !important;
+    }
+    :is(#spacesButtonMenuPopup, #spacesToolbarAddonsPopup) menuitem[disabled="true"] {
+      color: var(--f11-secondary) !important;
+    }
+    :is(#spacesButtonMenuPopup, #spacesToolbarAddonsPopup) :is(.menu-text, .menu-icon, .menu-accel, .menu-iconic-text, .menu-iconic-accel) {
+      color: inherit !important;
+    }
+    :is(#spacesButtonMenuPopup, #spacesToolbarAddonsPopup) :is(image, .menu-iconic-icon) {
+      color: inherit !important;
+      -moz-context-properties: fill, stroke, stroke-opacity;
+      fill: currentColor !important;
+      stroke: currentColor !important;
+    }
+    #spacesButtonMenuPopup menuseparator, #spacesToolbarAddonsPopup menuseparator {
+      border-color: var(--f11-line) !important;
+    }
+    :root { --spaces-button-text-color: var(--f11-text) !important; }
+    #spacesPinnedButton, #spacesToolbarReveal { color: var(--f11-text) !important; }
+    /* Удаляем только декоративные вертикальные границы. Верхнюю линию
+     * статусной строки, счётчики и индикаторы прогресса сохраняем. */
+    #status-bar .statusbarpanel,
+    #status-bar > *, #status-bar #messageCounts, #calendar-status-todaypane-button {
+      border-inline: 0 !important;
+      box-shadow: none !important;
+    }
+    #status-bar separator[orient="vertical"], #status-bar toolbarseparator {
+      display: none !important;
+    }
+    /* Прямой признак панели, без зависимости от синхронизации атрибута
+     * окна. Сама кнопка получает отдельную ячейку в compact-header.css. */
+    :root:has(#spacesToolbar[hidden]) #spacesPinnedButton {
+      display: inline-flex !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      min-inline-size: 32px !important;
+      max-inline-size: 32px !important;
+      align-items: center !important;
+      justify-content: center !important;
+      padding-inline: 5px !important;
+      margin-inline: 2px 4px !important;
+      color: var(--f11-text) !important;
+    }
+    :root:has(#spacesToolbar:not([hidden])) #spacesPinnedButton { display: none !important; }
+    #spacesPinnedButton .toolbarbutton-icon,
+    :is(#spacesButtonMenuPopup, #spacesToolbarAddonsPopup) .menu-icon {
+      color: var(--f11-text) !important;
+      -moz-context-properties: fill, fill-opacity, stroke, stroke-opacity;
+      fill: color-mix(in srgb, currentColor 20%, transparent) !important;
+      stroke: currentColor !important;
+      fill-opacity: 1 !important;
+      stroke-opacity: 1 !important;
+    }
+    /* Только расширения в верхней панели: обычные команды с подписями
+     * остаются обычными. Tooltip, badge и доступное имя не удаляются. */
+    #unifiedToolbarContent .extension-action .button-label,
+    #unifiedToolbarContent button[is="extension-action-button"] .button-label {
+      display: none !important;
+    }
+    #unifiedToolbarContent button[is="extension-action-button"] {
+      flex-direction: row !important;
+      gap: 0 !important;
+      min-inline-size: 32px !important;
+      padding-inline: 6px !important;
+      margin-block: 0 !important;
+    }
+    #unifiedToolbarContent button[is="extension-action-button"] .button-icon {
+      display: block !important;
+    }
+    /* Счётчики перед растягивающимся блоком статуса. Порядок DOM и
+     * aria-live сохраняется; действия календаря остаются справа. */
+    #status-bar > [role="status"] { display: flex !important; }
+    #status-bar #messageCounts {
+      order: -1 !important;
+      flex: 0 0 auto !important;
+      margin-inline: 4px 8px !important;
+    }
+    /* Раскрываем обёртку статуса только для визуального flex-порядка.
+     * Дочерние узлы, aria-live и dblclick-обработчик остаются в DOM. */
+    #status-bar #statusTextBox { display: contents !important; }
+    #statusTextBox > .statusbarpanel:has(#offline-status) {
+      order: -2 !important;
+      flex: 0 0 auto !important;
+    }
+    #statusText { order: 0 !important; flex: 1 1 auto !important; min-inline-size: 0 !important; }
+    #urlText { order: 0 !important; flex: 2 1 auto !important; min-inline-size: 0 !important; }
+    #statusbar-progresspanel, #quotaPanel { order: 1 !important; flex: 0 0 auto !important; }
+    #status-bar > #spacesToolbarReveal { order: -1 !important; }
+    #status-bar > [role="status"] { order: 0 !important; }
+    #status-bar > #calendar-show-todaypane-panel { order: 2 !important; }
+    /* Поле поиска использует Shadow DOM. Границу передаём через токен
+     * на host, который наследуется input внутри shadowRoot. */
+    #unifiedToolbar global-search-bar,
+    #unifiedToolbar .search-bar {
+      --search-bar-border-color: var(--f11-line) !important;
+    }
+  }
+}

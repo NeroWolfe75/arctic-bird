@@ -1,0 +1,26 @@
+/* Arctic Bird 0.3.8 — фон документа обычного письма, а не только оболочки.
+ * Область действия: только протоколы почтовых сообщений и локальные .eml.
+ * Установлено в userContent.css. Печать не затрагивается.
+ * Отдельные карточки/кнопки/изображения HTML-письма сохраняют свои цвета. */
+@-moz-document url-prefix("imap:"), url-prefix("mailbox:"),
+  url-prefix("news:"), url-prefix("snews:"), url-prefix("nntp:"),
+  regexp("^file:.*\\.[eE][mM][lL]([?#].*)?$") {
+  @media screen and (forced-colors: none) and (prefers-contrast: no-preference) {
+    :root {
+      color-scheme: var(--f11-color-scheme) !important;
+      --layout-background-0: var(--f11-paper) !important;
+      --layout-color-0: var(--f11-text) !important;
+      --color-gray-90: var(--f11-paper) !important;
+      --color-text-base-dark: var(--f11-text) !important;
+      --color-text-highlight-dark: var(--f11-accent) !important;
+    }
+    html, body, .moz-text-html, .moz-text-plain, .moz-text-flowed {
+      background-color: var(--f11-paper) !important;
+      color: var(--f11-text) !important;
+    }
+    html, body { background-image: none !important; }
+    a:link { color: var(--f11-accent) !important; }
+    a:visited { color: var(--f11-secondary) !important; }
+    a:focus-visible { outline-color: var(--f11-accent) !important; }
+  }
+}

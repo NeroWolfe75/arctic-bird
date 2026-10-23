@@ -1,0 +1,103 @@
+/* Arctic Bird 0.3.8 — контурные вкладки по пользовательскому референсу.
+ * Горизонтальная полоса; вертикальные вкладки Betterbird остаются штатными.
+ * Не меняем порядок панелей, перетаскивание, overflow и кнопки окна. */
+@-moz-document url("chrome://messenger/content/messenger.xhtml") {
+  @media screen and (forced-colors: none) and (prefers-contrast: no-preference) {
+    #navigation-toolbox #tabs-toolbar {
+      color-scheme: var(--f11-color-scheme) !important;
+      background-color: var(--f11-tabs-background) !important;
+      background-image: linear-gradient(to top, var(--f11-line) 0 1px, transparent 1px) !important;
+      box-shadow: none !important;
+      border: 0 !important;
+      padding-block-start: 0 !important;
+    }
+    #navigation-toolbox #tabmail-tabs {
+      padding-inline: 2px !important;
+      min-inline-size: 0 !important;
+      align-self: stretch !important;
+    }
+    /* Отступ ВНУТРИ прокручиваемого содержимого: внешний padding tabs
+     * не защищал нижний левый угол от обрезки scrollbox первой вкладки. */
+    #navigation-toolbox .tabmail-tab:first-of-type {
+      margin-inline-start: calc(var(--f11-tab-radius) + 1px) !important;
+    }
+    #navigation-toolbox .tabmail-tab {
+      color-scheme: var(--f11-color-scheme) !important;
+      background: transparent !important;
+      border-radius: var(--f11-tab-radius) var(--f11-tab-radius) 0 0 !important;
+      box-shadow: none !important;
+      margin-inline-end: calc(var(--f11-tab-radius) * 2) !important;
+      color: var(--f11-secondary) !important;
+    }
+    #navigation-toolbox .tabmail-tab .tab-background {
+      background: transparent !important;
+      border: 1px solid transparent !important;
+      border-block-end-color: var(--f11-line) !important;
+      border-radius: var(--f11-tab-radius) var(--f11-tab-radius) 0 0 !important;
+      box-shadow: none !important;
+    }
+    /* Неактивная вкладка при наведении — отдельная мягкая поверхность
+     * с четырьмя скруглениями и видимым зазором снизу. */
+    #navigation-toolbox .tabmail-tab:not([selected="true"]) .tab-background {
+      margin-block: 3px 4px !important;
+      border-radius: var(--f11-tab-radius) !important;
+      border-color: transparent !important;
+    }
+    #navigation-toolbox .tabmail-tab:not([selected="true"]):hover .tab-background {
+      background-color: var(--f11-hover) !important;
+    }
+    #navigation-toolbox .tabmail-tab[selected="true"] {
+      color: var(--f11-text) !important;
+      overflow: visible !important;
+    }
+    #navigation-toolbox .tabmail-tab[selected="true"] .tab-background {
+      position: relative;
+      background-color: var(--f11-tab-active) !important;
+      border-color: var(--f11-line) !important;
+      border-block-end-color: var(--f11-tab-active) !important;
+    }
+    /* Вогнутые нижние углы соединяют контур с линией полосы.
+     * Псевдоэлементы не перехватывают мышь и не меняют ширину вкладки. */
+    #navigation-toolbox .tabmail-tab[selected="true"] .tab-background::before,
+    #navigation-toolbox .tabmail-tab[selected="true"] .tab-background::after {
+      content: "";
+      position: absolute;
+      pointer-events: none;
+      inline-size: calc(var(--f11-tab-radius) + 1px);
+      block-size: calc(var(--f11-tab-radius) + 1px);
+      inset-block-end: -1px;
+    }
+    #navigation-toolbox .tabmail-tab[selected="true"] .tab-background::before {
+      left: calc(-1 * var(--f11-tab-radius) - 1px);
+      background: radial-gradient(circle at left top, transparent calc(var(--f11-tab-radius) - 1px), var(--f11-line) var(--f11-tab-radius), var(--f11-tab-active) calc(var(--f11-tab-radius) + 0.5px));
+    }
+    #navigation-toolbox .tabmail-tab[selected="true"] .tab-background::after {
+      right: calc(-1 * var(--f11-tab-radius) - 1px);
+      background: radial-gradient(circle at right top, transparent calc(var(--f11-tab-radius) - 1px), var(--f11-line) var(--f11-tab-radius), var(--f11-tab-active) calc(var(--f11-tab-radius) + 0.5px));
+    }
+    #navigation-toolbox .tab-content { position: relative; }
+    #navigation-toolbox .tabmail-tab .tab-line {
+      background: transparent !important;
+      box-shadow: none !important;
+    }
+    #navigation-toolbox .tabmail-tab:focus-visible .tab-content {
+      outline: 1px solid var(--f11-accent) !important;
+      outline-offset: -3px !important;
+      border-radius: var(--f11-tab-radius) var(--f11-tab-radius) 0 0;
+    }
+    #navigation-toolbox .tab-close-button {
+      color: var(--f11-secondary) !important;
+      border-radius: 4px !important;
+    }
+    #navigation-toolbox .tab-close-button:hover {
+      color: var(--f11-text) !important;
+      background-color: var(--f11-hover) !important;
+    }
+    #navigation-toolbox .tab-content,
+    #navigation-toolbox .tab-label, #navigation-toolbox .tab-text {
+      font-family: var(--f11-font) !important;
+      font-size: var(--f11-tab-font-size, 15px) !important;
+    }
+    #navigation-toolbox .tabmail-tab[selected="true"] .tab-label { font-weight: 600 !important; }
+  }
+}

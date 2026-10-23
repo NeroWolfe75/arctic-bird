@@ -1,0 +1,106 @@
+/* Arctic Bird 0.3.8 — оболочка окна создания письма.
+ * Только цвета и границы. Не меняем поля, размеры и отправку письма. */
+@-moz-document url("chrome://messenger/content/messengercompose/messengercompose.xhtml") {
+  @media screen and (forced-colors: none) and (prefers-contrast: no-preference) {
+    :root {
+      --toolbar-field-background-color-focus: var(--f11-field) !important;
+      --autocomplete-popup-background: var(--f11-raised) !important;
+      --autocomplete-popup-color: var(--f11-text) !important;
+      --autocomplete-popup-highlight-background: var(--f11-selection) !important;
+      --autocomplete-popup-highlight-color: var(--f11-text) !important;
+    }
+    #msgcomposeWindow, #composeContentBox, #messageArea, #messageEditor {
+      background-color: var(--f11-paper) !important;
+      color: var(--f11-text) !important;
+    }
+    #composeContentBox { box-shadow: none !important; }
+    #compose-toolbox, #composeToolbar2, #MsgHeadersToolbar,
+    #FormatToolbox, #FormatToolbar, #status-bar {
+      color-scheme: var(--f11-color-scheme) !important;
+      background-color: var(--f11-shell) !important;
+      background-image: none !important;
+      color: var(--f11-text) !important;
+      border-color: var(--f11-line) !important;
+      box-shadow: none !important;
+    }
+    #MsgHeadersToolbar .address-container, #msgSubject, #msgSubject:not(:focus) {
+      background-color: var(--f11-field) !important;
+      color: var(--f11-text) !important;
+      border-color: var(--f11-line) !important;
+      box-shadow: none !important;
+    }
+    #MsgHeadersToolbar .address-container:is([focused="true"], :focus-within), #msgSubject:focus {
+      border-color: var(--f11-accent) !important;
+      outline: 1px solid var(--f11-accent) !important;
+      outline-offset: 0 !important;
+    }
+    #MsgHeadersToolbar .address-input {
+      background-color: transparent !important;
+      color: var(--f11-text) !important;
+    }
+    #MsgHeadersToolbar :is(.address-input, #msgSubject)::placeholder { color: var(--f11-secondary) !important; }
+    #identityLabel, #subjectLabel, .address-label-container { color: var(--f11-secondary) !important; }
+    #msgIdentity { color: var(--f11-text) !important; }
+    #msgIdentity:not([disabled]):hover {
+      background-color: var(--f11-field) !important;
+      border-color: var(--f11-line) !important;
+    }
+    #msgIdentity:is(:focus, :focus-within, [focused="true"]) {
+      background-color: var(--f11-field) !important;
+      border-color: var(--f11-accent) !important;
+      outline-color: var(--f11-accent) !important;
+    }
+    #msgIdentity::part(description) { color: var(--f11-secondary) !important; opacity: 1 !important; }
+    /* Ошибочные адреса и проблемы шифрования сохраняют штатные цвета. */
+    #MsgHeadersToolbar .address-pill:not(.invalid-address, .key-issue, .editing) {
+      background-color: var(--f11-raised) !important;
+      color: var(--f11-text) !important;
+      box-shadow: inset 0 0 0 1px var(--f11-line) !important;
+      text-shadow: none !important;
+    }
+    #MsgHeadersToolbar .address-pill:not(.invalid-address, .key-issue, .editing):hover {
+      background-color: var(--f11-hover) !important;
+    }
+    #MsgHeadersToolbar .address-pill:not(.invalid-address, .key-issue, .editing)[selected] {
+      background-color: var(--f11-selection) !important;
+    }
+    #MsgHeadersToolbar .address-pill:not(.invalid-address, .key-issue):is(:focus, .editing) {
+      box-shadow: inset 0 0 0 1px var(--f11-accent) !important;
+    }
+    toolbarseparator, .ColorPickerLabel, .color-button {
+      border-color: var(--f11-line) !important;
+    }
+    /* Цветовые образцы не перекрашиваем: они показывают цвет письма. */
+    #headersSplitter, #attachmentSplitter { border-color: var(--f11-line) !important; background-color: var(--f11-line) !important; }
+    :is(#headersSplitter, #attachmentSplitter):is(:hover, :focus-visible, .splitter-resizing) {
+      background-color: var(--f11-accent) !important;
+    }
+    #attachmentArea, #attachmentBucket {
+      background-color: var(--f11-paper) !important;
+      color: var(--f11-text) !important;
+      border-color: var(--f11-line) !important;
+    }
+    #attachmentArea > summary { background-color: var(--f11-shell) !important; border-color: var(--f11-line) !important; }
+    #attachmentBucket .attachmentItem { color: var(--f11-text) !important; }
+    #attachmentBucket .attachmentItem:hover {
+      background-color: var(--f11-hover) !important;
+      border-color: var(--f11-line) !important;
+    }
+    #attachmentBucket .attachmentItem[selected="true"] {
+      background-color: var(--f11-selection-idle) !important;
+      border-color: var(--f11-line) !important;
+    }
+    #attachmentBucket:focus-within .attachmentItem[selected="true"],
+    #attachmentBucket:focus .attachmentItem[selected="true"] {
+      background-color: var(--f11-selection) !important;
+    }
+    #attachmentBucket .attachmentItem[current="true"] { outline-color: var(--f11-accent) !important; }
+    #attachmentBucket .attachmentcell-size, #attachmentBucketSize { color: var(--f11-secondary) !important; opacity: 1 !important; }
+    #PopupAutoComplete, .autocomplete-richlistbox {
+      background-color: var(--f11-raised) !important;
+      color: var(--f11-text) !important;
+      border-color: var(--f11-line) !important;
+    }
+    #languageStatusButton { color: var(--f11-secondary) !important; }
+  }
+}

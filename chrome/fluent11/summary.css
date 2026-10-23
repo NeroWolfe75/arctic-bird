@@ -1,0 +1,67 @@
+/* Arctic Bird 0.3.8 — ШТАТНЫЙ сводный просмотр обсуждения / нескольких писем.
+ * Это отдельный документ, без iframe с HTML-письмами.
+ * Стили подключены из userChrome и userContent для chrome-документа.
+ * Печать, теги, звёздочки и команды приложения сохраняются. */
+@-moz-document url("chrome://messenger/content/multimessageview.xhtml") {
+  @media screen and (forced-colors: none) and (prefers-contrast: no-preference) {
+    :root {
+      color-scheme: var(--f11-color-scheme) !important;
+      font-family: var(--f11-font) !important;
+      --layout-background-0: var(--f11-paper) !important;
+      --layout-background-1: var(--f11-paper) !important;
+      --layout-background-4: var(--f11-line) !important;
+      --layout-color-0: var(--f11-text) !important;
+      --layout-color-1: var(--f11-text) !important;
+      --layout-color-2: var(--f11-secondary) !important;
+      --sidebar-border: var(--f11-line) !important;
+      --toolbarbutton-header-bordercolor: var(--f11-line) !important;
+      --toolbarbutton-hover-bordercolor: var(--f11-line) !important;
+      --toolbarbutton-active-bordercolor: var(--f11-line) !important;
+      --toolbarbutton-background-color-hover: var(--f11-hover) !important;
+      --toolbarbutton-background-color-active: var(--f11-pressed) !important;
+      --toolbarbutton-active-boxshadow: none !important;
+      --button-text-color: var(--f11-text) !important;
+      --button-background-color: var(--f11-raised) !important;
+      --button-border-color: var(--f11-line) !important;
+      --button-hover-background-color: var(--f11-hover) !important;
+      --button-active-background-color: var(--f11-pressed) !important;
+      --focus-outline-color: var(--f11-accent) !important;
+      --heading-wrapper-padding: 12px var(--f11-reader-padding);
+      --content-padding: 12px var(--f11-reader-padding);
+    }
+    body {
+      background: var(--f11-paper) !important;
+      color: var(--f11-text) !important;
+      font-family: var(--f11-font) !important;
+      font-size: 1rem !important;
+      line-height: 1.5 !important;
+    }
+    #headingWrapper {
+      background: var(--f11-paper) !important;
+      color: var(--f11-text) !important;
+      border-block-end: 1px solid var(--f11-line) !important;
+    }
+    #heading { font: 600 1.15rem/1.4 var(--f11-font) !important; }
+    #summarySubtitle { color: var(--f11-secondary) !important; font-size: .9rem !important; font-weight: 400 !important; }
+    #messageList > li {
+      background: transparent !important;
+      border-block-end: 1px solid var(--f11-line) !important;
+      padding-block: 8px 16px !important;
+      margin-block-end: 8px !important;
+    }
+    .item-header { font-size: 1rem !important; line-height: 1.5 !important; }
+    .primary, .author { color: var(--f11-text) !important; }
+    .count, .info, .date, .snippet { color: var(--f11-secondary) !important; }
+    .snippet { font: inherit !important; overflow-wrap: anywhere; }
+    a { color: var(--f11-accent) !important; }
+    #header-view-toolbox { font-family: var(--f11-font) !important; }
+    #header-view-toolbar .toolbarbutton-1 {
+      color: var(--f11-text) !important;
+      border-radius: var(--f11-radius) !important;
+    }
+    :is(a, button, .link):focus-visible {
+      outline: 2px solid var(--f11-accent) !important;
+      outline-offset: 2px !important;
+    }
+  }
+}

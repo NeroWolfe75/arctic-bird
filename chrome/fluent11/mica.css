@@ -1,0 +1,19 @@
+/* ЭКСПЕРИМЕНТАЛЬНО, по умолчанию НЕ импортируется.
+ * Включается только при подтверждённой поддержке Mica самим Gecko.
+ * Не делает Thunderbird приложением WinUI и не имитирует Mica opacity.
+ * Настройка widget.windows.mica = true, если она существует в вашей сборке.
+ * Windows: «Показывать цвет элементов в заголовках окон» — выключено.
+ * В Thunderbird: встроенная системная тема, пользовательский заголовок.
+ * После этого раскомментируйте импорт mica.css в userChrome.css. */
+@-moz-document url("chrome://messenger/content/messenger.xhtml") {
+  @media (-moz-platform: windows) and (-moz-windows-mica)
+    and (-moz-windows-accent-color-in-titlebar: 0)
+    and (forced-colors: none) and (prefers-contrast: no-preference) {
+    :root[customtitlebar]:not([lwtheme]) #navigation-toolbox,
+    :root[customtitlebar]:not([lwtheme]) #unifiedToolbarContainer,
+    :root[customtitlebar]:not([lwtheme]) #tabs-toolbar {
+      background-color: transparent !important;
+      background-image: none !important;
+    }
+  }
+}

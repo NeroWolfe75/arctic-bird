@@ -1,0 +1,21 @@
+/* Arctic Bird 0.3.11 — монохромные значки панели папок, только CSS.
+ * Формы значков, метки, индикаторы аккаунтов и состояния ошибок сохраняются. */
+@-moz-document url-prefix("about:3pane"),
+  url-prefix("chrome://messenger/content/about3Pane.xhtml") {
+  @media screen and (forced-colors: none) and (prefers-contrast: no-preference) {
+    /* Меняем только цвет основного значка строки, включая специальные папки,
+     * RSS и аккаунты. Пользовательский цвет значка временно перекрывается;
+     * сохранённая настройка не изменяется. data-tag-key — цветная метка. */
+    #folderTree li:not([data-tag-key], .tls-error, [data-has-error], [data-is-busy]) > .container > .icon {
+      --icon-color: var(--f11-secondary) !important;
+    }
+    #folderTree li:is(.selected, .new-messages):not([data-tag-key], .tls-error, [data-has-error], [data-is-busy]) > .container > .icon {
+      --icon-color: var(--f11-accent) !important;
+    }
+    /* Штатный маркер новых писем остаётся на месте, в общем цвете акцента. */
+    #folderTree li:not([data-tag-key]) > .container > .new-icon {
+      fill: var(--f11-accent) !important;
+      stroke: var(--f11-accent) !important;
+    }
+  }
+}

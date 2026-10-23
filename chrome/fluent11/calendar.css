@@ -1,0 +1,144 @@
+/* Arctic Bird 0.3.8 — календарь, задачи, Today Pane и окна событий.
+ * Цвета отдельных календарей/категорий и состояния overdue/inprogress
+ * сохраняются. Не меняем геометрию календарной сетки и виртуальных деревьев. */
+@-moz-document url("chrome://messenger/content/messenger.xhtml"),
+  url-prefix("chrome://calendar/content/") {
+  @media screen and (forced-colors: none) and (prefers-contrast: no-preference) {
+    :root {
+      --viewColor: var(--f11-text) !important;
+      --viewBackground: var(--f11-paper) !important;
+      --viewBorderColor: var(--f11-line) !important;
+      --viewCalendarHeaderBackground: var(--f11-shell) !important;
+      --viewHighlightBorderColor: var(--f11-accent) !important;
+      --viewTodayColor: var(--f11-text) !important;
+      --viewTodayBackground: var(--f11-selection-idle) !important;
+      --viewTodayLabelColor: var(--f11-on-accent) !important;
+      --viewTodayLabelBackground: var(--f11-accent) !important;
+      --viewTodayOffBackground: var(--f11-shell) !important;
+      --viewTodayDayLabelBackground: var(--f11-selection) !important;
+      --viewTodayWeekendBackground: var(--f11-selection-idle) !important;
+      --viewWeekendBackground: var(--f11-shell) !important;
+      --viewHeaderSelectedBackground: var(--f11-selection) !important;
+      --viewDayBoxSelectedBackground: var(--f11-selection) !important;
+      --viewDayBoxOffSelectedBackground: var(--f11-selection-idle) !important;
+      --viewDayBoxOtherSelectedBackground: var(--f11-selection-idle) !important;
+      --viewMonthOtherBackground: var(--f11-shell) !important;
+      --viewMonthDayBoxSelectedColor: var(--f11-text) !important;
+      --viewMonthDayBoxLabelColor: var(--f11-text) !important;
+      --viewMonthWeekLabelBackground: var(--f11-shell) !important;
+      --viewMonthDayOtherBackground: var(--f11-shell) !important;
+      --viewMonthDayOffLabelBackground: var(--f11-shell) !important;
+      --viewOffTimeBackground: color-mix(in srgb, var(--f11-paper) 90%, var(--f11-line)) !important;
+      --viewTimeBoxColor: var(--f11-secondary) !important;
+      --viewDayLabelSelectedColor: var(--f11-text) !important;
+      --viewDayLabelSelectedBackground: var(--f11-selection) !important;
+      --viewDragboxBackground: var(--f11-selection) !important;
+      --viewDropshadowBackground: var(--f11-selection) !important;
+      --calendar-view-toggle-background: var(--f11-shell) !important;
+      --calendar-view-toggle-hover-background: var(--f11-hover) !important;
+      --calendar-view-toggle-active-background: var(--f11-pressed) !important;
+      --calendar-view-toggle-selected-background: var(--f11-selection) !important;
+      --calendar-view-toggle-selected-hover-background: var(--f11-selection) !important;
+      --calendar-view-toggle-border-color: var(--f11-line) !important;
+      --calendar-view-toggle-shadow-color: transparent !important;
+    }
+    /* minimonth задаёт эти переменные на себе: наследования от :root
+     * недостаточно, поэтому перечислены сами host-элементы. */
+    calendar-minimonth {
+      --mmMainBackground: var(--f11-sidebar) !important;
+      --mmMainBorderColor: var(--f11-line) !important;
+      --mmHighlightColor: var(--f11-text) !important;
+      --mmHighlightBackground: var(--f11-selection) !important;
+      --mmHighlightBorderColor: var(--f11-accent) !important;
+      --mmBoxBackground: var(--f11-shell) !important;
+      --mmBoxBorderColor: var(--f11-line) !important;
+      --mmBoxItemColor: var(--f11-secondary) !important;
+      --mmDayColor: var(--f11-text) !important;
+      --mmDayOtherColor: var(--f11-secondary) !important;
+      --mmDayWeekColor: var(--f11-secondary) !important;
+      --mmDayTodayColor: var(--f11-text) !important;
+      --mmDayTodayBackground: var(--f11-selection-idle) !important;
+      --mmDaySelectedColor: var(--f11-text) !important;
+      --mmDaySelectedBackground: var(--f11-selection) !important;
+      --mmDaySelectedBorderColor: var(--f11-accent) !important;
+      --mmDaySelectedTodayBackground: var(--f11-selection) !important;
+      --mmDaySelectedTodayBorderColor: var(--f11-accent) !important;
+      --mmDayBusyColor: var(--f11-accent) !important;
+    }
+    #calendar-view-box, #view-box, #calendar-task-box, #calendar-task-details-container,
+    #calendar-task-details, #calendar-task-details-description, #today-pane-panel,
+    #calendar-task-tree, #unifinder-search-results-tree, #unifinder-todo-tree {
+      background-color: var(--f11-paper) !important;
+      color: var(--f11-text) !important;
+      border-color: var(--f11-line) !important;
+    }
+    #minimonth-pane, #calendar-list-pane, #calSidebar {
+      background-color: var(--f11-sidebar) !important;
+      color: var(--f11-text) !important;
+    }
+    #task-addition-box, #unifinder-searchBox, #today-pane-header,
+    #calendar-nav-control, #calendar-view-toolbar, #task-actions-toolbar {
+      background-color: var(--f11-shell) !important;
+      color: var(--f11-text) !important;
+      border-color: var(--f11-line) !important;
+    }
+    #calendar-view-splitter, #calendar-task-view-splitter, #today-pane-splitter,
+    #calsidebar_splitter { border-color: var(--f11-line) !important; }
+    #calendar-task-details .task-details-name,
+    #calendar-task-details-grid > .item-date-row > .headline {
+      color: var(--f11-secondary) !important;
+      opacity: 1 !important;
+    }
+    :is(#calendar-task-tree, #unifinder-search-results-tree, #unifinder-todo-tree)
+      :is(treecols, treecol, treecolpicker, .tree-columnpicker-button) {
+      background-color: var(--f11-shell) !important;
+      color: var(--f11-secondary) !important;
+      border-color: var(--f11-line) !important;
+      /* Toolkit рисует нижнюю линию заголовков через inset-shadow. */
+      box-shadow: inset 0 -1px var(--f11-line) !important;
+    }
+    :is(#calendar-task-tree, #unifinder-search-results-tree, #unifinder-todo-tree)
+      :is(treecol, .tree-columnpicker-button):hover {
+      background-color: var(--f11-hover) !important;
+      color: var(--f11-text) !important;
+    }
+    :is(#calendar-task-tree, #unifinder-search-results-tree, #unifinder-todo-tree)
+      :is(treecol, .tree-columnpicker-button):hover:active {
+      background-color: var(--f11-pressed) !important;
+    }
+    #show-completed-checkbox-box { border-color: var(--f11-line) !important; }
+    /* Навигация мини-календаря использует жёстко заданный серый hover,
+     * а разделение месяца и года — цвет текста вместо цвета границы. */
+    calendar-minimonth .minimonth-nav-item { border-color: var(--f11-line) !important; }
+    calendar-minimonth :is(.minimonth-header button, .minimonth-header-btn):not(:disabled, [disabled]):hover {
+      background-color: var(--f11-hover) !important;
+      border-color: var(--f11-line) !important;
+    }
+    calendar-minimonth :is(.minimonth-header button, .minimonth-header-btn):not(:disabled, [disabled]):hover:active {
+      background-color: var(--f11-pressed) !important;
+    }
+    /* У деревьев XUL базовый выбранный фон яркий акцентный и рассчитан
+     * на --selected-item-text-color. Сохраняем этот контрастный механизм,
+     * включая особые цвета просроченных и выполняемых задач. */
+    /* Эти HTML-поля живут в главном chrome-документе и имеют
+     * собственную яркую рамку из searchBox.css. */
+    #unifinder-search-field, #task-text-filter-field,
+    #view-task-edit-field, #unifinder-task-edit-field,
+    #event-filter-menulist {
+      border-color: var(--f11-line) !important;
+      background-color: var(--f11-field) !important;
+      color: var(--f11-text) !important;
+      box-shadow: none !important;
+    }
+    #unifinder-search-field:hover, #task-text-filter-field:hover,
+    #view-task-edit-field:hover, #unifinder-task-edit-field:hover {
+      border-color: var(--f11-line) !important;
+      box-shadow: none !important;
+    }
+    #unifinder-search-field:focus-visible, #task-text-filter-field:focus-visible,
+    #view-task-edit-field:focus-visible, #unifinder-task-edit-field:focus-visible {
+      outline: 1px solid var(--f11-accent) !important;
+      outline-offset: 1px !important;
+    }
+  }
+}

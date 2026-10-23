@@ -1,0 +1,21 @@
+/* Arctic Bird 0.3.8 — внешний вид документа редактора письма.
+ * Нативный editorContent.css загружается как AGENT_SHEET (editor.js).
+ * Обычные пользовательские объявления перекрывают его, но уступают
+ * авторским цветам в HTML письма. Не добавлять здесь !important к body.
+ * Эти стили не записываются в отправляемый HTML. */
+@-moz-document url("about:blank?compose") {
+  @media screen and (forced-colors: none) and (prefers-contrast: no-preference) and -moz-pref("mail.dark-reader-compose.enabled") {
+    :root {
+      color-scheme: var(--f11-color-scheme);
+      background-color: var(--f11-paper);
+    }
+    body {
+      background-color: var(--f11-paper);
+      color: var(--f11-text);
+      caret-color: currentColor;
+    }
+    a:link { color: var(--f11-accent); }
+    a:visited { color: var(--f11-secondary); }
+    ::selection { background-color: var(--f11-selection); color: var(--f11-text); }
+  }
+}

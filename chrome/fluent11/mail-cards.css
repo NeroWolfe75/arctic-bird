@@ -1,0 +1,33 @@
+/* Arctic Bird 0.3.15 — мягкий фон и тусклый контур карточек, только CSS.
+ * Не меняет толщину рамки, скругления, размеры и виртуализацию строк. */
+@-moz-document url-prefix("about:3pane"),
+  url-prefix("chrome://messenger/content/about3Pane.xhtml") {
+  @media screen and (forced-colors: none) and (prefers-contrast: no-preference) {
+    #threadTree[rows="thread-card"] {
+      --tree-card-background: var(--f11-shell) !important;
+      --tree-card-border: color-mix(in srgb, var(--f11-line) 50%, var(--f11-paper)) !important;
+      --tree-card-border-hover: var(--f11-line) !important;
+      --tree-card-border-focus: var(--f11-line) !important;
+      --tree-card-border-selected: var(--f11-line) !important;
+      --tree-card-border-selected-unfocused: var(--f11-line) !important;
+      --tree-card-background-current: var(--f11-field) !important;
+      --tree-card-background-current-unfocused: var(--f11-field) !important;
+      --tree-card-background-selected: var(--f11-selection-idle) !important;
+      --tree-card-background-selected-current: var(--f11-selection-idle) !important;
+      --tree-card-background-selected-unfocused: var(--f11-selection-idle) !important;
+      --tree-card-background-selected-current-unfocused: var(--f11-selection-idle) !important;
+      --tree-card-background-selected-current-unfocused-hover: var(--f11-selection-idle) !important;
+    }
+    /* Нативный hover текущей выбранной карточки иначе делает её светлее.
+     * Сохраняем выбранный фон и при фокусе/наведении. Для спама, групп и
+     * перетаскивания оставляем собственные состояния клиента. */
+    #threadTree[rows="thread-card"] .card-layout.selected:not(
+      [data-properties~="junk"], [data-properties~="dummy"], .drag-source, .drop-target) {
+      --tree-card-background: var(--f11-selection-idle) !important;
+      --tree-card-border: var(--f11-line) !important;
+    }
+    /* Синяя полоса 3 px и контур текущей карточки при навигации с
+     * клавиатуры уже заданы в core.css. Inline-цвета аккаунтов и теги
+     * сохраняются: background-color с !important здесь не применяется. */
+  }
+}

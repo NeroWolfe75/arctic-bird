@@ -1,0 +1,925 @@
+<!doctype html>
+<html spacestoolbar="true" lang="ru" style="color-scheme:dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Arctic Bird — палитра и макет</title>
+<style id="paletteDefaults">
+/* Arctic Bird 0.3.8
+ * ================================================================
+ *                     НАСТРОЙКА ОФОРМЛЕНИЯ
+ * ================================================================
+ * light-dark(СВЕТЛАЯ, ТЁМНАЯ): меняйте одну или обе половины пары.
+ * Например: --f11-accent: light-dark(#0f6cbd, #8bc7ff);
+ * Сохраните файл и полностью перезапустите Thunderbird.
+ * CSS-файлы сохраняйте как обычный UTF-8, без расширения .txt.
+ *
+ * Это общие токены для оболочки и адаптеров бесед. Thunderbird не
+ * наследует CSS-переменные между документами: поэтому settings.css
+ * импортируется и из userChrome.css, и из userContent.css.
+ */
+:root {
+  /* Режим: light dark = автоматически; dark = тёмный; light = светлый.
+   * Принудительный режим относится к областям, оформленным этим скином. */
+  --f11-color-scheme: dark;
+
+  /* 1. ОСНОВНЫЕ ПОВЕРХНОСТИ */
+  --f11-shell: light-dark(#f3f4f6, #101217);       /* верхняя и нижняя панели */
+  --f11-paper: light-dark(#ffffff, #0d0e11);       /* список и чтение */
+  --f11-raised: light-dark(#fafbfc, #1b1d24);      /* меню и карточки */
+  --f11-field: light-dark(#ffffff, #191c23);       /* поиск и ввод */
+  --f11-hover: light-dark(#e9edf2, #242935);       /* наведение */
+  --f11-pressed: light-dark(#dfe5ec, #2b3543);     /* нажатие */
+  --f11-line: light-dark(#e2e6ec, #292e38);        /* разделители */
+  --f11-control-line: light-dark(#818a98, #545c6b); /* границы ввода */
+
+  /* Палитра тёмной схемы — Brackets Refined — Arctic для Zed.
+   * Боковая панель и почта имеют единый фон, как на скриншоте. */
+  --f11-sidebar: light-dark(#f3f4f6, #0d0e11);
+  --f11-tabs-background: light-dark(#f3f4f6, #101217);
+  --f11-tab-active: var(--f11-paper);
+  --f11-tab-radius: 8px;
+  /* Общая строка вкладок и поиска. Ниже 1100 CSS px поиск переходит вниз. */
+  --f11-header-height: 36px;
+  --f11-header-tools-width: clamp(240px, 28vw, 420px);
+
+  /* 2. ТЕКСТ И АКЦЕНТ */
+  --f11-text: light-dark(#1b1b1b, #e6e8ef);
+  --f11-secondary: light-dark(#565f6c, #a3a9bb);
+  --f11-accent: light-dark(#0f6cbd, #8bc7ff);
+  --f11-on-accent: light-dark(#ffffff, #0d0e11);
+  --f11-selection: light-dark(#e3eefb, #303f50);
+  --f11-selection-idle: light-dark(#e8ecf2, #242935);
+
+  /* 3. ГЕОМЕТРИЯ — высоту строк списка здесь не меняем.
+   * Используйте штатное меню «Вид → Плотность». */
+  --f11-font: "Segoe UI Variable Text", "Segoe UI", sans-serif;
+  --f11-radius: 6px;             /* кнопки, вкладки, строки */
+  --f11-card-radius: 8px;        /* карточки бесед и меню */
+  --f11-folder-inline: 6px;      /* боковые поля дерева папок */
+  --f11-reader-padding: 16px;
+  --f11-subject-size: 1.3rem;
+
+  /* 4. ШТАТНЫЙ СПИСОК СООБЩЕНИЙ
+   * 0px + transparent = плоские строки (по умолчанию).
+   * Для карточек: radius 8px, border var(--f11-line).
+   * Это форма строк; режим «Карточки / Таблица» выбирается в Thunderbird. */
+  --f11-list-radius: 0px;
+  --f11-list-border: transparent;
+
+  /* Можно использовать системный акцент Windows. Раскомментируйте
+   * ВСЕ ТРИ строки. При произвольном системном цвете контраст проверьте.
+  --f11-accent: AccentColor;
+  --f11-on-accent: AccentColorText;
+  --f11-selection: color-mix(in srgb, AccentColor 15%, var(--f11-paper));
+   */
+}
+
+</style>
+<style>
+*{box-sizing:border-box}body{margin:0;padding:24px;background:var(--f11-paper);color:var(--f11-text);font:14px/1.45 var(--f11-font)}button,select,input{font:inherit;color:inherit}button,select{border:1px solid var(--f11-control-line);background:var(--f11-raised);border-radius:6px;padding:7px 10px}button{cursor:pointer}button:hover{background:var(--f11-hover)}button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--f11-accent);outline-offset:2px}svg{height:20px;width:20px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex:none}.heading{display:flex;align-items:center;gap:16px;margin-bottom:18px}.heading h1{font-size:20px;font-weight:600;margin:0}.heading .sub{font-size:12px;color:var(--f11-secondary);margin-top:3px}.heading .right{margin-left:auto;display:flex;gap:8px;align-items:center}.tag{font-size:11px;letter-spacing:.05em;border:1px solid var(--f11-line);padding:4px 8px;border-radius:5px;color:var(--f11-secondary)}.desktop{border:1px solid var(--f11-line);border-radius:10px;overflow:hidden;height:840px;min-width:1010px;background:var(--f11-shell);box-shadow:0 12px 30px #0002}.overflow{overflow:auto;padding-bottom:8px}.top{height:50px;display:flex;align-items:center;padding:0 0 0 16px;gap:16px}.appmark{width:30px;height:30px;background:var(--f11-selection);color:var(--f11-accent);border-radius:7px;display:grid;place-items:center}.appname{font-weight:600;font-size:13px}.search{margin:auto;max-width:440px;flex:1;display:flex;align-items:center;gap:10px;color:var(--f11-secondary);background:var(--f11-field);border:1px solid var(--f11-line);border-bottom-color:var(--f11-control-line);border-radius:6px;height:32px;padding:0 10px;font-size:12px}.search kbd{margin-left:auto;font:11px var(--f11-font);border:1px solid var(--f11-line);border-radius:3px;padding:0 4px}.caption{display:flex;align-self:stretch;align-items:center;gap:0}.caption span{width:46px;text-align:center;color:var(--f11-secondary);font-size:17px}.tabs{height:34px;display:flex;align-items:stretch;padding:0 14px 0 62px;gap:5px}.tab{padding:6px 14px;font-size:12px;display:flex;align-items:center;gap:10px;color:var(--f11-secondary)}.tab svg{width:15px;height:15px}.tab.active{background:var(--f11-paper);color:var(--f11-text);border-radius:6px 6px 0 0;box-shadow:inset 0 -2px var(--f11-accent)}.tab .x{margin-left:44px}.workspace{display:grid;grid-template-columns:52px 212px 350px minmax(360px,1fr);height:728px}.rail{display:flex;flex-direction:column;align-items:center;gap:12px;padding-top:13px}.rail .ico{border:0;background:transparent;display:grid;place-items:center;width:36px;height:36px;padding:0;color:var(--f11-secondary)}.rail .ico.active{background:var(--f11-selection);color:var(--f11-text);box-shadow:inset 3px 0 var(--f11-accent)}.rail .last{margin-top:auto;margin-bottom:14px}.folders{padding:14px 8px;background:var(--f11-shell)}.primary{background:var(--f11-accent);color:var(--f11-on-accent);border-color:transparent;font-weight:600}.primary:hover{background:var(--f11-accent);filter:brightness(.95)}.new{width:100%;display:flex;gap:10px;align-items:center;justify-content:center;padding:8px;margin-bottom:22px}.new svg{height:17px;width:17px}.account{color:var(--f11-secondary);font-size:11px;margin:22px 10px 10px}.folder{display:flex;align-items:center;gap:12px;margin:3px 0;padding:8px 12px;border-radius:6px;font-size:13px}.folder svg{height:17px;width:17px;color:var(--f11-secondary)}.folder.active{background:var(--f11-selection);box-shadow:inset 3px 0 var(--f11-accent);font-weight:600}.folder.active svg{color:var(--f11-accent)}.folder .count{margin-left:auto;font-size:11px;color:var(--f11-accent)}.folder.indent{padding-left:30px}.list{border-left:1px solid var(--f11-line);border-right:1px solid var(--f11-line);background:var(--f11-paper);min-width:0;overflow:auto}.listhead{height:74px;background:var(--f11-shell);padding:13px 16px;border-bottom:1px solid var(--f11-line);display:flex;align-items:center;justify-content:space-between}.listhead strong{font-size:18px;font-weight:600}.listhead small{display:block;color:var(--f11-secondary);font-size:11px;margin-top:2px}.quiet{border:0;background:transparent;padding:5px;display:grid;place-items:center;color:var(--f11-secondary)}.filter{display:flex;align-items:center;gap:15px;margin:13px 16px 4px;font-size:12px;color:var(--f11-secondary)}.filter span:first-child{color:var(--f11-accent);border-bottom:2px solid var(--f11-accent);padding-bottom:5px}.rows{padding:4px 6px}.row{position:relative;min-height:71px;padding:12px 12px 12px 22px;border-radius:var(--f11-list-radius);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 8px;border:1px solid var(--f11-list-border);margin-bottom:3px}.row .sender{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500}.row time{font-size:10px;color:var(--f11-secondary);white-space:nowrap}.row .subject{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.row .replycount{font-size:10px;color:var(--f11-secondary);border:1px solid var(--f11-line);border-radius:4px;padding:0 4px;align-self:start}.row.unread .sender,.row.unread .subject{font-weight:650}.row.unread:before{content:"";position:absolute;left:8px;top:17px;background:var(--f11-accent);width:5px;height:5px;border-radius:50%}.row.sel{background:var(--f11-selection);box-shadow:inset 3px 0 var(--f11-accent)}.row .snip,.row .avatar{display:none}.row .snip{color:var(--f11-secondary);font-size:11px;grid-column:1/-1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.avatar{width:28px;height:28px;align-items:center;justify-content:center;border-radius:50%;background:var(--f11-selection);font-size:10px;color:var(--f11-accent)}.rows.soft .row,.rows.thread .row{border:1px solid var(--f11-line);border-radius:8px;padding-left:47px;min-height:91px}.rows.soft .snip,.rows.thread .snip{display:block}.rows.soft .avatar{display:flex;position:absolute;left:10px;top:14px}.rows.thread .row{margin-left:40px;padding-left:15px;min-height:86px}.rows.thread .row:before{content:"";width:5px;height:5px;border-radius:50%;background:var(--f11-accent);position:absolute;top:17px;left:-14px}.rows.thread .row:after{content:"";width:1px;background:var(--f11-line);position:absolute;left:-12px;top:24px;bottom:-13px}.rows.clear .row,.rows.table .row{min-height:38px;grid-template-columns:100px minmax(0,1fr) 40px;align-items:center;padding:8px 10px 8px 20px;border-bottom:1px solid var(--f11-line)}.rows.clear .row time,.rows.table .row time{grid-column:3;grid-row:1}.rows.clear .subject,.rows.table .subject{grid-column:2;grid-row:1}.rows.clear .replycount,.rows.table .replycount{display:none}.reader{min-width:0;overflow:auto;background:var(--f11-paper);padding:24px 24px 18px}.reader .eyebrow{font-size:10px;color:var(--f11-secondary);letter-spacing:.08em;text-transform:uppercase;margin-bottom:9px}.reader h2{font-size:22px;line-height:1.3;font-weight:600;margin:0 0 10px}.threadmeta{display:flex;align-items:center;gap:10px;font-size:11px;color:var(--f11-secondary);margin-bottom:22px}.threadmeta button{margin-left:auto;font-size:10px;padding:4px 8px;border-color:var(--f11-line)}.mail{border:1px solid var(--f11-line);border-radius:8px;position:relative;margin-bottom:10px;overflow:hidden;background:var(--f11-paper)}.mail summary{list-style:none;cursor:pointer;padding:14px;display:flex;align-items:center;gap:11px;font-size:12px}.mail summary::-webkit-details-marker{display:none}.mail .avatar{display:flex;flex:none}.mail .who{font-weight:600}.mail small{font-size:10px;color:var(--f11-secondary);display:block;font-weight:400;margin-top:2px}.mail time{margin-left:auto;font-size:10px;color:var(--f11-secondary);white-space:nowrap}.mail[open]{box-shadow:inset 3px 0 var(--f11-accent)}.mail .body{padding:2px 18px 18px 53px;font-size:12px;line-height:1.7}.mail .body p{margin:0 0 12px}.attachment{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--f11-control-line);padding:5px 9px;border-radius:6px;font-size:10px}.attachment svg{height:14px;width:14px}.mailactions{display:flex;gap:6px;margin-top:18px}.mailactions button{font-size:10px;padding:4px 9px}.separator{font-size:10px;color:var(--f11-secondary);margin:22px 0 10px}.reply{margin-top:20px;border:1px solid var(--f11-control-line);border-radius:6px;color:var(--f11-secondary);padding:11px 14px;display:flex;align-items:center;gap:10px;font-size:12px}.reader.clear .mail{border:0;border-bottom:1px solid var(--f11-line);border-radius:0}.reader.clear .mail .avatar{display:none}.reader.clear .mail .body{padding-left:15px}.reader.thread .mail{margin-left:64px;overflow:visible}.reader.thread .mail .avatar{display:none}.reader.thread .mail .body{padding-left:16px}.reader.thread .mail time{position:absolute;left:-62px;top:19px;font-size:9px}.reader.thread .mail:before{content:"";width:6px;height:6px;border-radius:50%;background:var(--f11-accent);position:absolute;left:-16px;top:20px}.reader.thread .mail:after{content:"";width:1px;background:var(--f11-line);position:absolute;left:-13px;top:29px;bottom:-21px}.reader.original .mail{border:0;box-shadow:none}.reader.original .history,.reader.original .threadmeta,.reader.original .separator,.reader.original .reply{display:none}.reader.original .mail .body{padding:16px}.reader.original .mailactions{border-top:1px solid var(--f11-line);padding-top:16px}.statusbar{height:28px;border-top:1px solid var(--f11-line);display:flex;align-items:center;gap:15px;justify-content:flex-end;padding:0 14px;color:var(--f11-secondary);font-size:10px}.under{display:flex;gap:24px;align-items:flex-start;margin-top:14px;font-size:12px;color:var(--f11-secondary)}.under strong{color:var(--f11-text);font-weight:500}.controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:16px;padding:15px 0;border-top:1px solid var(--f11-line)}.controls label{font-size:12px;display:flex;gap:8px;align-items:center}.controls select{font-size:12px}.editor{margin-top:8px;padding:18px;border:1px solid var(--f11-line);border-radius:8px;background:var(--f11-shell)}.editor[hidden]{display:none}.editor p{margin:0 0 16px;font-size:12px;color:var(--f11-secondary)}.swatches{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.swatches label{display:flex;align-items:center;gap:9px;font-size:12px}.swatches input{border:0;padding:0;width:32px;height:28px;background:none;cursor:pointer}.editor footer{margin-top:20px;display:flex;align-items:center;gap:12px}.editor footer span{color:var(--f11-secondary);font-size:12px}#notice{min-height:18px;font-size:12px;color:var(--f11-secondary);margin-top:8px}@media(max-width:1000px){body{padding:16px}.heading{flex-wrap:wrap}.heading .right{margin-left:0}.swatches{grid-template-columns:repeat(2,1fr)}.under{flex-direction:column;gap:6px}}
+</style>
+<style>
+
+
+
+
+.desktop{height:auto}
+.statusbarpanel{border-inline-end:1px solid #bdbdbd}
+#navigation-toolbox{background:var(--f11-shell)}
+#titlebar{display:flex;flex-direction:column}
+#unifiedToolbarContainer{display:flex;align-items:center}
+#unifiedToolbar{display:flex;align-items:center;flex:1;min-width:0}
+#unifiedToolbarContent{display:flex;align-items:center;list-style:none;flex:1;min-width:0;margin:0}
+#unifiedToolbarContent li{min-width:0;list-style:none}
+#unifiedToolbarContent .search{width:100%;margin:0;height:30px;max-width:none}
+#button-appmenu{flex:none}
+.caption{display:flex;height:100%;align-items:center}
+.caption span{width:46px;text-align:center;color:var(--f11-secondary)}
+#tabs-toolbar{display:flex;align-items:stretch;padding-inline:2px}
+#tabmail-tabs{display:flex;flex:1;min-height:34px;min-width:0}
+#tabmail-arrowscrollbox{display:flex;flex:1;min-width:0;overflow:hidden}
+.tabmail-tab{flex:0 1 220px;min-width:80px;min-height:34px;position:relative;padding:0;display:flex}
+.tabmail-tab[selected="true"]{z-index:2}
+.tab-stack{display:grid;flex:1;min-width:0}
+.tab-background,.tab-content{grid-area:1/1}
+.tab-content{display:flex;align-items:center;gap:8px;padding:0 12px;min-width:0;font-size:13px}
+.tab-content svg{width:16px;height:16px}
+.tab-label{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tab-close-button{border:0;background:transparent;padding:1px 3px;font-size:19px;line-height:1}
+.folders,.rail{background:var(--f11-sidebar)}
+.rail{border-right:1px solid var(--f11-line)}
+.listhead{background:var(--f11-paper)}
+.reader.native-summary,.reader.original{padding:0;overflow:hidden}
+.reader.native-summary>:not(#summaryPreview),.reader.original>:not(#messagePreview){display:none}
+.reader iframe{display:none;width:100%;height:100%;border:0}
+.reader.native-summary #summaryPreview,.reader.original #messagePreview{display:block}
+#spacesButtonMenuPopup{position:absolute;z-index:10;inset:100px 25px auto auto;border:1px solid var(--f11-line);border-radius:8px;padding:6px;min-width:210px}
+#spacesButtonMenuPopup[hidden]{display:none}
+#spacesButtonMenuPopup menuitem{display:flex;padding:8px 12px;gap:12px;border-radius:4px;cursor:pointer}
+#spacesButtonMenuPopup .menu-icon{width:18px}
+.desktop.rail-hidden .workspace{grid-template-columns:0 212px 350px minmax(360px,1fr)}
+.desktop.rail-hidden .rail{display:none}
+@media(max-width:1100px){.desktop{min-width:760px}.workspace{grid-template-columns:44px 170px 275px minmax(260px,1fr)}}
+
+.search{border-color:var(--f11-line)!important}.statusbar>[role="status"]{flex:1;align-items:center}#statusTextBox{font-size:11px;color:var(--f11-secondary)}#messageCounts{display:flex;gap:12px}#demoExtension{background:transparent;border:0;color:var(--f11-text);display:flex;align-items:center}#demoExtension .button-icon{width:18px;height:18px;color:var(--f11-accent)}
+
+.rail{grid-column:1}.folders{grid-column:2}.list{grid-column:3}.reader{grid-column:4}
+#spacesToolbar{display:none}#spacesToolbar[hidden]{display:none}.tab-content{font-size:15px}#status-bar{display:flex}#status-bar>[role="status"]{flex:1;align-items:center}#statusTextBox>.statusbarpanel{display:flex;align-items:center}#offline-status{border:0;padding:0 6px;background:transparent;color:var(--f11-text)}#statusText{font-size:11px;color:var(--f11-secondary)}
+
+.rows:not(.table) .row{column-gap:12px}.row .sender{min-width:0}
+  @media screen and (forced-colors: none) and (prefers-contrast: no-preference) {
+    :root {
+      color-scheme: var(--f11-color-scheme) !important;
+      font-family: var(--f11-font) !important;
+      --layout-background-0: var(--f11-paper) !important;
+      --layout-background-1: var(--f11-shell) !important;
+      --layout-background-2: var(--f11-hover) !important;
+      --layout-background-3: var(--f11-raised) !important;
+      --layout-background-4: var(--f11-pressed) !important;
+      --layout-color-0: var(--f11-text) !important;
+      --layout-color-1: var(--f11-text) !important;
+      --layout-color-2: var(--f11-secondary) !important;
+      --layout-color-3: var(--f11-secondary) !important;
+      --layout-border-0: var(--f11-line) !important;
+      --layout-border-1: var(--f11-control-line) !important;
+      --layout-border-2: var(--f11-control-line) !important;
+      /* Актуальные toolkit-токены, в том числе для страниц настроек.
+       * Смысловые токены ошибок/предупреждений не переопределяем. */
+      --background-color-canvas: var(--f11-paper) !important;
+      --background-color-box: var(--f11-raised) !important;
+      --text-color: var(--f11-text) !important;
+      --text-color-deemphasized: var(--f11-secondary) !important;
+      --in-content-page-background: var(--f11-paper) !important;
+      --in-content-page-color: var(--f11-text) !important;
+      --in-content-box-background: var(--f11-raised) !important;
+      --in-content-box-border-color: var(--f11-line) !important;
+      --in-content-text-color: var(--f11-text) !important;
+      --in-content-deemphasized-text: var(--f11-secondary) !important;
+      --in-content-accent-color: var(--f11-accent) !important;
+      --in-content-primary-button-background: var(--f11-accent) !important;
+      --in-content-primary-button-text-color: var(--f11-on-accent) !important;
+      --lwt-accent-color: var(--f11-shell) !important;
+      --lwt-accent-color-inactive: var(--f11-shell) !important;
+      /* В Thunderbird 158 рамка и бейджи читают lwt-frame;
+       * Betterbird 153 использует прежнее имя lwt-accent-color. */
+      --lwt-frame: var(--f11-shell) !important;
+      --lwt-frame-inactive: var(--f11-shell) !important;
+      --lwt-text-color: var(--f11-text) !important;
+      --toolbar-background-color: var(--f11-shell) !important;
+      --toolbar-text-color: var(--f11-text) !important;
+      --toolbar-field-color: var(--f11-text) !important;
+      --toolbar-field-text-color-focus: var(--f11-text) !important;
+      --toolbar-field-background-color: var(--f11-field) !important;
+      --toolbar-field-focus-border-color: var(--f11-accent) !important;
+      --selected-item-color: var(--f11-accent) !important;
+      --selected-item-text-color: var(--f11-on-accent) !important;
+      --primary: var(--f11-accent) !important;
+      --focus-outline-color: var(--f11-accent) !important;
+      --button-border-radius: var(--f11-radius) !important;
+      --button-text-color: var(--f11-text) !important;
+      --button-background-color: var(--f11-raised) !important;
+      --button-hover-background-color: var(--f11-hover) !important;
+      --button-active-background-color: var(--f11-pressed) !important;
+      --button-border-color: var(--f11-line) !important;
+      --button-border-color-hover: var(--f11-line) !important;
+      --button-border-color-active: var(--f11-line) !important;
+      --button-border-color-disabled: var(--f11-line) !important;
+      --button-background-color-disabled: var(--f11-raised) !important;
+      --button-text-color-disabled: var(--f11-secondary) !important;
+      --button-background-color-hover: var(--f11-hover) !important;
+      --button-background-color-active: var(--f11-pressed) !important;
+      --button-primary-background-color: var(--f11-accent) !important;
+      --button-primary-text-color: var(--f11-on-accent) !important;
+      --button-primary-hover-background-color: color-mix(in srgb, var(--f11-accent) 90%, light-dark(black, white)) !important;
+      --button-primary-active-background-color: color-mix(in srgb, var(--f11-accent) 80%, light-dark(black, white)) !important;
+      --button-primary-border-color: transparent !important;
+      --button-link-text-color: var(--f11-accent) !important;
+      --input-border-color: var(--f11-control-line) !important;
+      --input-text-border-radius: var(--f11-radius) !important;
+      --input-search-border-radius: var(--f11-radius) !important;
+      --sidebar-background-color: var(--f11-sidebar) !important;
+      --sidebar-background: var(--f11-sidebar) !important;
+      --sidebar-text-color: var(--f11-text) !important;
+      --sidebar-color: var(--f11-text) !important;
+      --sidebar-border-color: var(--f11-line) !important;
+      --sidebar-border: var(--f11-line) !important;
+      --spaces-bg-color: var(--f11-sidebar) !important;
+      --spaces-bg-image: none !important;
+      --spaces-button-active-bg-color: var(--f11-selection) !important;
+      --spaces-button-active-text-color: var(--f11-text) !important;
+      --search-bar-color: var(--f11-text) !important;
+      --search-bar-background: var(--f11-field) !important;
+      --search-bar-focus-background: var(--f11-paper) !important;
+      --search-bar-border-color: var(--f11-line) !important;
+      --search-field-placeholder: var(--f11-secondary) !important;
+      --tree-view-bg: var(--f11-paper) !important;
+      --tree-view-color: var(--f11-text) !important;
+      --tree-pane-background: var(--f11-paper) !important;
+      --unread-color: var(--f11-text) !important;
+      --new-subject-color: var(--f11-accent) !important;
+      --listbox-hover: var(--f11-hover) !important;
+      --listbox-selected-bg: var(--f11-selection-idle) !important;
+      --listbox-focused-selected-bg: var(--f11-selection) !important;
+      --listbox-selected-color: var(--f11-text) !important;
+      --listbox-focused-selected-color: var(--f11-text) !important;
+      --tree-view-header-hover-bg: var(--f11-hover) !important;
+      --tree-view-header-hover-active-bg: var(--f11-pressed) !important;
+      --listbox-border-radius: var(--f11-radius) !important;
+      --list-container-border: transparent !important;
+      --list-container-border-hover: transparent !important;
+      --list-container-border-selected: transparent !important;
+      --list-container-border-selected-current: transparent !important;
+      --list-container-border-selected-focused: transparent !important;
+      --list-container-border-selected-current-focused: transparent !important;
+      --list-container-background-hover: var(--f11-hover) !important;
+      --list-container-background-selected: var(--f11-selection-idle) !important;
+      --list-container-background-selected-current: var(--f11-selection-idle) !important;
+      --list-container-background-selected-focused: var(--f11-selection) !important;
+      --list-container-background-selected-current-focused: var(--f11-selection) !important;
+      --treeitem-background-hover: var(--f11-hover) !important;
+      --treeitem-background-selected: var(--f11-selection-idle) !important;
+      --treeitem-background-active: var(--f11-selection) !important;
+      --treeitem-text-active: var(--f11-text) !important;
+      --tree-card-background: var(--f11-paper) !important;
+      --tree-card-border: var(--f11-list-border) !important;
+      --tree-card-border-hover: var(--f11-list-border) !important;
+      --tree-card-border-focus: var(--f11-list-border) !important;
+      --tree-card-border-selected: var(--f11-list-border) !important;
+      --tree-card-border-selected-unfocused: var(--f11-list-border) !important;
+      --tree-card-background-current: var(--f11-hover) !important;
+      --tree-card-background-selected: var(--f11-selection) !important;
+      --tree-card-background-selected-current: var(--f11-selection) !important;
+      --tree-card-background-current-unfocused: var(--f11-hover) !important;
+      --tree-card-background-selected-unfocused: var(--f11-selection-idle) !important;
+      --tree-card-background-selected-current-unfocused: var(--f11-selection-idle) !important;
+      --tree-card-background-selected-current-unfocused-hover: var(--f11-selection) !important;
+      --tree-focus-outline: transparent !important;
+      --chrome-content-separator-color: var(--f11-line) !important;
+      --toolbarseparator-color: var(--f11-line) !important;
+      --panel-separator-color: var(--f11-line) !important;
+    
+      --border-color: var(--f11-line) !important;
+      --color-surface-base: var(--f11-paper) !important;
+      --color-surface-lower: var(--f11-sidebar) !important;
+      --color-surface-subtle: var(--f11-shell) !important;
+      --color-surface-raised: var(--f11-raised) !important;
+      --color-surface-border: var(--f11-line) !important;
+      --color-text-base: var(--f11-text) !important;
+      --color-text-secondary: var(--f11-secondary) !important;
+      --color-accent-primary: var(--f11-accent) !important;
+      --color-accent-primary-selected: var(--f11-selection) !important;
+      --color-accent-primary-selected-unfocused: var(--f11-selection-idle) !important;
+      --button-text-color-hover: var(--f11-text) !important;
+      --button-text-color-active: var(--f11-text) !important;
+      --input-background-color: var(--f11-field) !important;
+      --input-color: var(--f11-text) !important;
+      --input-border-color: var(--f11-line) !important;
+      --background-color-list-item-hover: var(--f11-hover) !important;
+      --text-color-list-item-hover: var(--f11-text) !important;
+      --link-color: var(--f11-accent) !important;
+      --link-color-hover: var(--f11-accent) !important;
+      --icon-color: var(--f11-secondary) !important;
+      --in-content-focus-outline-color: var(--f11-accent) !important;
+      --in-content-button-background: var(--f11-raised) !important;
+      --in-content-button-background-hover: var(--f11-hover) !important;
+      --in-content-button-background-active: var(--f11-pressed) !important;
+      --in-content-button-text-color: var(--f11-text) !important;
+      --in-content-box-background-odd: var(--f11-shell) !important;
+      --in-content-item-hover: var(--f11-hover) !important;
+      --in-content-item-selected: var(--f11-selection) !important;
+      --in-content-item-selected-text: var(--f11-text) !important;
+      --in-content-table-background: var(--f11-paper) !important;
+      --in-content-table-border-color: var(--f11-line) !important;
+    }
+    /* Старые toolbarbutton и локальные палитры календаря не используют
+     * новые --button-*; задаём их на самих контейнерах переопределений. */
+    :root, #messageHeader, #headingWrapper,
+    #calendar-task-details-container, #unifinder-searchBox, #today-pane-panel {
+      --toolbarbutton-background-color-hover: var(--f11-hover) !important;
+      --toolbarbutton-background-color-active: var(--f11-pressed) !important;
+      --toolbarbutton-hover-bordercolor: var(--f11-line) !important;
+      --toolbarbutton-active-bordercolor: var(--f11-line) !important;
+      --toolbarbutton-header-bordercolor: var(--f11-line) !important;
+      --toolbarbutton-hover-boxshadow: none !important;
+      --toolbarbutton-active-boxshadow: none !important;
+      --toolbarbutton-checked-background: var(--f11-selection-idle) !important;
+    }
+  }
+  @media screen and (forced-colors: none) and (prefers-contrast: no-preference) {
+    /* Кнопка в заголовке списка и её вариант в универсальной панели.
+     * aria-pressed остаётся штатным источником выбранного состояния. */
+    :is(#threadPaneQuickFilterButton, button[is="quick-filter-bar-toggle"]) {
+      --button-hover-text-color: var(--f11-text) !important;
+      --button-pressed-shadow: none !important;
+      --button-pressed-indicator-shadow: none !important;
+      color: var(--f11-text) !important;
+      background-color: transparent !important;
+      border-color: var(--f11-line) !important;
+      box-shadow: none !important;
+    }
+    :is(#threadPaneQuickFilterButton, button[is="quick-filter-bar-toggle"]):enabled:hover {
+      background-color: var(--f11-hover) !important;
+    }
+    :is(#threadPaneQuickFilterButton, button[is="quick-filter-bar-toggle"])[aria-pressed="true"]:enabled {
+      background-color: var(--f11-selection-idle) !important;
+    }
+    :is(#threadPaneQuickFilterButton, button[is="quick-filter-bar-toggle"])[aria-pressed="true"]:enabled:hover {
+      background-color: var(--f11-selection) !important;
+    }
+    :is(#threadPaneQuickFilterButton, button[is="quick-filter-bar-toggle"]):enabled:hover:active {
+      background-color: var(--f11-pressed) !important;
+    }
+    :is(#threadPaneQuickFilterButton, button[is="quick-filter-bar-toggle"])::before {
+      background-color: transparent !important;
+      border-color: var(--f11-line) !important;
+      box-shadow: none !important;
+    }
+    :is(#threadPaneQuickFilterButton, button[is="quick-filter-bar-toggle"])[aria-pressed="true"]::before {
+      background-color: var(--f11-accent) !important;
+      border-color: var(--f11-accent) !important;
+    }
+    :is(#threadPaneQuickFilterButton, button[is="quick-filter-bar-toggle"]):disabled {
+      color: var(--f11-secondary) !important;
+    }
+    :is(#threadPaneQuickFilterButton, button[is="quick-filter-bar-toggle"]):disabled::before {
+      background-color: transparent !important;
+      border-color: var(--f11-line) !important;
+    }
+    :is(#threadPaneQuickFilterButton, button[is="quick-filter-bar-toggle"]):focus-visible {
+      outline: 2px solid var(--f11-accent) !important;
+      outline-offset: 2px !important;
+    }
+
+    /* Карточки: дата и меню занимают собственное место справа,
+     * длинный отправитель сжимается внутри оставшейся ширины.
+     * Сохраняем нативные строки, плотность, значки и заголовки групп. */
+    #threadTree[rows="thread-card"] .card-layout:not([data-properties~="dummy"]) .card-container {
+      grid-template-columns: auto minmax(0, 1fr) !important;
+    }
+    #threadTree[rows="thread-card"] .card-container > .thread-card-column {
+      min-inline-size: 0 !important;
+    }
+    #threadTree[rows="thread-card"] .thread-card-row:has(> .sender):has(> .date) {
+      min-inline-size: 0 !important;
+      flex-wrap: nowrap !important;
+    }
+    #threadTree[rows="thread-card"] .thread-card-row > .sender {
+      flex: 1 1 0% !important;
+      min-inline-size: 0 !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+      white-space: nowrap !important;
+    }
+    #threadTree[rows="thread-card"] .thread-card-row > .date {
+      flex: 0 0 auto !important;
+      margin-inline-start: 10px !important;
+      white-space: nowrap !important;
+      text-align: end !important;
+    }
+    #threadTree[rows="thread-card"] .thread-card-row > .tree-button-more {
+      flex: 0 0 auto !important;
+    }
+
+    /* Список чтения, в обоих положениях панели Betterbird (top/bottom).
+     * Не затрагиваем attachmentBucket и drag/drop окна создания письма. */
+    #attachmentView, #attachmentList {
+      background-color: var(--f11-paper) !important;
+      color: var(--f11-text) !important;
+      border-color: var(--f11-line) !important;
+    }
+    #attachmentBar {
+      background-color: var(--f11-shell) !important;
+      color: var(--f11-text) !important;
+      border-color: var(--f11-line) !important;
+    }
+    #attachmentList .attachmentItem {
+      background-color: transparent !important;
+      color: var(--f11-text) !important;
+      border-color: transparent !important;
+    }
+    #attachmentList .attachmentItem:hover {
+      background-color: var(--f11-hover) !important;
+      border-color: var(--f11-line) !important;
+    }
+    #attachmentList .attachmentItem[selected="true"] {
+      background-color: var(--f11-selection-idle) !important;
+      border-color: var(--f11-line) !important;
+    }
+    #attachmentList:focus .attachmentItem[selected="true"],
+    #attachmentList:focus-within .attachmentItem[selected="true"],
+    #attachmentList .attachmentItem[selected="true"]:hover {
+      background-color: var(--f11-selection) !important;
+    }
+    #attachmentList .attachmentcell-size, #attachmentSize {
+      color: var(--f11-secondary) !important;
+      opacity: 1 !important;
+    }
+    #attachmentList:focus .attachmentItem[current="true"],
+    #attachmentList:focus-within .attachmentItem[current="true"] {
+      outline: 1px solid var(--f11-accent) !important;
+      outline-offset: -1px !important;
+    }
+    #attachmentName { color: var(--f11-text) !important; }
+    #attachmentName:hover {
+      background-color: var(--f11-hover) !important;
+      color: var(--f11-text) !important;
+    }
+    #attachmentName[selected="true"] {
+      background-color: var(--f11-selection) !important;
+      color: var(--f11-text) !important;
+    }
+    #attachmentToggle:not([disabled]):hover { background-color: var(--f11-hover) !important; }
+    #attachmentToggle:not([disabled]):hover:active { background-color: var(--f11-pressed) !important; }
+  }
+  @media screen and (forced-colors: none) and (prefers-contrast: no-preference) {
+    #navigation-toolbox #tabs-toolbar {
+      color-scheme: var(--f11-color-scheme) !important;
+      background-color: var(--f11-tabs-background) !important;
+      background-image: linear-gradient(to top, var(--f11-line) 0 1px, transparent 1px) !important;
+      box-shadow: none !important;
+      border: 0 !important;
+      padding-block-start: 0 !important;
+    }
+    #navigation-toolbox #tabmail-tabs {
+      padding-inline: 2px !important;
+      min-inline-size: 0 !important;
+      align-self: stretch !important;
+    }
+    /* Отступ ВНУТРИ прокручиваемого содержимого: внешний padding tabs
+     * не защищал нижний левый угол от обрезки scrollbox первой вкладки. */
+    #navigation-toolbox .tabmail-tab:first-of-type {
+      margin-inline-start: calc(var(--f11-tab-radius) + 1px) !important;
+    }
+    #navigation-toolbox .tabmail-tab {
+      color-scheme: var(--f11-color-scheme) !important;
+      background: transparent !important;
+      border-radius: var(--f11-tab-radius) var(--f11-tab-radius) 0 0 !important;
+      box-shadow: none !important;
+      margin-inline-end: calc(var(--f11-tab-radius) * 2) !important;
+      color: var(--f11-secondary) !important;
+    }
+    #navigation-toolbox .tabmail-tab .tab-background {
+      background: transparent !important;
+      border: 1px solid transparent !important;
+      border-block-end-color: var(--f11-line) !important;
+      border-radius: var(--f11-tab-radius) var(--f11-tab-radius) 0 0 !important;
+      box-shadow: none !important;
+    }
+    /* Неактивная вкладка при наведении — отдельная мягкая поверхность
+     * с четырьмя скруглениями и видимым зазором снизу. */
+    #navigation-toolbox .tabmail-tab:not([selected="true"]) .tab-background {
+      margin-block: 3px 4px !important;
+      border-radius: var(--f11-tab-radius) !important;
+      border-color: transparent !important;
+    }
+    #navigation-toolbox .tabmail-tab:not([selected="true"]):hover .tab-background {
+      background-color: var(--f11-hover) !important;
+    }
+    #navigation-toolbox .tabmail-tab[selected="true"] {
+      color: var(--f11-text) !important;
+      overflow: visible !important;
+    }
+    #navigation-toolbox .tabmail-tab[selected="true"] .tab-background {
+      position: relative;
+      background-color: var(--f11-tab-active) !important;
+      border-color: var(--f11-line) !important;
+      border-block-end-color: var(--f11-tab-active) !important;
+    }
+    /* Вогнутые нижние углы соединяют контур с линией полосы.
+     * Псевдоэлементы не перехватывают мышь и не меняют ширину вкладки. */
+    #navigation-toolbox .tabmail-tab[selected="true"] .tab-background::before,
+    #navigation-toolbox .tabmail-tab[selected="true"] .tab-background::after {
+      content: "";
+      position: absolute;
+      pointer-events: none;
+      inline-size: calc(var(--f11-tab-radius) + 1px);
+      block-size: calc(var(--f11-tab-radius) + 1px);
+      inset-block-end: -1px;
+    }
+    #navigation-toolbox .tabmail-tab[selected="true"] .tab-background::before {
+      left: calc(-1 * var(--f11-tab-radius) - 1px);
+      background: radial-gradient(circle at left top, transparent calc(var(--f11-tab-radius) - 1px), var(--f11-line) var(--f11-tab-radius), var(--f11-tab-active) calc(var(--f11-tab-radius) + 0.5px));
+    }
+    #navigation-toolbox .tabmail-tab[selected="true"] .tab-background::after {
+      right: calc(-1 * var(--f11-tab-radius) - 1px);
+      background: radial-gradient(circle at right top, transparent calc(var(--f11-tab-radius) - 1px), var(--f11-line) var(--f11-tab-radius), var(--f11-tab-active) calc(var(--f11-tab-radius) + 0.5px));
+    }
+    #navigation-toolbox .tab-content { position: relative; }
+    #navigation-toolbox .tabmail-tab .tab-line {
+      background: transparent !important;
+      box-shadow: none !important;
+    }
+    #navigation-toolbox .tabmail-tab:focus-visible .tab-content {
+      outline: 1px solid var(--f11-accent) !important;
+      outline-offset: -3px !important;
+      border-radius: var(--f11-tab-radius) var(--f11-tab-radius) 0 0;
+    }
+    #navigation-toolbox .tab-close-button {
+      color: var(--f11-secondary) !important;
+      border-radius: 4px !important;
+    }
+    #navigation-toolbox .tab-close-button:hover {
+      color: var(--f11-text) !important;
+      background-color: var(--f11-hover) !important;
+    }
+    #navigation-toolbox .tab-content,
+    #navigation-toolbox .tab-label, #navigation-toolbox .tab-text {
+      font-family: var(--f11-font) !important;
+      font-size: var(--f11-tab-font-size, 15px) !important;
+    }
+    #navigation-toolbox .tabmail-tab[selected="true"] .tab-label { font-weight: 600 !important; }
+  }
+  @media screen and (forced-colors: none) and (prefers-contrast: no-preference) {
+    :root:not(.customizingUnifiedToolbar):has(#titlebar > #tabs-toolbar) #titlebar {
+      display: grid !important;
+      grid-template-columns: auto minmax(140px, 1fr) var(--f11-header-tools-width) auto auto auto !important;
+      grid-template-areas: "menubar menubar menubar menubar menubar menubar" "spaces tabs tools notice appmenu caption" !important;
+      align-items: stretch !important;
+      background-color: var(--f11-shell) !important;
+      min-inline-size: 0 !important;
+    }
+    /* Общая линия второго grid-ряда заполняет промежутки под Spaces,
+     * уведомлениями и меню, в том числе когда поиск переходит ниже.
+     * Она не занимает отдельную строку и не перехватывает мышь. */
+    :root:not(.customizingUnifiedToolbar):has(#titlebar > #tabs-toolbar) #titlebar::after {
+      content: "";
+      grid-column: 1 / -1;
+      grid-row: 2;
+      align-self: end;
+      block-size: 1px;
+      background-color: var(--f11-line);
+      pointer-events: none;
+      z-index: 0;
+    }
+    :root:not(.customizingUnifiedToolbar):has(#titlebar > #tabs-toolbar) #titlebar > unified-toolbar,
+    :root:not(.customizingUnifiedToolbar):has(#titlebar > #tabs-toolbar) #unifiedToolbarContainer,
+    :root:not(.customizingUnifiedToolbar):has(#titlebar > #tabs-toolbar) #unifiedToolbar {
+      display: contents !important;
+    }
+    :root:not(.customizingUnifiedToolbar):has(#titlebar > #tabs-toolbar) #toolbar-menubar { grid-area: menubar !important; }
+    :root:not(.customizingUnifiedToolbar):has(#titlebar > #tabs-toolbar) #titlebar > #tabs-toolbar {
+      grid-area: tabs !important;
+      /* Активная вкладка закрывает общую линию своим фоном. */
+      position: relative !important;
+      z-index: 1 !important;
+      display: flex !important;
+      visibility: visible !important;
+      align-items: stretch !important;
+      min-inline-size: 0 !important;
+      min-block-size: var(--f11-header-height) !important;
+      padding-block: 0 !important;
+      box-sizing: border-box !important;
+      -moz-window-dragging: drag;
+    }
+    :root:not(.customizingUnifiedToolbar):has(#titlebar > #tabs-toolbar) #spacesPinnedButton {
+      grid-area: spaces !important;
+      align-self: center !important;
+      justify-self: center !important;
+      -moz-window-dragging: no-drag;
+    }
+    :root:not(.customizingUnifiedToolbar):has(#titlebar > #tabs-toolbar) #unifiedToolbarContent {
+      grid-area: tools !important;
+      display: flex !important;
+      align-items: center !important;
+      min-inline-size: 0 !important;
+      min-block-size: 32px !important;
+      margin: 0 !important;
+      padding: 1px 4px 1px 8px !important;
+      border-block-end: 1px solid var(--f11-line) !important;
+      box-sizing: border-box !important;
+      -moz-window-dragging: drag;
+    }
+    :root:not(.customizingUnifiedToolbar):has(#titlebar > #tabs-toolbar) #unifiedToolbarContent .spacer { display: none !important; }
+    :root:not(.customizingUnifiedToolbar):has(#titlebar > #tabs-toolbar) #unifiedToolbarContent .search-bar {
+      flex: 1 1 auto !important;
+      min-inline-size: 5em !important;
+    }
+    :root:not(.customizingUnifiedToolbar):has(#titlebar > #tabs-toolbar) #notification-popup-box { grid-area: notice !important; align-self: center; }
+    :root:not(.customizingUnifiedToolbar):has(#titlebar > #tabs-toolbar) #button-appmenu {
+      grid-area: appmenu !important;
+      align-self: center !important;
+      margin-block: 0 !important;
+    }
+    :root:not(.customizingUnifiedToolbar):has(#titlebar > #tabs-toolbar) #unifiedToolbarContainer > .titlebar-buttonbox-container {
+      grid-area: caption !important;
+      align-self: stretch !important;
+      border-block-end: 1px solid var(--f11-line) !important;
+      -moz-window-dragging: no-drag;
+    }
+    :root:not(.customizingUnifiedToolbar):has(#titlebar > #tabs-toolbar) :is(.tabmail-tab, #alltabs-button, #spacesPinnedButton, #button-appmenu, #notification-popup-box) { -moz-window-dragging: no-drag; }
+    #navigation-toolbox #tabmail-tabs, #navigation-toolbox #tabmail-arrowscrollbox { align-items: stretch !important; align-self: stretch !important; }
+    #navigation-toolbox #tabmail-arrowscrollbox::part(scrollbox) { align-items: stretch !important; }
+    #navigation-toolbox .tabmail-tab { min-block-size: var(--f11-header-height) !important; }
+    #navigation-toolbox .tabmail-tab, #navigation-toolbox .tab-stack {
+      align-self: stretch !important;
+      block-size: auto !important;
+      max-block-size: none !important;
+      margin-block: 0 !important;
+      padding-block: 0 !important;
+    }
+    /* Нижняя граница контейнера занимает ещё 1px. */
+    :root:not(.customizingUnifiedToolbar):has(#titlebar > #tabs-toolbar) .titlebar-button { min-block-size: calc(var(--f11-header-height) - 1px) !important; padding-block: 0 !important; }
+    @media (max-width: 1100px) {
+      :root:not(.customizingUnifiedToolbar):has(#titlebar > #tabs-toolbar) #titlebar {
+        grid-template-columns: auto minmax(140px, 1fr) auto auto auto !important;
+        grid-template-areas: "menubar menubar menubar menubar menubar" "spaces tabs notice appmenu caption" "tools tools tools tools tools" !important;
+      }
+    }
+  }
+  @media screen and (forced-colors: none) and (prefers-contrast: no-preference) {
+    #spacesButtonMenuPopup, #spacesToolbarAddonsPopup {
+      color-scheme: var(--f11-color-scheme) !important;
+      color: var(--f11-text) !important;
+      background-color: var(--f11-raised) !important;
+      --panel-background: var(--f11-raised) !important;
+      --panel-color: var(--f11-text) !important;
+      --panel-border-color: var(--f11-line) !important;
+      --arrowpanel-background: var(--f11-raised) !important;
+      --arrowpanel-color: var(--f11-text) !important;
+      --menu-color: var(--f11-text) !important;
+      --menu-background-color: var(--f11-raised) !important;
+      --menuitem-hover-background-color: var(--f11-hover) !important;
+    }
+    :is(#spacesButtonMenuPopup, #spacesToolbarAddonsPopup) menuitem:not([disabled="true"]) {
+      color: var(--f11-text) !important;
+    }
+    :is(#spacesButtonMenuPopup, #spacesToolbarAddonsPopup) menuitem:is([_moz-menuactive="true"], :hover) {
+      background-color: var(--f11-hover) !important;
+    }
+    :is(#spacesButtonMenuPopup, #spacesToolbarAddonsPopup) menuitem[disabled="true"] {
+      color: var(--f11-secondary) !important;
+    }
+    :is(#spacesButtonMenuPopup, #spacesToolbarAddonsPopup) :is(.menu-text, .menu-icon, .menu-accel, .menu-iconic-text, .menu-iconic-accel) {
+      color: inherit !important;
+    }
+    :is(#spacesButtonMenuPopup, #spacesToolbarAddonsPopup) :is(image, .menu-iconic-icon) {
+      color: inherit !important;
+      -moz-context-properties: fill, stroke, stroke-opacity;
+      fill: currentColor !important;
+      stroke: currentColor !important;
+    }
+    #spacesButtonMenuPopup menuseparator, #spacesToolbarAddonsPopup menuseparator {
+      border-color: var(--f11-line) !important;
+    }
+    :root { --spaces-button-text-color: var(--f11-text) !important; }
+    #spacesPinnedButton, #spacesToolbarReveal { color: var(--f11-text) !important; }
+    /* Удаляем только декоративные вертикальные границы. Верхнюю линию
+     * статусной строки, счётчики и индикаторы прогресса сохраняем. */
+    #status-bar .statusbarpanel,
+    #status-bar > *, #status-bar #messageCounts, #calendar-status-todaypane-button {
+      border-inline: 0 !important;
+      box-shadow: none !important;
+    }
+    #status-bar separator[orient="vertical"], #status-bar toolbarseparator {
+      display: none !important;
+    }
+    /* Прямой признак панели, без зависимости от синхронизации атрибута
+     * окна. Сама кнопка получает отдельную ячейку в compact-header.css. */
+    :root:has(#spacesToolbar[hidden]) #spacesPinnedButton {
+      display: inline-flex !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      min-inline-size: 32px !important;
+      max-inline-size: 32px !important;
+      align-items: center !important;
+      justify-content: center !important;
+      padding-inline: 5px !important;
+      margin-inline: 2px 4px !important;
+      color: var(--f11-text) !important;
+    }
+    :root:has(#spacesToolbar:not([hidden])) #spacesPinnedButton { display: none !important; }
+    #spacesPinnedButton .toolbarbutton-icon,
+    :is(#spacesButtonMenuPopup, #spacesToolbarAddonsPopup) .menu-icon {
+      color: var(--f11-text) !important;
+      -moz-context-properties: fill, fill-opacity, stroke, stroke-opacity;
+      fill: color-mix(in srgb, currentColor 20%, transparent) !important;
+      stroke: currentColor !important;
+      fill-opacity: 1 !important;
+      stroke-opacity: 1 !important;
+    }
+    /* Только расширения в верхней панели: обычные команды с подписями
+     * остаются обычными. Tooltip, badge и доступное имя не удаляются. */
+    #unifiedToolbarContent .extension-action .button-label,
+    #unifiedToolbarContent button[is="extension-action-button"] .button-label {
+      display: none !important;
+    }
+    #unifiedToolbarContent button[is="extension-action-button"] {
+      flex-direction: row !important;
+      gap: 0 !important;
+      min-inline-size: 32px !important;
+      padding-inline: 6px !important;
+      margin-block: 0 !important;
+    }
+    #unifiedToolbarContent button[is="extension-action-button"] .button-icon {
+      display: block !important;
+    }
+    /* Счётчики перед растягивающимся блоком статуса. Порядок DOM и
+     * aria-live сохраняется; действия календаря остаются справа. */
+    #status-bar > [role="status"] { display: flex !important; }
+    #status-bar #messageCounts {
+      order: -1 !important;
+      flex: 0 0 auto !important;
+      margin-inline: 4px 8px !important;
+    }
+    /* Раскрываем обёртку статуса только для визуального flex-порядка.
+     * Дочерние узлы, aria-live и dblclick-обработчик остаются в DOM. */
+    #status-bar #statusTextBox { display: contents !important; }
+    #statusTextBox > .statusbarpanel:has(#offline-status) {
+      order: -2 !important;
+      flex: 0 0 auto !important;
+    }
+    #statusText { order: 0 !important; flex: 1 1 auto !important; min-inline-size: 0 !important; }
+    #urlText { order: 0 !important; flex: 2 1 auto !important; min-inline-size: 0 !important; }
+    #statusbar-progresspanel, #quotaPanel { order: 1 !important; flex: 0 0 auto !important; }
+    #status-bar > #spacesToolbarReveal { order: -1 !important; }
+    #status-bar > [role="status"] { order: 0 !important; }
+    #status-bar > #calendar-show-todaypane-panel { order: 2 !important; }
+    /* Поле поиска использует Shadow DOM. Границу передаём через токен
+     * на host, который наследуется input внутри shadowRoot. */
+    #unifiedToolbar global-search-bar,
+    #unifiedToolbar .search-bar {
+      --search-bar-border-color: var(--f11-line) !important;
+    }
+  }
+</style>
+<style>
+/* Folder preview: native row selectors; SVG shapes are demo symbols. */
+.demo-folder-tree{list-style:none;margin:0;padding:0}.demo-folder-tree>li{margin:0;padding:0}.demo-folder-tree .container{contain:none}.demo-folder-tree .icon{--icon-color:var(--f11-secondary);stroke:var(--icon-color);fill:color-mix(in srgb,var(--icon-color) 20%,transparent)}.demo-folder-tree li.selected>.folder{background:var(--f11-selection);border-left:2px solid var(--f11-accent)}
+@media screen and (forced-colors: none) and (prefers-contrast: no-preference) {
+    /* Меняем только цвет основного значка строки, включая специальные папки,
+     * RSS и аккаунты. Пользовательский цвет значка временно перекрывается;
+     * сохранённая настройка не изменяется. data-tag-key — цветная метка. */
+    #folderTree li:not([data-tag-key], .tls-error, [data-has-error], [data-is-busy]) > .container > .icon {
+      --icon-color: var(--f11-secondary) !important;
+    }
+    #folderTree li:is(.selected, .new-messages):not([data-tag-key], .tls-error, [data-has-error], [data-is-busy]) > .container > .icon {
+      --icon-color: var(--f11-accent) !important;
+    }
+    /* Штатный маркер новых писем остаётся на месте, в общем цвете акцента. */
+    #folderTree li:not([data-tag-key]) > .container > .new-icon {
+      fill: var(--f11-accent) !important;
+      stroke: var(--f11-accent) !important;
+    }
+  }
+</style><style>@media screen and (forced-colors: none) and (prefers-contrast: no-preference) {
+    :root {
+      --f11-ui-icon-tone: var(--f11-secondary);
+    }
+
+    /* Собственное наследуемое состояние; подписи и нативные состояния
+     * контролов не перекрашиваются. Каждый контрол начинает с серого. */
+    :where(button, toolbarbutton, menu, menuitem, .tabmail-tab,
+      .bookRow, .listRow, .category) {
+      --f11-ui-icon-tone: var(--f11-secondary);
+    }
+    :where(button, toolbarbutton, menu, menuitem, .tabmail-tab,
+      .bookRow, .listRow, .category):is(:hover, :focus-visible, [_moz-menuactive="true"]) {
+      --f11-ui-icon-tone: var(--f11-text);
+    }
+    :where(button, toolbarbutton, menu, menuitem, .tabmail-tab,
+      .bookRow, .listRow, .category):is(.current, .selected,
+      [selected="true"], [checked="true"], [aria-pressed="true"], [aria-selected="true"], [active="true"]) {
+      --f11-ui-icon-tone: var(--f11-accent);
+    }
+    /* На голубой основной кнопке нужен тёмный, контрастный значок. */
+    :where(button, toolbarbutton):is(.primary, .button-primary, .primary-button, [default="true"]) {
+      --f11-ui-icon-tone: var(--f11-on-accent);
+    }
+    :where(button, toolbarbutton, menu, menuitem):is(:disabled, [disabled]:not([disabled="false"]), [aria-disabled="true"]) {
+      --f11-ui-icon-tone: color-mix(in srgb, var(--f11-secondary) 45%, transparent);
+    }
+
+    /* Только реальные классы служебных значков. .icon не используется:
+     * этим классом также помечены папки, метки и состояния сообщений.
+     * Цветные пункты меток Betterbird имеют inline style="color: …". */
+    :root :is(.toolbarbutton-icon, .button-icon, .search-button-icon,
+      .menu-icon, .menu-iconic-icon, .tab-close-icon, .category-icon,
+      .sidebar-footer-icon, .bookRow-icon, .listRow-icon,
+      .tab-icon-image:is([src^="chrome://"], :not([src])),
+      .spaces-toolbar-button > img, .spaces-toolbar-statusbar-button > img,
+      .spaces-toolbar-pinned-button > img):not(:is(
+        [data-tag-key], [tag], :is(menu, menuitem, toolbarbutton)[style*="color:"], .tagMenuItem,
+        .notificationbox-stack, notification, .notification-button,
+        .warning, .error, .critical, .success, .crypto-button,
+        .tls-error, .requesting, .drop-error, .drop-loading, [data-has-error], [data-is-busy],
+        #cryptoBox, #button-security, #button-encryption, #button-signing,
+        #calendar-list, #calendarList, .calendar-event-box) *),
+    :root :is(#spacesPinnedButton, #spacesButtonMenuPopup, #spacesToolbarAddonsPopup)
+      :is(.menu-icon, .toolbarbutton-icon) {
+      color: var(--f11-ui-icon-tone) !important;
+      -moz-context-properties: fill, stroke, fill-opacity, stroke-opacity;
+      fill: color-mix(in srgb, var(--f11-ui-icon-tone) 20%, transparent) !important;
+      stroke: var(--f11-ui-icon-tone) !important;
+    }
+    /* Этот SVG рисуется заливкой, поэтому не ослабляем крестик до 20%. */
+    :root .tab-close-icon {
+      fill: var(--f11-ui-icon-tone) !important;
+    }
+
+    /* Кнопки с фоновой SVG и значки без отдельного img. Эти свойства
+     * влияют на контекст SVG, не на цвет текста/фона самого контрола. */
+    :root :is(#folderPaneHeaderBar, #threadPaneHeaderBar, #booksPaneHeaderBar,
+      #cardsPaneHeader, #status-bar, #calendar-nav-control, #calendar-view-toolbar, #task-actions-toolbar)
+      :is(button.icon-button, button.button-flat, toolbarbutton):not(:is(
+        .warning, .error, .critical, [data-tag-key],
+        #button-security, #button-encryption, #button-signing)) {
+      -moz-context-properties: fill, stroke;
+      fill: color-mix(in srgb, var(--f11-ui-icon-tone) 20%, transparent) !important;
+      stroke: var(--f11-ui-icon-tone) !important;
+    }
+    :root :is(.btn-hub, .btn-link)::before {
+      color: var(--f11-ui-icon-tone) !important;
+      fill: color-mix(in srgb, var(--f11-ui-icon-tone) 20%, transparent) !important;
+      stroke: var(--f11-ui-icon-tone) !important;
+    }
+    :root #accountLogo {
+      color: var(--f11-secondary) !important;
+    }
+
+    /* Фоновая папка при наведении тоже светлеет. Выбор, новые письма,
+     * метки и важные состояния продолжают использовать folder-icons.css. */
+    :root #folderTree li:not(.selected, .new-messages, [data-tag-key],
+      .tls-error, [data-has-error], [data-is-busy]) > .container:hover > .icon {
+      --icon-color: var(--f11-text) !important;
+    }
+
+    /* Логотипы расширений/сайтов имеют собственные цвета внутри SVG/PNG.
+     * Grayscale только на картинке сохраняет детали, alpha и цвет badge. */
+    :root #unifiedToolbarContent button[is="extension-action-button"] .button-icon,
+    :root #spacesToolbar .spaces-addon-button > img,
+    :root .tab-icon-image[src]:not([src^="chrome://"]) {
+      filter: grayscale(1) !important;
+    }
+  }
+</style><style>
+/* The card demo uses the same palette and states as mail-cards.css. */
+.rows:not(.table) .row{border-color:color-mix(in srgb,var(--f11-line) 50%,var(--f11-paper));background:var(--f11-shell)}
+.rows:not(.table) .row:hover{border-color:var(--f11-line);background:var(--f11-field)}
+.rows:not(.table) .row.sel,.rows:not(.table) .row.sel:hover{border-color:var(--f11-line);background:var(--f11-selection-idle);box-shadow:inset 3px 0 var(--f11-accent)}
+</style></head>
+<body>
+<svg style="display:none" aria-hidden="true"><defs>
+<symbol id="mail" viewBox="0 0 20 20"><rect x="2.5" y="4" width="15" height="12" rx="2"/><path d="m3 5 7 5 7-5"/></symbol>
+<symbol id="person" viewBox="0 0 20 20"><circle cx="10" cy="6.5" r="3"/><path d="M4 17v-2a6 6 0 0 1 12 0v2"/></symbol>
+<symbol id="cal" viewBox="0 0 20 20"><rect x="3" y="4" width="14" height="13" rx="2"/><path d="M6 2.5v3M14 2.5v3M3 8h14M7 11h1M12 11h1M7 14h1"/></symbol>
+<symbol id="check" viewBox="0 0 20 20"><rect x="3" y="3" width="14" height="14" rx="2"/><path d="m6.5 10 2.5 2.5 4.5-5"/></symbol>
+<symbol id="chat" viewBox="0 0 20 20"><path d="M5 15H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-6l-5 3z"/></symbol>
+<symbol id="gear" viewBox="0 0 20 20"><circle cx="10" cy="10" r="3"/><path d="m8 2-.5 2-2 1-2-.5-1 3L4 9v2l-1.5 1.5 1 3 2-.5 2 1 .5 2h4l.5-2 2-1 2 .5 1-3L16 11V9l1.5-1.5-1-3-2 .5-2-1-.5-2z"/></symbol>
+<symbol id="inbox" viewBox="0 0 20 20"><path d="m5 3-3 9v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4l-3-9zM2 12h5l1.5 2h3l1.5-2h5"/></symbol>
+<symbol id="send" viewBox="0 0 20 20"><path d="m2 3 16 7-16 7 3-7zM5 10h8"/></symbol>
+<symbol id="edit" viewBox="0 0 20 20"><path d="m4 13-1 4 4-1L17 6l-3-3zM12 5l3 3"/></symbol>
+<symbol id="folder" viewBox="0 0 20 20"><path d="M2 5a1 1 0 0 1 1-1h5l2 2h7a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1z"/></symbol>
+<symbol id="trash" viewBox="0 0 20 20"><path d="M3 5h14M7 5V3h6v2M5 5l1 12h8l1-12M8 8v6M12 8v6"/></symbol>
+<symbol id="archive" viewBox="0 0 20 20"><rect x="2" y="3" width="16" height="4" rx="1"/><path d="M4 7v10h12V7M8 10h4"/></symbol>
+<symbol id="search" viewBox="0 0 20 20"><circle cx="8" cy="8" r="5"/><path d="m12 12 5 5"/></symbol>
+<symbol id="filter" viewBox="0 0 20 20"><path d="M3 4h14l-5 6v6l-4-2v-4z"/></symbol>
+<symbol id="more" viewBox="0 0 20 20"><circle cx="4" cy="10" r=".6"/><circle cx="10" cy="10" r=".6"/><circle cx="16" cy="10" r=".6"/></symbol>
+<symbol id="clip" viewBox="0 0 20 20"><path d="m7 10 5-5a3 3 0 0 1 4 4l-7 7a4 4 0 0 1-6-6l7-7M6 11l6-6"/></symbol>
+<symbol id="reply" viewBox="0 0 20 20"><path d="m8 4-6 5 6 5V9h4c4 0 5 2 6 5V9c0-3-3-5-6-5z"/></symbol>
+</defs></svg>
+<div class="heading"><div><h1>Arctic <span style="color:var(--f11-accent)">Bird</span></h1><div class="sub">Дизайн-макет · не снимок работающего Thunderbird · демонстрационные данные</div></div><div class="right"><span class="tag">0.3.16 / WINDOWS 11</span><select id="theme" aria-label="Цветовая схема"><option value="dark">Тёмная схема</option><option value="light">Светлая схема</option></select><button id="editPalette">Настроить цвета</button></div></div>
+<div class="overflow"><div class="desktop">
+<div id="spacesToolbar" aria-hidden="true"></div><div id="navigation-toolbox"><div id="titlebar"><div id="toolbar-menubar" hidden></div><unified-toolbar><div id="unifiedToolbarContainer"><div id="unifiedToolbar" role="toolbar"><button id="spacesPinnedButton" hidden aria-label="Пространства"><svg class="button-icon"><use href="#mail"/></svg></button><ul id="unifiedToolbarContent"><li class="spacer"></li><li class="search-bar"><div class="search"><svg class="button-icon"><use href="#search"/></svg>Поиск<kbd>Ctrl + K</kbd></div></li><li class="extension-action"><button id="demoExtension" is="extension-action-button" title="Demo extension"><svg class="button-icon"><use href="#gear"/></svg><span class="button-label">Demo extension</span></button></li><li class="spacer"></li></ul><button class="quiet demo" id="button-appmenu" aria-label="Меню"><svg class="button-icon"><use href="#more"/></svg></button></div><div class="titlebar-buttonbox-container"><div class="caption" aria-hidden="true"><span>−</span><span>□</span><span>×</span></div></div></div></unified-toolbar><div id="tabs-toolbar"><div id="tabmail-tabs"><div id="tabmail-arrowscrollbox"><div class="tabmail-tab" selected="true"><div class="tab-stack"><div class="tab-background"><div class="tab-line"></div></div><div class="tab-content"><svg class="button-icon"><use href="#mail"/></svg><span class="tab-label">Входящие</span><button class="tab-close-button demo" aria-label="Закрыть вкладку">×</button></div></div></div><div class="tabmail-tab"><div class="tab-stack"><div class="tab-background"><div class="tab-line"></div></div><div class="tab-content"><svg class="button-icon"><use href="#mail"/></svg><span class="tab-label">Комплект чертежей</span><button class="tab-close-button demo" aria-label="Закрыть вкладку">×</button></div></div></div><div class="tabmail-tab"><div class="tab-stack"><div class="tab-background"><div class="tab-line"></div></div><div class="tab-content"><svg class="button-icon"><use href="#cal"/></svg><span class="tab-label">Календарь</span><button class="tab-close-button demo" aria-label="Закрыть вкладку">×</button></div></div></div></div></div></div></div></div>
+<main class="workspace"><nav class="rail" aria-label="Пространства"><button class="ico active demo" aria-pressed="true" aria-label="Почта"><svg class="button-icon"><use href="#mail"/></svg></button><button class="ico demo" aria-label="Контакты"><svg class="button-icon"><use href="#person"/></svg></button><button class="ico demo" aria-label="Календарь"><svg class="button-icon"><use href="#cal"/></svg></button><button class="ico demo" aria-label="Задачи"><svg class="button-icon"><use href="#check"/></svg></button><button class="ico demo" aria-label="Чат"><svg class="button-icon"><use href="#chat"/></svg></button><button class="ico last demo" aria-label="Настройки"><svg class="button-icon"><use href="#gear"/></svg></button></nav>
+<aside class="folders"><ul id="folderTree" class="demo-folder-tree"><li class="unselectable"><button class="primary new demo"><svg class="button-icon"><use href="#edit"></use></svg>Написать</button></li><li is="folder-tree-row" class="selected" data-folder-type="inbox"><div class="container folder active"><svg class="icon"><use href="#inbox"></use></svg>Входящие<span class="count">6</span></div></li><li is="folder-tree-row" data-folder-type="sent"><div class="container folder"><svg class="icon"><use href="#send"></use></svg>Отправленные</div></li><li is="folder-tree-row"><div class="container folder"><svg class="icon"><use href="#edit"></use></svg>Черновики<span class="count">2</span></div></li><li is="folder-tree-row"><div class="container folder"><svg class="icon"><use href="#archive"></use></svg>Архив</div></li><li is="folder-tree-row"><div class="container folder"><svg class="icon"><use href="#trash"></use></svg>Корзина</div></li><li class="unselectable"><div class="account">РАБОТА · DEMO@EXAMPLE.INVALID</div></li><li is="folder-tree-row"><div class="container folder"><svg class="icon"><use href="#folder"></use></svg>Проекты</div></li><li is="folder-tree-row"><div class="container folder indent">Документация</div></li><li is="folder-tree-row"><div class="container folder indent">Согласования</div></li><li is="folder-tree-row"><div class="container folder"><svg class="icon"><use href="#folder"></use></svg>Поставщики</div></li><li class="unselectable"><div class="account">ЛОКАЛЬНЫЕ ПАПКИ</div></li><li is="folder-tree-row"><div class="container folder"><svg class="icon"><use href="#archive"></use></svg>Архив переписки</div></li><li is="folder-tree-row" data-tag-key="demo-work"><div class="container folder"><svg class="icon" style="--icon-color:#61c58d"><use href="#folder"/></svg>Работа</div></li><li is="folder-tree-row" data-tag-key="demo-important"><div class="container folder"><svg class="icon" style="--icon-color:#dba77c"><use href="#folder"/></svg>Важно</div></li></ul></aside>
+<section class="list" aria-label="Список сообщений"><div class="listhead"><div><strong>Входящие</strong><small>28 сообщений · 6 непрочитанных</small></div><button id="threadPaneQuickFilterButton" class="quiet" aria-label="Фильтр" aria-pressed="false"><svg class="button-icon"><use href="#filter"/></svg></button></div><div class="filter"><span>Все</span><span>Непрочитанные</span><span>С вложениями</span></div><div class="rows" id="rows"></div></section>
+<section class="reader native-summary" id="reader" aria-label="Область чтения"><iframe id="messagePreview" title="Макет обычного письма"></iframe><iframe id="summaryPreview" title="Макет штатного сводного просмотра"></iframe><div id="readerLabel" hidden></div></section></main><footer id="status-bar" class="statusbar"><button id="spacesToolbarReveal" hidden title="Показать боковую панель">→</button><div role="status"><div id="statusTextBox"><div class="statusbarpanel"><button id="offline-status" title="Онлайн">◉</button></div><span id="statusText">Все папки обновлены</span></div><div id="messageCounts"><span class="statusbarpanel">Непрочитанных: 6</span><span class="statusbarpanel">Всего: 28</span></div></div><span>Сегодня</span></footer>
+</div></div>
+<div class="under"><span><strong>Две основные поверхности.</strong> Навигация отступает, письма остаются в фокусе.</span><span><strong>Один акцент.</strong> Выделение, фокус и непрочитанные сообщения.</span><span><strong>Штатные функции.</strong> CSS сохраняет управление Thunderbird и дополнений.</span></div>
+<div class="controls"><label>Список<select id="listMode"><option value="stock">Карточки Thunderbird</option><option value="table">Таблица Thunderbird</option></select></label><button id="toggleRail">Показать / скрыть боковую панель</button><label>Чтение<select id="readMode"><option value="summary" selected>Штатный сводный просмотр</option><option value="original">Одиночное письмо Thunderbird</option></select></label><span style="font-size:11px;color:var(--f11-secondary)">Переключатели относятся только к макету.</span></div>
+<section class="editor" id="editor" hidden><p>Меняйте цвета текущей схемы. Экспорт сохранит обе палитры в полном файле settings.css. Замените им chrome/fluent11/settings.css и перезапустите Thunderbird. Предпросмотр приблизительный; фактический интерфейс зависит от версии и дополнений.</p><div class="swatches" id="swatches"></div><footer><button class="primary" id="export">Скачать settings.css</button><button id="reset">Сбросить обе палитры</button><span id="contrast"></span></footer></section>
+<div id="spacesButtonMenuPopup" hidden role="menu"><menuitem><img class="menu-icon" alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M2 3h12v10H2z' fill='%23e6e8ef' fill-opacity='0.2' stroke='%23e6e8ef'/%3E%3C/svg%3E"><span class="menu-text">Почта</span></menuitem><menuitem><span class="menu-icon">▦</span><span class="menu-text">Календарь</span></menuitem><menuitem><span class="menu-icon">⚙</span><span class="menu-text">Настройки</span></menuitem></div><div id="notice" role="status"></div>
+<script>
+'use strict';
+const messages=[['Ирина Смирнова','Обновлённый комплект чертежей','09:42','4','ИС',true,true,'Замечания учтены, изменения отмечены в ведомости.'],['Мария Волкова','График согласования документации','08:25','','МВ',true,false,'Предлагаю уточнить сроки следующего выпуска.'],['Проектная группа — сопровождение строительства и согласование документации','Протокол технического совещания','Вчера','3','ПГ',true,false,'Направляем протокол и перечень решений.'],['Алексей Петров','Схемы управления — редакция 02','Вчера','2','АП',false,false,'Комментарии к предыдущему комплекту.'],['Отдел закупок','Сроки поставки оборудования','16 окт.','','ОЗ',false,false,'Поставщик подтвердил готовность к отгрузке.'],['Техническая библиотека','Новые поступления за октябрь','16 окт.','','ТБ',false,false,'Обновление каталога технической литературы.'],['Рабочая группа','Материалы к следующей встрече','15 окт.','5','РГ',false,false,'Повестка и материалы для обсуждения.']];
+document.getElementById("summaryPreview").srcdoc="<!doctype html><html lang=\"ru\" style=\"color-scheme:dark\"><head><meta charset=\"utf-8\"><style>/* Arctic Bird 0.3.8\n * ================================================================\n *                     НАСТРОЙКА ОФОРМЛЕНИЯ\n * ================================================================\n * light-dark(СВЕТЛАЯ, ТЁМНАЯ): меняйте одну или обе половины пары.\n * Например: --f11-accent: light-dark(#0f6cbd, #8bc7ff);\n * Сохраните файл и полностью перезапустите Thunderbird.\n * CSS-файлы сохраняйте как обычный UTF-8, без расширения .txt.\n *\n * Это общие токены для оболочки и адаптеров бесед. Thunderbird не\n * наследует CSS-переменные между документами: поэтому settings.css\n * импортируется и из userChrome.css, и из userContent.css.\n */\n:root {\n  /* Режим: light dark = автоматически; dark = тёмный; light = светлый.\n   * Принудительный режим относится к областям, оформленным этим скином. */\n  --f11-color-scheme: dark;\n\n  /* 1. ОСНОВНЫЕ ПОВЕРХНОСТИ */\n  --f11-shell: light-dark(#f3f4f6, #101217);       /* верхняя и нижняя панели */\n  --f11-paper: light-dark(#ffffff, #0d0e11);       /* список и чтение */\n  --f11-raised: light-dark(#fafbfc, #1b1d24);      /* меню и карточки */\n  --f11-field: light-dark(#ffffff, #191c23);       /* поиск и ввод */\n  --f11-hover: light-dark(#e9edf2, #242935);       /* наведение */\n  --f11-pressed: light-dark(#dfe5ec, #2b3543);     /* нажатие */\n  --f11-line: light-dark(#e2e6ec, #292e38);        /* разделители */\n  --f11-control-line: light-dark(#818a98, #545c6b); /* границы ввода */\n\n  /* Палитра тёмной схемы — Brackets Refined — Arctic для Zed.\n   * Боковая панель и почта имеют единый фон, как на скриншоте. */\n  --f11-sidebar: light-dark(#f3f4f6, #0d0e11);\n  --f11-tabs-background: light-dark(#f3f4f6, #101217);\n  --f11-tab-active: var(--f11-paper);\n  --f11-tab-radius: 8px;\n\n  /* 2. ТЕКСТ И АКЦЕНТ */\n  --f11-text: light-dark(#1b1b1b, #e6e8ef);\n  --f11-secondary: light-dark(#565f6c, #a3a9bb);\n  --f11-accent: light-dark(#0f6cbd, #8bc7ff);\n  --f11-on-accent: light-dark(#ffffff, #0d0e11);\n  --f11-selection: light-dark(#e3eefb, #303f50);\n  --f11-selection-idle: light-dark(#e8ecf2, #242935);\n\n  /* 3. ГЕОМЕТРИЯ — высоту строк списка здесь не меняем.\n   * Используйте штатное меню «Вид → Плотность». */\n  --f11-font: \"Segoe UI Variable Text\", \"Segoe UI\", sans-serif;\n  --f11-radius: 6px;             /* кнопки, вкладки, строки */\n  --f11-card-radius: 8px;        /* карточки бесед и меню */\n  --f11-folder-inline: 6px;      /* боковые поля дерева папок */\n  --f11-reader-padding: 16px;\n  --f11-subject-size: 1.3rem;\n\n  /* 4. ШТАТНЫЙ СПИСОК СООБЩЕНИЙ\n   * 0px + transparent = плоские строки (по умолчанию).\n   * Для карточек: radius 8px, border var(--f11-line).\n   * Это форма строк; режим «Карточки / Таблица» выбирается в Thunderbird. */\n  --f11-list-radius: 0px;\n  --f11-list-border: transparent;\n\n  /* Можно использовать системный акцент Windows. Раскомментируйте\n   * ВСЕ ТРИ строки. При произвольном системном цвете контраст проверьте.\n  --f11-accent: AccentColor;\n  --f11-on-accent: AccentColorText;\n  --f11-selection: color-mix(in srgb, AccentColor 15%, var(--f11-paper));\n   */\n}\n\n/* This Source Code Form is subject to the terms of the Mozilla Public\n * License, v. 2.0. If a copy of the MPL was not distributed with this\n * file, You can obtain one at http://mozilla.org/MPL/2.0/. */\n\n\n\n\n/* Generic (cross-platform) multimessage view CSS.  Some bits will be overridden\n  by theme specific files */\n\n:root {\n  user-select: auto; /* Overrides messenger.css. */\n\n  --heading-wrapper-padding: 6px 9px;\n  --content-padding: 6px 18px;\n\n  &[uidensity=\"compact\"] {\n    --heading-wrapper-padding: 3px 6px;\n    --content-padding: 3px 12px;\n  }\n\n  &[uidensity=\"touch\"] {\n    --heading-wrapper-padding: 6px 12px;\n    --content-padding: 9px 21px;\n  }\n}\n\nbody {\n  background-color: var(--layout-background-0);\n  font-size: 1.1rem;\n  margin: 0;\n  padding: 0;\n  display: flex;\n  flex-direction: column;\n}\n\n/* The heading area */\n\n#headingWrapper {\n  display: flex;\n  flex-wrap: wrap;\n  flex-direction: row-reverse;\n  align-items: center;\n  gap: 6px;\n  padding: var(--heading-wrapper-padding);\n  color: var(--layout-color-1);\n  background-color: var(--layout-background-1);\n  border-block-end: 1px solid var(--sidebar-border);\n\n  @media (prefers-color-scheme: dark) {\n    --toolbarbutton-background-color-hover: rgba(179, 179, 179, 0.4);\n    --toolbarbutton-hover-bordercolor: rgba(179, 179, 179, 0.4);\n    --toolbarbutton-header-bordercolor: rgba(179, 179, 179, 0.4);\n    --toolbarbutton-background-color-active: rgba(179, 179, 179, 0.6);\n    --toolbarbutton-active-bordercolor: rgba(179, 179, 179, 0.6);\n    --toolbarbutton-active-boxshadow: none;\n  }\n\n  @media print {\n    position: static;\n  }\n}\n\n#heading {\n  flex: 1;\n  font-size: 1.3rem;\n  font-weight: normal;\n  margin: 0;\n  padding: 0;\n}\n\n#summarySubtitle {\n  font-size: 1.1rem;\n  white-space: nowrap;\n  margin-inline-start: 9px;\n}\n\n/* The main content area */\n\n#content {\n  flex: 1 1 0;\n  overflow: auto;\n  padding: var(--content-padding);\n}\n\n#messageList {\n  margin: 0;\n  padding: 0;\n  list-style-type: none;\n\n  & > li {\n    position: relative;\n    margin-block-end: 9px;\n    padding-block-end: 9px;\n    padding-inline: 12px 9px;\n    border-block-end: 1px solid var(--layout-background-4);\n\n    &.unread::before {\n      position: absolute;\n      inset-inline-start: -6px;\n      inset-block-start: 8px;\n      content: var(--icon-dot);\n      -moz-context-properties: fill, stroke;\n      fill: var(--color-green-50);\n      stroke: var(--color-green-60);\n      overflow: visible;\n    }\n  }\n}\n\n.star {\n  inline-size: 16px;\n  block-size: 16px;\n  position: absolute;\n  inset-inline-start: -7px;\n  inset-block-start: 6px;\n  background-repeat: no-repeat;\n\n  .starred & {\n    background-image: var(--icon-star);\n    background-size: contain;\n    -moz-context-properties: fill, stroke;\n    fill: var(--thread-pane-flag-fill);\n    stroke: var(--thread-pane-flag-stroke);\n  }\n}\n\n.item-header {\n  display: flex;\n  flex-wrap: nowrap;\n  align-items: baseline;\n  justify-content: space-between;\n  gap: 6px;\n  padding-block: 6px;\n  margin-block: 0;\n  font-weight: normal;\n\n  & .left-block {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    gap: 3px 6px;\n    flex: 1 auto;\n\n    .author {\n      inline-size: min-content;\n      flex-grow: 1;\n    }\n  }\n\n  & .link {\n    font-weight: 600;\n\n    &:hover {\n      text-decoration: underline;\n      cursor: pointer;\n    }\n  }\n}\n\n.unread .primary {\n  font-weight: bold;\n}\n\n.count {\n  font-weight: 600;\n  white-space: nowrap;\n}\n\n.tags {\n  font-size: 1rem;\n  display: flex;\n  align-items: center;\n  gap: 6px;\n}\n\n.tag {\n  display: inline-block;\n  white-space: nowrap;\n  padding: 2px 4px;\n  line-height: 1em;\n  border-radius: 3px;\n}\n\n.count,\n.info,\n.date,\n.snippet {\n  color: var(--layout-color-2);\n}\n\n.snippet {\n  margin: 0;\n}\n\na {\n  color: LinkText;\n  font-weight: bold;\n\n  &:hover {\n    text-decoration: underline;\n  }\n}\n\n#header-view-toolbox {\n  font: message-box;\n  font-size: 1rem;\n\n  @media print {\n    display: none;\n  }\n}\n\n#header-view-toolbar {\n  display: flex;\n  align-items: center;\n  gap: 6px;\n  user-select: none;\n}\n\n  @media screen and (forced-colors: none) and (prefers-contrast: no-preference) {\n    :root {\n      color-scheme: var(--f11-color-scheme) !important;\n      font-family: var(--f11-font) !important;\n      --layout-background-0: var(--f11-paper) !important;\n      --layout-background-1: var(--f11-paper) !important;\n      --layout-background-4: var(--f11-line) !important;\n      --layout-color-0: var(--f11-text) !important;\n      --layout-color-1: var(--f11-text) !important;\n      --layout-color-2: var(--f11-secondary) !important;\n      --sidebar-border: var(--f11-line) !important;\n      --toolbarbutton-header-bordercolor: var(--f11-line) !important;\n      --toolbarbutton-hover-bordercolor: var(--f11-line) !important;\n      --toolbarbutton-active-bordercolor: var(--f11-line) !important;\n      --toolbarbutton-background-color-hover: var(--f11-hover) !important;\n      --toolbarbutton-background-color-active: var(--f11-pressed) !important;\n      --toolbarbutton-active-boxshadow: none !important;\n      --button-text-color: var(--f11-text) !important;\n      --button-background-color: var(--f11-raised) !important;\n      --button-border-color: var(--f11-line) !important;\n      --button-hover-background-color: var(--f11-hover) !important;\n      --button-active-background-color: var(--f11-pressed) !important;\n      --focus-outline-color: var(--f11-accent) !important;\n      --heading-wrapper-padding: 12px var(--f11-reader-padding);\n      --content-padding: 12px var(--f11-reader-padding);\n    }\n    body {\n      background: var(--f11-paper) !important;\n      color: var(--f11-text) !important;\n      font-family: var(--f11-font) !important;\n      font-size: 1rem !important;\n      line-height: 1.5 !important;\n    }\n    #headingWrapper {\n      background: var(--f11-paper) !important;\n      color: var(--f11-text) !important;\n      border-block-end: 1px solid var(--f11-line) !important;\n    }\n    #heading { font: 600 1.15rem/1.4 var(--f11-font) !important; }\n    #summarySubtitle { color: var(--f11-secondary) !important; font-size: .9rem !important; font-weight: 400 !important; }\n    #messageList > li {\n      background: transparent !important;\n      border-block-end: 1px solid var(--f11-line) !important;\n      padding-block: 8px 16px !important;\n      margin-block-end: 8px !important;\n    }\n    .item-header { font-size: 1rem !important; line-height: 1.5 !important; }\n    .primary, .author { color: var(--f11-text) !important; }\n    .count, .info, .date, .snippet { color: var(--f11-secondary) !important; }\n    .snippet { font: inherit !important; overflow-wrap: anywhere; }\n    a { color: var(--f11-accent) !important; }\n    #header-view-toolbox { font-family: var(--f11-font) !important; }\n    #header-view-toolbar .toolbarbutton-1 {\n      color: var(--f11-text) !important;\n      border-radius: var(--f11-radius) !important;\n    }\n    :is(a, button, .link):focus-visible {\n      outline: 2px solid var(--f11-accent) !important;\n      outline-offset: 2px !important;\n    }\n  }\nhtml,body{height:100%}button{font:inherit;background:var(--f11-raised);color:var(--f11-text);border:1px solid var(--f11-line);border-radius:6px;padding:5px 8px}button:hover{background:var(--f11-hover)}</style></head><body><div id=\"headingWrapper\"><div id=\"header-view-toolbox\"><div id=\"header-view-toolbar\"><button>Архивировать</button><button>Удалить</button></div></div><h1 id=\"heading\"><span id=\"summaryTitle\">Обновлённый комплект чертежей</span><span id=\"summarySubtitle\">3 сообщения</span></h1></div><div id=\"content\"><ul id=\"messageList\"><li><h2 class=\"item-header\"><span class=\"left-block\"><span class=\"author link primary\" tabindex=\"0\">Ирина Смирнова</span></span><span class=\"date\">Сегодня</span></h2><p class=\"snippet\">Направляю обновлённый комплект чертежей. Замечания по вторичным цепям учтены, изменения отмечены в ведомости.</p></li><li><h2 class=\"item-header\"><span class=\"left-block\"><span class=\"author link primary\" tabindex=\"0\">Алексей Петров</span></span><span class=\"date\">Вчера</span></h2><p class=\"snippet\">Спасибо. Проверил схемы управления и сигнализации. Прошу уточнить обозначения двух клемм в листе замечаний.</p></li><li><h2 class=\"item-header\"><span class=\"left-block\"><span class=\"author link primary\" tabindex=\"0\">Мария Волкова</span></span><span class=\"date\">Вчера</span></h2><p class=\"snippet\">Получила комплект. Проверку завершим к следующему техническому совещанию.</p></li></ul><div id=\"footer\"><span class=\"info\">Штатный просмотр показывает фрагменты писем. Это макет с демонстрационными данными.</span></div></div></body></html>";
+document.getElementById("messagePreview").srcdoc="<!doctype html><html lang=\"ru\"><head><meta charset=\"utf-8\"><title>Иерархия шапки — модель Betterbird</title><style>\n:root{font-size:14px;--message-header-field-offset:2px;--button-border-radius:6px;--selected-item-text-color:var(--f11-text);--selected-item-color:var(--f11-hover);--focus-outline:2px solid var(--f11-accent);--focus-outline-offset:1px;--message-header-label-width:4em}\nbody{margin:0;font:1rem/1.45 \"Segoe UI\",sans-serif;background:var(--f11-paper);color:var(--f11-text)}[hidden]{display:none!important}button{font:inherit;padding:5px 8px;border:1px solid var(--f11-line);border-radius:var(--f11-radius);background:var(--f11-raised);color:var(--f11-text)}button:hover{background:var(--f11-hover)}button:focus-visible{outline:2px solid var(--f11-accent)}hbox{display:flex;gap:3px;flex-wrap:wrap}.message-header-label{min-inline-size:3.5em}.recipient-avatar{font-size:10px;display:inline-grid;place-items:center}.message-body{padding:24px;max-width:76ch}.message-body p{margin:0 0 16px}\n/* Arctic Bird 0.3.8\n * ================================================================\n *                     НАСТРОЙКА ОФОРМЛЕНИЯ\n * ================================================================\n * light-dark(СВЕТЛАЯ, ТЁМНАЯ): меняйте одну или обе половины пары.\n * Например: --f11-accent: light-dark(#0f6cbd, #8bc7ff);\n * Сохраните файл и полностью перезапустите Thunderbird.\n * CSS-файлы сохраняйте как обычный UTF-8, без расширения .txt.\n *\n * Это общие токены для оболочки и адаптеров бесед. Thunderbird не\n * наследует CSS-переменные между документами: поэтому settings.css\n * импортируется и из userChrome.css, и из userContent.css.\n */\n:root {\n  /* Режим: light dark = автоматически; dark = тёмный; light = светлый.\n   * Принудительный режим относится к областям, оформленным этим скином. */\n  --f11-color-scheme: dark;\n\n  /* 1. ОСНОВНЫЕ ПОВЕРХНОСТИ */\n  --f11-shell: light-dark(#f3f4f6, #101217);       /* верхняя и нижняя панели */\n  --f11-paper: light-dark(#ffffff, #0d0e11);       /* список и чтение */\n  --f11-raised: light-dark(#fafbfc, #1b1d24);      /* меню и карточки */\n  --f11-field: light-dark(#ffffff, #191c23);       /* поиск и ввод */\n  --f11-hover: light-dark(#e9edf2, #242935);       /* наведение */\n  --f11-pressed: light-dark(#dfe5ec, #2b3543);     /* нажатие */\n  --f11-line: light-dark(#e2e6ec, #292e38);        /* разделители */\n  --f11-control-line: light-dark(#818a98, #545c6b); /* границы ввода */\n\n  /* Палитра тёмной схемы — Brackets Refined — Arctic для Zed.\n   * Боковая панель и почта имеют единый фон, как на скриншоте. */\n  --f11-sidebar: light-dark(#f3f4f6, #0d0e11);\n  --f11-tabs-background: light-dark(#f3f4f6, #101217);\n  --f11-tab-active: var(--f11-paper);\n  --f11-tab-radius: 8px;\n  /* Общая строка вкладок и поиска. Ниже 1100 CSS px поиск переходит вниз. */\n  --f11-header-height: 36px;\n  --f11-header-tools-width: clamp(240px, 28vw, 420px);\n\n  /* 2. ТЕКСТ И АКЦЕНТ */\n  --f11-text: light-dark(#1b1b1b, #e6e8ef);\n  --f11-secondary: light-dark(#565f6c, #a3a9bb);\n  --f11-accent: light-dark(#0f6cbd, #8bc7ff);\n  --f11-on-accent: light-dark(#ffffff, #0d0e11);\n  --f11-selection: light-dark(#e3eefb, #303f50);\n  --f11-selection-idle: light-dark(#e8ecf2, #242935);\n\n  /* 3. ГЕОМЕТРИЯ — высоту строк списка здесь не меняем.\n   * Используйте штатное меню «Вид → Плотность». */\n  --f11-font: \"Segoe UI Variable Text\", \"Segoe UI\", sans-serif;\n  --f11-radius: 6px;             /* кнопки, вкладки, строки */\n  --f11-card-radius: 8px;        /* карточки бесед и меню */\n  --f11-folder-inline: 6px;      /* боковые поля дерева папок */\n  --f11-reader-padding: 16px;\n  --f11-subject-size: 1.3rem;\n\n  /* 4. ШТАТНЫЙ СПИСОК СООБЩЕНИЙ\n   * 0px + transparent = плоские строки (по умолчанию).\n   * Для карточек: radius 8px, border var(--f11-line).\n   * Это форма строк; режим «Карточки / Таблица» выбирается в Thunderbird. */\n  --f11-list-radius: 0px;\n  --f11-list-border: transparent;\n\n  /* Можно использовать системный акцент Windows. Раскомментируйте\n   * ВСЕ ТРИ строки. При произвольном системном цвете контраст проверьте.\n  --f11-accent: AccentColor;\n  --f11-on-accent: AccentColorText;\n  --f11-selection: color-mix(in srgb, AccentColor 15%, var(--f11-paper));\n   */\n}\n\n/* This Source Code Form is subject to the terms of the Mozilla Public\n * License, v. 2.0. If a copy of the MPL was not distributed with this\n * file, You can obtain one at http://mozilla.org/MPL/2.0/. */\n\n@namespace html url(\"http://www.w3.org/1999/xhtml\");\n\n:root {\n  /* This variable is used for both inline and block spacing in order to keep\n   a visual consistency for recipients and simple fields alignment. */\n  --message-header-field-offset: 2px;\n  --recipient-avatar-size: 26px;\n  --recipient-avatar-placeholder-size: 16px;\n  --recipient-avatar-margin-block-start: -1px;\n\n  --recipient-avatar-color: light-dark(var(--color-gray-50), var(--color-gray-40));\n  --recipient-avatar-background-color: light-dark(var(--color-gray-30), var(--color-gray-60));\n\n  --recipient-multi-line-gap: 2px;\n  --message-header-label-opacity: 0.7;\n\n  &[uidensity=\"compact\"] {\n    --recipient-avatar-size: 20px;\n    --recipient-avatar-placeholder-size: contain;\n    --recipient-avatar-margin-block-start: -2px;\n    --recipient-multi-line-gap: 0;\n\n    & .message-header-show-big-avatar {\n      --recipient-avatar-size: 36px;\n    }\n  }\n\n  &[uidensity=\"touch\"] {\n    --recipient-avatar-size: 32px;\n    --recipient-avatar-placeholder-size: 16px;\n    --recipient-multi-line-gap: 3px;\n\n    & .message-header-show-big-avatar {\n      --recipient-avatar-size: 44px;\n    }\n  }\n\n  & .message-header-show-big-avatar {\n    --recipient-avatar-size: 40px;\n  }\n}\n\n#messagepanebox {\n  color: var(--color-text-base);\n  background-color: var(--layout-background-1);\n  min-inline-size: 0;\n}\n\n/* Protect against the headers overflowing the entire preview. */\n#singleMessage {\n  max-block-size: 85%;\n}\n\n.main-header-area {\n  border-block-end-style: none;\n  display: block;\n  overflow-x: clip;\n  overflow-y: auto;\n  /* We need the following to lose the scroll bar when making this high\n   * enough via the splitter */\n  block-size: 100%;\n}\n\n.message-header-container,\n.message-header-extra-container {\n  display: grid;\n  row-gap: 6px;\n}\n\n.message-header-container {\n  padding: 3px;\n\n  @media (max-width: 768px) {\n    padding: 6px;\n  }\n}\n\n.message-header-row {\n  &:not([hidden]) {\n    display: flex;\n  }\n\n  &.header-row-reverse {\n    flex-direction: row-reverse;\n  }\n\n  &.items-center {\n    /* Variation for those rows that include buttons. */\n    align-items: center;\n  }\n\n  @media (max-width: 768px) {\n    &.items-center {\n      align-items: baseline;\n    }\n  }\n}\n\n#headerSubjectSecurityContainer {\n  align-items: center; /* Needed for when the encryption button is visible. */\n}\n\n.message-header-wrap {\n  flex-wrap: wrap;\n\n  @media (max-width: 768px) {\n    &:not([hidden]) {\n      flex-direction: column;\n      align-items: flex-start;\n    }\n  }\n}\n\n.header-buttons-container {\n  display: flex;\n  justify-content: end;\n  flex-wrap: wrap;\n  gap: 3px;\n\n  .message-header-buttons-only-icons & {\n    gap: 5px;\n  }\n\n  & *:focus-visible {\n    outline: var(--focus-outline);\n    outline-offset: var(--focus-outline-offset);\n  }\n\n  @media (max-width: 768px) {\n    align-self: end;\n  }\n}\n\n.header-row-grow:not([hidden]) {\n  flex: 1 1 auto;\n  display: flex;\n  align-items: center;\n}\n\n#mail-notification-top {\n  & > .notificationbox-stack:not(:empty) {\n    border-block-end: 1px solid var(--sidebar-border);\n  }\n\n  & > .notificationbox-stack[notificationside=\"top\"] {\n    background-color: var(--layout-background-1);\n  }\n}\n\n/* ::::: msg header toolbars ::::: */\n\n#messageHeader[show_header_mode=\"all\"] {\n  max-block-size: 18em;\n}\n\n/* Height restriction for scrollable gets in the way of dragging it as\n * big as we want. */\n#messageHeader.scrollable:not([show_header_mode=\"all\"]) {\n  overflow: hidden;\n}\n\n#expandedBoxSpacer {\n  display: block;\n  block-size: 4px;\n}\n\nmail-tagfield[collapsed] {\n  display: none;\n}\n\n/* ::::: msg header buttons ::::: */\n\n.message-header-view-button {\n  flex-direction: row;\n  min-inline-size: 24px;\n  margin: 0;\n  padding-inline: 3px;\n  fill: color-mix(in srgb, currentColor 20%, transparent);\n  stroke: currentColor;\n\n  &[is=\"toolbarbutton-menu-button\"] {\n    padding: 0;\n\n    & > .toolbarbutton-menubutton-button {\n      flex-direction: row;\n      padding-inline: 3px;\n    }\n  }\n\n  & .toolbarbutton-text {\n    padding-inline-start: 2px;\n  }\n}\n\n#messageHeader:not(.message-header-buttons-only-icons) .toolbarbutton-1.message-header-view-button:not([is=\"toolbarbutton-menu-button\"]),\n#messageHeader:not(.message-header-buttons-only-icons) .toolbarbutton-1.message-header-view-button > .toolbarbutton-menubutton-button,\n#messageHeader:not(.message-header-buttons-only-icons) .toolbarbutton-1.message-header-view-button > .toolbarbutton-menubutton-dropmarker,\n#headingWrapper .toolbarbutton-1.message-header-view-button {\n  border-color: var(--toolbarbutton-header-bordercolor);\n}\n\n#messageHeader:not(.message-header-buttons-only-icons)\n  .toolbarbutton-1.message-header-view-button:not([disabled]):is(:hover, [open])\n  > .toolbarbutton-menubutton-button,\n#messageHeader:not(.message-header-buttons-only-icons)\n  .toolbarbutton-1.message-header-view-button:not([disabled]):is(:hover, [open])\n  > .toolbarbutton-menubutton-dropmarker,\n#messageHeader:not(.message-header-buttons-only-icons)\n  .toolbarbutton-1.message-header-view-button:not([is=\"toolbarbutton-menu-button\"], [disabled], [checked], [open], :active):hover,\n#messageHeader:not(.message-header-buttons-only-icons)\n  .toolbarbutton-1.message-header-view-button:not([buttonover], [open], :active):hover\n  > .toolbarbutton-menubutton-dropmarker:not([disabled]),\n#headingWrapper .toolbarbutton-1.message-header-view-button:hover {\n  border-color: var(--toolbarbutton-active-bordercolor);\n}\n\n#msgHeaderView[shrink] .message-header-view-button .toolbarbutton-text {\n  display: none;\n}\n\n.hdrReplyToSenderButton,\n.hdrDummyReplyButton,\n.hdrReplyButton {\n  list-style-image: var(--icon-reply);\n}\n\n.hdrReplyAllButton {\n  list-style-image: var(--icon-reply-all);\n}\n\n.hdrReplyListButton,\n.hdrFollowupButton {\n  list-style-image: var(--icon-reply-list);\n}\n\n.hdrForwardButton {\n  list-style-image: var(--icon-forward);\n}\n\n.hdrArchiveButton {\n  list-style-image: var(--icon-archive);\n}\n\n.hdrJunkButton {\n  list-style-image: var(--icon-spam);\n}\n\n.hdrTrashButton {\n  list-style-image: var(--icon-trash);\n}\n\n.hdrTrashButton[data-imap-deleted=\"true\"] {\n  list-style-image: var(--icon-restore);\n}\n\n.hdrMoreButton {\n  list-style-image: var(--icon-kebab);\n}\n\n#attachmentSaveAllSingle,\n#attachmentSaveAllMultiple {\n  list-style-image: var(--icon-download);\n}\n\n/* ::::: msg header toolbars ::::: */\n\n#expandedHeadersTopBox {\n  /* Use the HTML layout model to allow the message header toolbar to float to\n     the right of the From field. */\n  display: block;\n}\n\n/* ::::: expanded header pane ::::: */\n\n#expandedsubjectBox {\n  font-weight: 700;\n  margin-inline-start: calc(var(--message-header-field-offset) * -1);\n  padding-inline: var(--message-header-field-offset);\n  /* IMPORTANT! Keep these to avoid issues with very long subjects. Bug 77806 */\n  display: -webkit-box;\n  -webkit-box-orient: vertical;\n  -webkit-line-clamp: 3;\n  overflow-y: auto;\n}\n\n#expandedButtonsBox {\n  align-self: normal;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n}\n\n#buttonsBox {\n  display: flex;\n  align-items: end;\n  justify-content: flex-end;\n}\n\n/* ::::: Splitters, header and attachments ::::: */\n\nsplitter[orient=\"vertical\"] {\n  appearance: none;\n  background-color: transparent;\n  border-width: 0;\n  border-block-start: 1px solid var(--sidebar-border);\n  /* splitter grip area */\n  block-size: 5px;\n  min-block-size: 5px;\n  /* make only the splitter border visible */\n  margin-block-end: -5px;\n  /* because of the negative margin needed to make the splitter visible */\n  position: relative;\n  z-index: 10;\n}\n\n@media (prefers-reduced-motion: no-preference) {\n  splitter[orient=\"vertical\"] {\n    transition: border-color 200ms;\n  }\n}\n\nsplitter[orient=\"vertical\"]:hover,\nsplitter[orient=\"vertical\"]:focus {\n  border-block-start: 4px solid var(--selected-item-color);\n}\n\nsplitter[state=\"collapsed\"]:not(:hover, :focus) {\n  border-block-start-width: 0;\n}\n\n/* ::::: attachment view ::::: */\n\n#attachmentBar {\n  min-block-size: inherit;\n  color: var(--layout-color-1);\n  background-color: var(--layout-background-1);\n  padding: 3px 0;\n  overflow: hidden;\n}\n\n/* Collapsed list */\n#attachmentView[location=\"top\"] #attachmentBar[tooltiptext^=\"Show\"] {\n  border-block-end: 1px solid var(--sidebar-border);\n}\n\n#attachmentToggle {\n  /* Override button appearance */\n  appearance: none;\n  min-inline-size: 20px;\n  margin-block: 0;\n  margin-inline: 1px 0;\n  border: 0;\n  background-color: transparent;\n  color: inherit;\n  -moz-user-focus: normal;\n  list-style-image: var(--icon-nav-down-sm);\n  -moz-context-properties: stroke, fill-opacity;\n  stroke: currentColor;\n  fill-opacity: 1;\n\n  &:focus-visible {\n    outline: var(--focus-outline);\n    outline-offset: -2px;\n  }\n\n  &:not([checked]) > .button-box > .button-icon {\n    transform: rotate(-90deg);\n\n    &:-moz-locale-dir(rtl) {\n      transform: rotate(90deg);\n    }\n  }\n\n  @media (prefers-reduced-motion: no-preference) {\n    & > .button-box > .button-icon {\n      transition: transform 200ms ease;\n    }\n  }\n\n  & > .button-box > .button-text {\n    display: none;\n  }\n}\n\n#attachmentInfo {\n  overflow: hidden;\n  flex-shrink: 1;\n}\n\n#attachmentName {\n  -moz-user-focus: normal;\n  margin: 0;\n  margin-inline-end: -3px;\n  padding: 2px 3px;\n  border-radius: 2px;\n\n  &:focus-visible {\n    outline: var(--focus-outline);\n    outline-offset: -1px;\n  }\n\n  &:is(:hover, [selected=\"true\"]) {\n    cursor: pointer;\n    color: var(--selected-item-text-color);\n    background-color: var(--selected-item-color);\n  }\n}\n\n#attachmentSize {\n  margin: 0;\n  margin-inline-start: 8px;\n  opacity: var(--message-header-label-opacity);\n}\n\n#attachmentIcon {\n  margin-inline-start: 5px;\n  -moz-context-properties: fill, fill-opacity;\n  fill: currentColor;\n  fill-opacity: var(--toolbarbutton-icon-fill-opacity);\n}\n\n#attachmentCount {\n  margin: 0;\n  padding: 2px 0;\n  margin-inline: 2px 1px;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n\n#attachment-splitter {\n  &[location=\"bottom\"][state=\"collapsed\"] {\n    margin-block-start: -5px;\n    margin-block-end: 0;\n  }\n\n  &[location=\"top\"]:not([state=\"collapsed\"], :hover, :focus) {\n    border-block-start-width: 1px;\n  }\n}\n\n/* Collapsed list - splitter on bottom */\n#header-splitter[state=\"collapsed\"] + #attachmentView[location=\"top\"] {\n  border-block-start-width: 0;\n}\n\n/* ::::: msg header captions ::::: */\n\n.message-header-label {\n  padding: 0;\n  margin-block: 0;\n  margin-inline: 6px 8px;\n  flex-shrink: 0;\n  align-self: baseline;\n  opacity: var(--message-header-label-opacity);\n\n  @media (max-width: 768px) {\n    min-inline-size: 0 !important;\n    margin-inline-start: 0;\n    text-align: start;\n  }\n\n  &.header-pill-label {\n    padding-block-start: var(--message-header-field-offset);\n  }\n}\n\n.headerValue {\n  display: flex;\n  align-items: center;\n  flex-wrap: wrap;\n  margin: 0;\n}\n\n.header-row:focus-visible,\n.header-recipient:focus-visible,\n.header-newsgroup:focus-visible {\n  outline: var(--focus-outline);\n}\n\n.header-row[is=\"simple-header-row\"],\n.header-row[is=\"url-header-row\"] {\n  /* Match the visual alignment of the rows with clickable elements. */\n  margin-inline-start: calc(var(--message-header-field-offset) * -1);\n  padding-inline: var(--message-header-field-offset);\n}\n\n.tag {\n  padding: 1px 3px;\n  margin-inline-start: 0;\n  border-radius: var(--button-border-radius);\n  border: 1px solid transparent;\n\n  &:not([style]) {\n    border-color: color-mix(in srgb, currentColor 50%, transparent);\n  }\n}\n\n.message-header-datetime {\n  user-select: text;\n  -moz-user-focus: normal;\n  cursor: text;\n  margin: 0 6px;\n  white-space: nowrap;\n\n  #expandedtoRow & {\n    align-self: flex-start;\n    margin-block: 2px;\n  }\n}\n\n/* ::::: msg header email addresses ::::: */\n\nbutton.email-action-button {\n  margin: 0;\n  padding: 0;\n  border-radius: 0;\n\n  &:is(:hover, :hover:active) {\n    background-color: transparent;\n  }\n\n  &:focus-visible {\n    outline: var(--focus-outline);\n  }\n}\n\n.header-row {\n  -moz-user-focus: normal;\n  user-select: text;\n  word-wrap: anywhere;\n  display: inherit;\n  line-height: 1.3;\n}\n\n.screen-reader-only {\n  position: absolute;\n  clip-path: inset(50%);\n}\n\n#attachmentView {\n  display: flex;\n  flex-direction: column;\n  justify-content: stretch;\n  min-block-size: 30px;\n  /* Allow the area to shrink. */\n  min-inline-size: 0;\n  max-block-size: 50%;\n  overflow: hidden;\n  flex: 0 1 auto;\n\n  &.list-expanded {\n    /* By design, attachmentView should not take up more than 1/4 of the message\n       pane space. */\n    max-block-size: min(var(--preferred-height), 25%);\n  }\n}\n\n#attachmentView,\n#attachmentList {\n  border-block-start: 1px solid var(--sidebar-border); /* The same color as the splitters */\n}\n\n:root[lwt-tree] {\n  & #singleMessage,\n  & #attachmentView {\n    background-color: var(--toolbar-background-color) !important;\n    background-image: none !important;\n    color: var(--lwt-text-color);\n  }\n\n  & .headerValue {\n    color: inherit;\n  }\n\n  & #attachmentBar {\n    background-color: hsla(0, 0%, 50%, 0.15);\n    color: inherit;\n  }\n}\n\n/* OpenPGP and S/MIME encryption and signature status icons */\n\n#cryptoBox:not([hidden]) {\n  display: contents;\n}\n\n.crypto-label {\n  font-weight: 600;\n  white-space: nowrap;\n}\n\n.crypto-button {\n  min-inline-size: initial;\n  margin-block: 0;\n  margin-inline-end: 3px;\n  fill: currentColor;\n  background-color: transparent;\n  display: flex;\n  flex-wrap: nowrap;\n  align-items: center;\n  flex-direction: row;\n  gap: 3px;\n\n  &[hidden] {\n    display: none;\n  }\n\n  & > * {\n    vertical-align: middle;\n  }\n}\n\n/* Encryption security pane */\n#messageSecurityPanel {\n  --panel-width: 37rem;\n\n  & .security-panel-body {\n    overflow-x: hidden;\n    flex: 1;\n    padding-inline: 6px;\n  }\n}\n\nhtml|header.message-security-header {\n  display: flex;\n  flex-wrap: nowrap;\n  text-align: center;\n  align-items: center;\n  margin-block-end: 6px;\n\n  & html|h3 {\n    flex: 1;\n    margin-block: 0;\n  }\n}\n\n.message-security-body {\n  overflow-y: auto;\n  flex: 1;\n\n  & > description {\n    margin-block-end: 18px;\n  }\n}\n\n.message-security-label {\n  font-weight: 600;\n  font-size: 1.1em;\n  padding-inline-start: 21px;\n  background-position: left center;\n  background-repeat: no-repeat;\n  background-size: 16px;\n  margin-block-end: 6px;\n  fill: currentColor;\n  -moz-context-properties: fill;\n\n  &:-moz-locale-dir(rtl) {\n    background-position-x: right;\n  }\n}\n\n.message-security-label.none,\n#encryptionLabel.none,\n#signatureLabel.none {\n  padding-inline-start: 0;\n}\n\n#signatureLabel {\n  &.ok {\n    background-image: url(\"chrome://messenger/skin/icons/message-signed-ok.svg\");\n  }\n\n  &.verified {\n    background-image: url(\"chrome://messenger/skin/icons/message-signed-verified.svg\");\n  }\n\n  &.unverified {\n    background-image: url(\"chrome://messenger/skin/icons/message-signed-unverified.svg\");\n  }\n\n  &.unknown {\n    background-image: url(\"chrome://messenger/skin/icons/message-signed-unknown.svg\");\n  }\n\n  &:is(.mismatch, .notok) {\n    background-image: url(\"chrome://messenger/skin/icons/message-signed-mismatch.svg\");\n  }\n}\n\n#encryptionLabel {\n  &.ok {\n    background-image: url(\"chrome://messenger/skin/icons/message-encrypted-ok.svg\");\n  }\n\n  &.notok {\n    background-image: url(\"chrome://messenger/skin/icons/message-encrypted-notok.svg\");\n  }\n}\n\n#openpgpImportButton {\n  list-style-image: url(\"chrome://messenger/skin/icons/encryption-key.svg\");\n  -moz-context-properties: fill;\n  fill: currentColor;\n\n  & .button-icon {\n    margin-inline-end: 2px;\n  }\n}\n\n.message-security-container {\n  margin-block-end: 21px;\n}\n\n#signatureKeyId,\n#encryptionKeyId,\n.cert-label {\n  font-weight: 600;\n}\n\n#signatureKey {\n  flex-wrap: wrap;\n}\n\n#otherEncryptionKeysList {\n  margin: 9px 6px;\n}\n\n.other-key-row {\n  border-radius: 2px;\n  padding: 3px 2px;\n  border: 1px solid var(--button-border-color);\n  background-color: rgba(215, 215, 219, 0.2);\n  margin-block-end: 3px;\n}\n\n.openpgp-key-id {\n  font-weight: bold;\n}\n\n.openpgp-key-name {\n  font-size: 0.9em;\n}\n\n#signatureKeyId,\n#encryptionKeyId,\n.openpgp-key-id,\n.openpgp-key-name {\n  user-select: text;\n  cursor: text;\n}\n\n.button-focusable {\n  -moz-user-focus: normal;\n\n  &:focus-visible {\n    outline: var(--focus-outline);\n    outline-offset: var(--focus-outline-offset);\n  }\n\n  &:focus:not(:focus-visible) {\n    outline: none;\n  }\n}\n\nbutton.email-action-flagged {\n  margin-inline: 6px;\n  cursor: pointer;\n  -moz-context-properties: fill, stroke;\n  fill: color-mix(in srgb, currentColor 10%, transparent);\n  stroke: color-mix(in srgb, currentColor 30%, transparent);\n  align-self: center;\n  border-radius: var(--button-border-radius);\n\n  &.flagged {\n    fill: var(--color-orange-30) !important;\n    stroke: var(--color-orange-60);\n  }\n\n  &:not(.flagged):hover {\n    fill: color-mix(in srgb, currentColor 20%, transparent);\n    stroke: currentColor;\n  }\n}\n\n/* Customization options */\n\n.message-header-hide-label-column {\n  padding-inline-start: 9px;\n\n  & .message-header-label {\n    display: none;\n  }\n\n  & :is(.multi-recipient-row:not(#expandedfromBox), .multi-url-header-row, .multi-message-ids-row, .header-newsgroups-row) {\n    display: flex;\n\n    & ol {\n      flex: 1 1 auto;\n    }\n  }\n\n  & .row-heading:not(#subjectHeading, #fromHeading, #tagsHeading) {\n    display: flow-root;\n    margin-inline-end: 1ch;\n    font-weight: 600;\n    align-self: baseline;\n    word-break: keep-all;\n    white-space: nowrap;\n    opacity: var(--message-header-label-opacity);\n  }\n\n  & .multi-recipient-row .row-heading:not(#fromHeading),\n  & .multi-url-header-row .row-heading,\n  & .row-heading:is(#newsgroupsHeading, #followup-toHeading, #message-idHeading, #referencesHeading, #in-reply-toHeading) {\n    padding-block: var(--message-header-field-offset);\n  }\n}\n\n.message-header-large-subject {\n  & #expandedsubjectBox {\n    font-weight: 500;\n    font-size: 1.35em;\n    line-height: 1.35em;\n  }\n\n  & #expandedsubjectLabel {\n    margin-block-start: 5px;\n  }\n}\n\n.message-header-buttons-only-icons .toolbarbutton-text,\n.message-header-buttons-only-text .toolbarbutton-icon {\n  display: none !important;\n}\n\n.message-header-buttons-only-text .toolbarbutton-text {\n  margin: 0 !important;\n  padding-inline: 2px !important;\n}\n\n/* Header row widgets */\n\n.multi-recipient-row {\n  flex: 1 1 auto;\n}\n\n.list-header-row {\n  flex: 1 1 auto;\n}\n\n.row-heading {\n  display: none;\n}\n\n.header-recipient:not(:last-child, .last-before-button)::after,\n.header-message-id:not(:last-child, .last-before-button)::after,\n.header-message-url:not(:last-child)::after,\n.header-newsgroup:not(:last-child)::after {\n  content: \",\";\n}\n\n.header-recipient,\n.header-newsgroup,\n.header-message-id {\n  display: flow-root;\n  padding: var(--message-header-field-offset);\n  border-radius: var(--button-border-radius);\n}\n\n.header-recipient {\n  white-space: nowrap;\n\n  & img {\n    pointer-events: none;\n  }\n}\n\n.header-recipient:hover,\n.header-newsgroup:hover {\n  color: var(--selected-item-text-color);\n  background-color: var(--selected-item-color);\n  cursor: pointer;\n}\n\n.header-recipient span,\n.header-message-id {\n  word-break: break-word;\n  white-space: break-spaces;\n}\n\n.recipients-list,\n.newsgroups-list,\n.tags-list,\n.ids-list,\n.url-list {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  row-gap: 2px;\n  margin: 0;\n  padding: 0;\n  list-style: none;\n  margin-inline-start: calc(var(--message-header-field-offset) * -1);\n  min-inline-size: 100px;\n}\n\n.header-message-url a {\n  display: inline-block;\n  max-inline-size: 80vw;\n}\n\n.tags-list {\n  column-gap: 3px;\n  min-inline-size: fit-content;\n}\n\n.recipient-address-book-button {\n  margin: 0;\n  margin-inline-start: 3px;\n  margin-block-start: -2px;\n  padding: 1px;\n  border-radius: var(--button-border-radius);\n  cursor: pointer;\n  vertical-align: middle;\n  background-color: transparent;\n\n  &:not([disabled]):hover {\n    background-color: transparent;\n  }\n\n  & img {\n    display: block;\n    -moz-context-properties: fill, stroke;\n    fill: color-mix(in srgb, currentColor 20%, transparent);\n    stroke: currentColor;\n  }\n\n  &.in-address-book img {\n    fill: color-mix(in srgb, var(--selected-item-color) 20%, transparent);\n    stroke: var(--selected-item-color);\n  }\n\n  .header-recipient:hover &.in-address-book img {\n    fill: var(--selected-item-text-color);\n    stroke: var(--selected-item-text-color);\n  }\n\n  .header-recipient:hover & img {\n    opacity: var(--message-header-label-opacity);\n  }\n\n  .header-recipient:hover &:not([disabled]):hover img {\n    opacity: 1;\n  }\n}\n\n.show-more-recipients,\n.show-more-ids {\n  min-block-size: auto;\n  min-inline-size: auto;\n  border-radius: 12px;\n  line-height: 1;\n  text-transform: uppercase;\n  font-weight: 600;\n  background-color: var(--selected-item-color);\n  color: var(--selected-item-text-color);\n\n  &:is(:not([disabled])):hover {\n    background-color: var(--selected-item-text-color);\n    color: var(--selected-item-color);\n  }\n\n  &:focus-visible {\n    outline: var(--focus-outline);\n    outline-offset: var(--focus-outline-offset);\n  }\n}\n\n.show-more-recipients {\n  padding: 3px 9px;\n  margin-inline-start: 6px !important;\n  font-size: 0.9rem;\n}\n\n.show-more-ids {\n  padding: 2px 6px;\n  font-size: 0.8rem;\n}\n\n/* Avatar */\n\n.recipient-avatar {\n  display: none;\n  block-size: var(--recipient-avatar-size);\n  inline-size: var(--recipient-avatar-size);\n  border-radius: 50%;\n  margin-block-start: var(--recipient-avatar-margin-block-start);\n  margin-inline-end: 6px;\n  text-align: center;\n  overflow: hidden;\n  color: var(--recipient-avatar-color);\n  background-color: var(--recipient-avatar-background-color);\n  align-items: center;\n  justify-content: center;\n\n  & img {\n    inline-size: 100%;\n    block-size: 100%;\n    object-fit: cover;\n  }\n\n  .message-header-show-recipient-avatar #expandedfromBox & {\n    display: inline-flex;\n  }\n\n  .message-header-show-recipient-avatar &.has-avatar,\n  .message-header-show-sender-full-address & {\n    vertical-align: middle;\n  }\n}\n\n.message-header-show-sender-full-address #expandedfromLabel,\n.message-header-show-recipient-avatar #expandedfromLabel {\n  padding-block-start: var(--recipient-avatar-margin-block-start);\n  align-self: center;\n}\n\n.message-header-show-recipient-avatar:not(.message-header-show-sender-full-address) #expandedfromLabel {\n  padding-block-start: 0;\n}\n\n.recipient-multi-line {\n  display: none;\n  flex-direction: column;\n  gap: var(--recipient-multi-line-gap);\n  vertical-align: middle;\n  margin-inline-end: 3px;\n}\n\n.recipient-multi-line-name {\n  font-weight: 500;\n  font-size: 105%;\n}\n\n.recipient-multi-line-address {\n  opacity: 0.9;\n}\n\n.message-header-show-sender-full-address #expandedfromBox {\n  & .recipient-multi-line {\n    display: inline-flex;\n  }\n\n  & .recipient-single-line {\n    display: none;\n  }\n}\n\n/* Conversation view */\n\n.in-conversation {\n  & #expandedsubjectRow {\n    display: none;\n  }\n}\n\n/* Dark Message Mode */\n\n#darkReaderToggle {\n  display: none;\n\n  & input {\n    margin-block: 0;\n  }\n}\n\n#headerShowDarkToggle {\n  display: none;\n}\n\n/* stylelint-disable-next-line media-query-no-invalid */\n@media (prefers-color-scheme: dark) and -moz-pref(\"mail.dark-reader.show-toggle\") {\n  #darkReaderToggle {\n    display: initial;\n\n    @media (prefers-contrast) {\n      display: none;\n    }\n  }\n}\n\n@media (prefers-color-scheme: dark) {\n  #headerShowDarkToggle {\n    display: flex;\n  }\n}\n\n.dark-reader-toggle {\n  position: relative;\n\n  &::after {\n    position: absolute;\n    display: flex;\n    align-items: center;\n    content: var(--icon-moon-xs);\n    -moz-context-properties: fill, stroke;\n    fill: color-mix(in srgb, currentColor 10%, transparent);\n    stroke: color-mix(in srgb, currentColor 55%, transparent);\n    inset-block: 0;\n    inset-inline-end: 3px;\n  }\n\n  &:checked::after {\n    content: var(--icon-sun-xs);\n    fill: color-mix(in srgb, var(--selected-item-text-color) 40%, transparent);\n    stroke: color-mix(in srgb, var(--selected-item-text-color) 90%, transparent);\n    translate: -23px;\n  }\n\n  &.toggle-checkbox-sm {\n    &::after {\n      inset-inline-end: 2px;\n    }\n\n    &:checked::after {\n      translate: -20px;\n    }\n  }\n}\n\n@media (forced-colors: none) and (prefers-contrast: no-preference) {\n    :root {\n      color-scheme: var(--f11-color-scheme) !important;\n      font-family: var(--f11-font) !important;\n      --layout-background-0: var(--f11-paper) !important;\n      --layout-background-1: var(--f11-shell) !important;\n      --layout-background-2: var(--f11-hover) !important;\n      --layout-background-3: var(--f11-raised) !important;\n      --layout-background-4: var(--f11-pressed) !important;\n      --layout-color-0: var(--f11-text) !important;\n      --layout-color-1: var(--f11-text) !important;\n      --layout-color-2: var(--f11-secondary) !important;\n      --layout-color-3: var(--f11-secondary) !important;\n      --layout-border-0: var(--f11-line) !important;\n      --layout-border-1: var(--f11-control-line) !important;\n      --layout-border-2: var(--f11-control-line) !important;\n      /* Актуальные toolkit-токены, в том числе для страниц настроек.\n       * Смысловые токены ошибок/предупреждений не переопределяем. */\n      --background-color-canvas: var(--f11-paper) !important;\n      --background-color-box: var(--f11-raised) !important;\n      --text-color: var(--f11-text) !important;\n      --text-color-deemphasized: var(--f11-secondary) !important;\n      --in-content-page-background: var(--f11-paper) !important;\n      --in-content-page-color: var(--f11-text) !important;\n      --in-content-box-background: var(--f11-raised) !important;\n      --in-content-box-border-color: var(--f11-line) !important;\n      --in-content-text-color: var(--f11-text) !important;\n      --in-content-deemphasized-text: var(--f11-secondary) !important;\n      --in-content-accent-color: var(--f11-accent) !important;\n      --in-content-primary-button-background: var(--f11-accent) !important;\n      --in-content-primary-button-text-color: var(--f11-on-accent) !important;\n      --lwt-accent-color: var(--f11-shell) !important;\n      --lwt-accent-color-inactive: var(--f11-shell) !important;\n      /* В Thunderbird 158 рамка и бейджи читают lwt-frame;\n       * Betterbird 153 использует прежнее имя lwt-accent-color. */\n      --lwt-frame: var(--f11-shell) !important;\n      --lwt-frame-inactive: var(--f11-shell) !important;\n      --lwt-text-color: var(--f11-text) !important;\n      --toolbar-background-color: var(--f11-shell) !important;\n      --toolbar-text-color: var(--f11-text) !important;\n      --toolbar-field-color: var(--f11-text) !important;\n      --toolbar-field-text-color-focus: var(--f11-text) !important;\n      --toolbar-field-background-color: var(--f11-field) !important;\n      --toolbar-field-focus-border-color: var(--f11-accent) !important;\n      --selected-item-color: var(--f11-accent) !important;\n      --selected-item-text-color: var(--f11-on-accent) !important;\n      --primary: var(--f11-accent) !important;\n      --focus-outline-color: var(--f11-accent) !important;\n      --button-border-radius: var(--f11-radius) !important;\n      --button-text-color: var(--f11-text) !important;\n      --button-background-color: var(--f11-raised) !important;\n      --button-hover-background-color: var(--f11-hover) !important;\n      --button-active-background-color: var(--f11-pressed) !important;\n      --button-border-color: var(--f11-control-line) !important;\n      --button-primary-background-color: var(--f11-accent) !important;\n      --button-primary-text-color: var(--f11-on-accent) !important;\n      --button-primary-hover-background-color: color-mix(in srgb, var(--f11-accent) 90%, light-dark(black, white)) !important;\n      --button-primary-active-background-color: color-mix(in srgb, var(--f11-accent) 80%, light-dark(black, white)) !important;\n      --button-primary-border-color: transparent !important;\n      --button-link-text-color: var(--f11-accent) !important;\n      --input-border-color: var(--f11-control-line) !important;\n      --input-text-border-radius: var(--f11-radius) !important;\n      --input-search-border-radius: var(--f11-radius) !important;\n      --sidebar-background-color: var(--f11-sidebar) !important;\n      --sidebar-background: var(--f11-sidebar) !important;\n      --sidebar-text-color: var(--f11-text) !important;\n      --sidebar-color: var(--f11-text) !important;\n      --sidebar-border-color: var(--f11-line) !important;\n      --sidebar-border: var(--f11-line) !important;\n      --spaces-bg-color: var(--f11-sidebar) !important;\n      --spaces-bg-image: none !important;\n      --spaces-button-active-bg-color: var(--f11-selection) !important;\n      --spaces-button-active-text-color: var(--f11-text) !important;\n      --search-bar-color: var(--f11-text) !important;\n      --search-bar-background: var(--f11-field) !important;\n      --search-bar-focus-background: var(--f11-paper) !important;\n      --search-bar-border-color: var(--f11-control-line) !important;\n      --search-field-placeholder: var(--f11-secondary) !important;\n      --tree-view-bg: var(--f11-paper) !important;\n      --tree-view-color: var(--f11-text) !important;\n      --tree-pane-background: var(--f11-paper) !important;\n      --unread-color: var(--f11-text) !important;\n      --new-subject-color: var(--f11-accent) !important;\n      --listbox-hover: var(--f11-hover) !important;\n      --listbox-selected-bg: var(--f11-selection-idle) !important;\n      --listbox-focused-selected-bg: var(--f11-selection) !important;\n      --listbox-selected-color: var(--f11-text) !important;\n      --listbox-focused-selected-color: var(--f11-text) !important;\n      --tree-view-header-hover-bg: var(--f11-hover) !important;\n      --tree-view-header-hover-active-bg: var(--f11-pressed) !important;\n      --listbox-border-radius: var(--f11-radius) !important;\n      --list-container-border: transparent !important;\n      --list-container-border-hover: transparent !important;\n      --list-container-border-selected: transparent !important;\n      --list-container-border-selected-current: transparent !important;\n      --list-container-border-selected-focused: transparent !important;\n      --list-container-border-selected-current-focused: transparent !important;\n      --list-container-background-hover: var(--f11-hover) !important;\n      --list-container-background-selected: var(--f11-selection-idle) !important;\n      --list-container-background-selected-current: var(--f11-selection-idle) !important;\n      --list-container-background-selected-focused: var(--f11-selection) !important;\n      --list-container-background-selected-current-focused: var(--f11-selection) !important;\n      --treeitem-background-hover: var(--f11-hover) !important;\n      --treeitem-background-selected: var(--f11-selection-idle) !important;\n      --treeitem-background-active: var(--f11-selection) !important;\n      --treeitem-text-active: var(--f11-text) !important;\n      --tree-card-background: var(--f11-paper) !important;\n      --tree-card-border: var(--f11-list-border) !important;\n      --tree-card-border-hover: var(--f11-list-border) !important;\n      --tree-card-border-focus: var(--f11-list-border) !important;\n      --tree-card-border-selected: var(--f11-list-border) !important;\n      --tree-card-border-selected-unfocused: var(--f11-list-border) !important;\n      --tree-card-background-current: var(--f11-hover) !important;\n      --tree-card-background-selected: var(--f11-selection) !important;\n      --tree-card-background-selected-current: var(--f11-selection) !important;\n      --tree-card-background-current-unfocused: var(--f11-hover) !important;\n      --tree-card-background-selected-unfocused: var(--f11-selection-idle) !important;\n      --tree-card-background-selected-current-unfocused: var(--f11-selection-idle) !important;\n      --tree-card-background-selected-current-unfocused-hover: var(--f11-selection) !important;\n      --tree-focus-outline: transparent !important;\n      --chrome-content-separator-color: var(--f11-line) !important;\n      --toolbarseparator-color: var(--f11-line) !important;\n      --panel-separator-color: var(--f11-line) !important;\n    }\n\n    /* Окно и вкладки. Кнопки управления окном сохраняют реализацию TB. */\n    #navigation-toolbox, #tabs-toolbar, #unifiedToolbarContainer, #status-bar {\n      background-color: var(--f11-shell) !important;\n      background-image: none !important;\n      color: var(--f11-text) !important;\n      box-shadow: none !important;\n    }\n    unified-toolbar { border-block-end-color: transparent !important; }\n    /* Контур горизонтальных вкладок задаётся отдельным tabs.css. */\n    #status-bar { border-block-start-color: var(--f11-line) !important; }\n\n    /* Боковая полоса пространств: мягкое выделение и короткий маркер. */\n    #spacesToolbar { border-inline-end: 1px solid var(--f11-line) !important; }\n    #spacesToolbar .spaces-toolbar-button { border-radius: var(--f11-radius) !important; }\n    #spacesToolbar .spaces-toolbar-button.current {\n      box-shadow: inset 3px 0 var(--f11-accent) !important;\n    }\n\n    /* Папки: не меняем иконки ошибок, теги и пользовательские цвета. */\n    #folderPane { background-color: var(--f11-sidebar) !important; }\n    #folderTree li > .container {\n      margin-inline: var(--f11-folder-inline) !important;\n      border-radius: var(--f11-radius) !important;\n    }\n    #folderTree li.selected > .container {\n      color: var(--f11-text) !important;\n      box-shadow: inset 3px 0 var(--f11-accent) !important;\n    }\n    #folderTree li[data-server-type] > .container > .name { font-weight: 600 !important; }\n    #folderTree .mode-name { color: var(--f11-secondary) !important; }\n    #folderTree .folder-count-badge {\n      border-color: transparent !important;\n      background-color: transparent !important;\n    }\n    #folderTree .unread-count { color: var(--f11-accent) !important; }\n    #folderTree .total-count { color: var(--f11-secondary) !important; }\n    #folderTree li.drop-target > .container {\n      outline: 2px solid var(--f11-accent) !important;\n      outline-offset: -2px !important;\n    }\n\n    /* Заголовки и фильтр. Не задаём высоту строк/шрифта виртуального списка. */\n    #threadPane, #threadPane > tree-view { background-color: var(--f11-paper) !important; }\n    #threadPaneHeaderBar, #folderPaneHeaderBar {\n      background-color: var(--f11-paper) !important;\n      border-block-end-color: var(--f11-line) !important;\n    }\n    #threadPaneFolderName { font-weight: 600 !important; }\n    #threadPaneFolderCount, #threadPaneSelectedCount { color: var(--f11-secondary) !important; }\n    #quick-filter-bar { background-color: var(--f11-paper) !important; }\n\n    /* Штатный список сообщений. */\n    #threadTree[rows=\"thread-card\"] .card-container {\n      border-radius: var(--f11-list-radius) !important;\n    }\n    #threadTree .card-container .date { color: var(--f11-secondary) !important; opacity: 1 !important; }\n    #threadTree .card-container .sender { color: var(--f11-text) !important; }\n    #threadTree tr[data-properties~=\"unread\"] :is(.sender, .subject),\n    #threadTree tr[data-properties~=\"hasUnread\"] .sender { font-weight: 700 !important; }\n    /* Короткий маркер выбираемого элемента не меняет его габариты. */\n    #threadTree tr.selected .card-container {\n      box-shadow: inset 3px 0 var(--f11-accent) !important;\n    }\n    /* Таблица и многострочный режим Betterbird используют штатный каскад\n     * с переменными listbox-*. Не перекрываем !important-фоном inline-\n     * окраску аккаунтов Betterbird, теги и drag-source / drop-target. */\n    /* Keyboard current != selected. Сохраняем различимость обоих состояний. */\n    #threadTree:focus-visible tr.current .card-container,\n    #threadTree:has(:focus-visible) tr.current .card-container {\n      outline: 1px solid var(--f11-accent) !important;\n      outline-offset: -2px !important;\n    }\n\n    /* Разделители остаются доступными для перетаскивания. */\n    #folderPaneSplitter, #messagePaneSplitter {\n      border-color: var(--f11-line) !important;\n      background-color: transparent !important;\n    }\n    #folderPaneSplitter:is(:hover, .splitter-resizing),\n    #messagePaneSplitter:is(:hover, .splitter-resizing) { border-color: var(--f11-accent) !important; }\n\n    /* Штатная область чтения — только оболочка, без внутреннего HTML письма. */\n    #messagePane, #messagepanebox, #singleMessage { background-color: var(--f11-paper) !important; }\n    #messageHeader {\n      background-color: var(--f11-paper) !important;\n      color: var(--f11-text) !important;\n      border-block-end: 1px solid var(--f11-line) !important;\n      padding-inline: var(--f11-reader-padding) !important;\n    }\n    #expandedsubjectBox {\n      font-size: var(--f11-subject-size) !important;\n      font-weight: 600 !important;\n      line-height: 1.35 !important;\n    }\n    .message-header-label, .message-header-datetime { color: var(--f11-secondary) !important; }\n    #attachmentBar { background-color: var(--f11-shell) !important; border-color: var(--f11-line) !important; }\n\n    /* Контакты: та же иерархия поверхностей, штатные размеры списка. */\n    #booksPane { background-color: var(--f11-shell) !important; }\n    #cardsPane, #detailsPane { background-color: var(--f11-paper) !important; }\n    #books li > .container { border-radius: var(--f11-radius) !important; }\n    #books li.selected > .container {\n      color: var(--f11-text) !important;\n      box-shadow: inset 3px 0 var(--f11-accent) !important;\n    }\n\n    /* Календарь/задачи внутри главного окна. Цвета отдельных календарей,\n     * категорий и просроченных задач остаются смысловыми цветами TB. */\n    :root {\n      --viewBackground: var(--f11-paper) !important;\n      --viewColor: var(--f11-text) !important;\n      --viewBorderColor: var(--f11-line) !important;\n      --viewTodayBackground: var(--f11-selection) !important;\n      --viewWeekendBackground: var(--f11-shell) !important;\n      --viewDayBoxSelectedBackground: var(--f11-selection) !important;\n      --viewHighlightBorderColor: var(--f11-accent) !important;\n    }\n\n    /* Создание письма: поля и панель, без принудительной смены HTML письма. */\n    #MsgHeadersToolbar, #composeToolbar2 { background-color: var(--f11-shell) !important; }\n    .address-container, #msgSubject {\n      border-radius: var(--f11-radius) !important;\n      background-color: var(--f11-field) !important;\n      color: var(--f11-text) !important;\n    }\n    .address-container:not([focused=\"true\"]), #msgSubject:not(:focus) {\n      border-color: var(--f11-control-line) !important;\n    }\n\n    /* Меню: переменные на самих popup, т.к. TB задаёт их локально. */\n    menupopup, panel {\n      --panel-background-color: var(--f11-raised) !important;\n      --panel-text-color: var(--f11-text) !important;\n      --panel-border-color: var(--f11-line) !important;\n      --panel-border-radius: var(--f11-card-radius) !important;\n    }\n    menupopup > :is(menu, menuitem) { border-radius: var(--f11-radius) !important; }\n    menupopup > :is(menu, menuitem)[_moz-menuactive=\"true\"] {\n      background-color: var(--f11-hover) !important;\n      color: var(--f11-text) !important;\n    }\n    #unifiedToolbar :is(button, input), #folderPane button, #threadPaneHeaderBar button {\n      font-family: var(--f11-font) !important;\n    }\n    :is(button, input, textarea, select):focus-visible {\n      outline: 2px solid var(--f11-accent) !important;\n      outline-offset: 2px !important;\n    }\n  }\n\n@media screen and (forced-colors: none) and (prefers-contrast: no-preference) {\n    /* Первый уровень: тема. Размер берётся из прежнего settings.css. */\n    #messageHeader #expandedsubjectBox {\n      color: var(--f11-text) !important;\n      font-size: var(--f11-subject-size, 1.3rem) !important;\n      font-weight: 700 !important;\n      line-height: 1.35 !important;\n      margin-block: 3px !important;\n      /* Нативное ограничение длинной темы и её прокрутка сохраняются. */\n    }\n\n    /* Второй уровень: имя отправителя. Используем уже заполненные клиентом\n     * spans, чтобы адрес можно было оформить отдельно без разбора текста.\n     * Две строки показываются и при компактном варианте штатной шапки. */\n    #messageHeader #expandedfromBox .recipient-single-line {\n      display: none !important;\n    }\n    #messageHeader #expandedfromBox .recipient-multi-line {\n      display: inline-flex !important;\n      flex-direction: column !important;\n      gap: 2px !important;\n      vertical-align: middle !important;\n      min-inline-size: 0 !important;\n    }\n    #messageHeader #expandedfromBox .header-recipient {\n      color: var(--f11-text) !important;\n      display: inline-flex !important;\n      align-items: center !important;\n      min-inline-size: 0 !important;\n      max-inline-size: 100% !important;\n      box-sizing: border-box !important;\n    }\n    #messageHeader #expandedfromBox :is(.recipient-avatar, .recipient-address-book-button) {\n      flex-shrink: 0 !important;\n    }\n    #messageHeader #expandedfromBox .recipient-multi-line-name {\n      color: var(--f11-text) !important;\n      font-size: 1.05em !important;\n      font-weight: 600 !important;\n      line-height: 1.4 !important;\n      overflow-wrap: anywhere !important;\n    }\n\n    /* Третий уровень: адрес, получатели, подписи полей и оба варианта даты.\n     * Цвет из палитры вместо opacity, чтобы контраст не зависел от вложенности. */\n    #messageHeader #expandedfromBox .recipient-multi-line-address {\n      color: var(--f11-secondary) !important;\n      font-size: 0.95em !important;\n      font-weight: 400 !important;\n      line-height: 1.4 !important;\n      opacity: 1 !important;\n      overflow-wrap: anywhere !important;\n    }\n    #messageHeader #expandedfromBox .recipient-multi-line-address:empty {\n      display: none !important;\n    }\n    #messageHeader :is(#expandedtoBox, #expandedccBox, #expandedbccBox,\n      #expandedreply-toBox, #expandedsenderBox) .header-recipient {\n      color: var(--f11-secondary) !important;\n      font-size: 0.95em !important;\n      font-weight: 400 !important;\n    }\n    #messageHeader :is(.message-header-label, .message-header-datetime) {\n      color: var(--f11-secondary) !important;\n      font-size: 0.95em !important;\n      font-weight: 400 !important;\n    }\n    #messageHeader .message-header-datetime {\n      font-variant-numeric: tabular-nums !important;\n    }\n\n    /* Адреса остаются интерактивными; акцент виден при наведении и фокусе. */\n    #messageHeader .header-recipient:is(:hover, :focus-visible) {\n      background-color: var(--f11-hover) !important;\n    }\n    #messageHeader .header-recipient:focus-visible {\n      outline: 2px solid var(--f11-accent) !important;\n      outline-offset: 1px !important;\n    }\n  }\n.toggle-label {\n  display: inline-block;\n  line-height: 1;\n  margin: 0;\n  padding: 0;\n}\n\n.toggle-group {\n  display: flex;\n  align-items: center;\n}\n\n.toggle-checkbox {\n  appearance: none;\n  box-sizing: border-box;\n  padding: 0;\n  background-color: var(--color-surface-lower);\n  border: 1px solid var(--color-surface-border);\n  block-size: 22px;\n  inline-size: 44px;\n  border-radius: 14px;\n  cursor: pointer;\n\n  &::before {\n    display: block;\n    content: \"\";\n    box-sizing: border-box;\n    background-color: var(--color-surface-base);\n    border: 1px solid var(--color-surface-border);\n    block-size: 18px;\n    inline-size: 18px;\n    margin-block-start: 1px;\n    margin-inline-start: 1px;\n    border-radius: 10px;\n    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);\n    translate: 0;\n  }\n\n  &:checked {\n    background-color: var(--selected-item-color);\n    border-color: color-mix(in srgb, var(--selected-item-color) 80%, black);\n\n    &::before {\n      translate: 23px;\n      background-color: var(--selected-item-text-color);\n      border-color: color-mix(in srgb, var(--selected-item-color) 80%, black);\n    }\n\n    &:is(:hover, :active) {\n      background-color: color-mix(in srgb, var(--selected-item-color) 90%, black);\n      border-color: color-mix(in srgb, var(--selected-item-color) 80%, black);\n    }\n  }\n\n  &:is(:hover, :active) {\n    background-color: var(--color-surface-border);\n    border-color: var(--color-neutral-200);\n  }\n\n  &:focus-visible {\n    outline: var(--focus-outline);\n    outline-offset: var(--focus-outline-offset);\n  }\n\n  &.toggle-checkbox-sm {\n    block-size: 18px;\n    inline-size: 38px;\n\n    &::before {\n      block-size: 14px;\n      inline-size: 14px;\n    }\n\n    &:checked::before {\n      translate: 20px;\n    }\n  }\n}\n\n@media (prefers-color-scheme: dark) {\n  .toggle-checkbox {\n    background-color: color-mix(in srgb, currentColor 10%, transparent);\n    border-color: color-mix(in srgb, currentColor 50%, transparent);\n\n    &::before {\n      background-color: color-mix(in srgb, currentColor 70%, transparent);\n      border-color: transparent;\n    }\n\n    &:is(:hover, :active) {\n      background-color: color-mix(in srgb, currentColor 20%, transparent);\n      border-color: color-mix(in srgb, currentColor 50%, transparent);\n    }\n\n    &:checked {\n      border-color: rgba(0, 0, 0, 0.4);\n\n      &::before {\n        border-color: color-mix(in srgb, var(--selected-item-color), black 40%);\n      }\n\n      &:is(:hover, :active) {\n        background-color: color-mix(in srgb, var(--selected-item-color), black 20%);\n        border-color: rgba(0, 0, 0, 0.4);\n      }\n    }\n  }\n}\n\n@media (prefers-reduced-motion: no-preference) {\n  .toggle-checkbox {\n    transition:\n      opacity 0.15s ease,\n      background-color 0.15s ease,\n      border-color 0.15s ease;\n\n    &::before {\n      transition: translate 0.21s ease;\n    }\n  }\n}\n\n.dark-reader-toggle {\n  position: relative;\n\n  &::after {\n    position: absolute;\n    display: flex;\n    align-items: center;\n    content: var(--icon-moon-xs);\n    -moz-context-properties: fill, stroke;\n    fill: color-mix(in srgb, currentColor 10%, transparent);\n    stroke: color-mix(in srgb, currentColor 55%, transparent);\n    inset-block: 0;\n    inset-inline-end: 3px;\n  }\n\n  &:checked::after {\n    content: var(--icon-sun-xs);\n    fill: color-mix(in srgb, var(--selected-item-text-color) 40%, transparent);\n    stroke: color-mix(in srgb, var(--selected-item-text-color) 90%, transparent);\n    translate: -23px;\n  }\n\n  &.toggle-checkbox-sm {\n    &::after {\n      inset-inline-end: 2px;\n    }\n\n    &:checked::after {\n      translate: -20px;\n    }\n  }\n}\n@media screen and (forced-colors: none) and (prefers-contrast: no-preference) {\n    /* Первый уровень: тема. Размер берётся из прежнего settings.css. */\n    #messageHeader #expandedsubjectBox {\n      color: var(--f11-text) !important;\n      font-size: var(--f11-subject-size, 1.3rem) !important;\n      font-weight: 700 !important;\n      line-height: 1.35 !important;\n      margin-block: 3px !important;\n      /* Нативное ограничение длинной темы и её прокрутка сохраняются. */\n    }\n\n    /* Второй уровень: имя отправителя. Используем уже заполненные клиентом\n     * spans, чтобы адрес можно было оформить отдельно без разбора текста.\n     * Две строки показываются и при компактном варианте штатной шапки. */\n    #messageHeader #expandedfromBox .recipient-single-line {\n      display: none !important;\n    }\n    #messageHeader #expandedfromBox .recipient-multi-line {\n      display: inline-flex !important;\n      flex-direction: column !important;\n      gap: 2px !important;\n      vertical-align: middle !important;\n      min-inline-size: 0 !important;\n    }\n    #messageHeader #expandedfromBox .header-recipient {\n      color: var(--f11-text) !important;\n      display: inline-flex !important;\n      align-items: center !important;\n      min-inline-size: 0 !important;\n      max-inline-size: 100% !important;\n      box-sizing: border-box !important;\n    }\n    #messageHeader #expandedfromBox :is(.recipient-avatar, .recipient-address-book-button) {\n      flex-shrink: 0 !important;\n    }\n    #messageHeader #expandedfromBox .recipient-multi-line-name {\n      color: var(--f11-text) !important;\n      font-size: 1.05em !important;\n      font-weight: 600 !important;\n      line-height: 1.4 !important;\n      overflow-wrap: anywhere !important;\n    }\n\n    /* Третий уровень: адрес, получатели, подписи полей и оба варианта даты.\n     * Цвет из палитры вместо opacity, чтобы контраст не зависел от вложенности. */\n    #messageHeader #expandedfromBox .recipient-multi-line-address {\n      color: var(--f11-secondary) !important;\n      font-size: 0.95em !important;\n      font-weight: 400 !important;\n      line-height: 1.4 !important;\n      opacity: 1 !important;\n      overflow-wrap: anywhere !important;\n    }\n    #messageHeader #expandedfromBox .recipient-multi-line-address:empty {\n      display: none !important;\n    }\n    #messageHeader :is(#expandedtoBox, #expandedccBox, #expandedbccBox,\n      #expandedreply-toBox, #expandedsenderBox) .header-recipient {\n      color: var(--f11-secondary) !important;\n      font-size: 0.95em !important;\n      font-weight: 400 !important;\n    }\n    #messageHeader :is(.message-header-label, .message-header-datetime) {\n      color: var(--f11-secondary) !important;\n      font-size: 0.95em !important;\n      font-weight: 400 !important;\n    }\n    #messageHeader .message-header-datetime {\n      font-variant-numeric: tabular-nums !important;\n    }\n\n    /* Адреса остаются интерактивными; акцент виден при наведении и фокусе. */\n    #messageHeader .header-recipient:is(:hover, :focus-visible) {\n      background-color: var(--f11-hover) !important;\n    }\n    #messageHeader .header-recipient:focus-visible {\n      outline: 2px solid var(--f11-accent) !important;\n      outline-offset: 1px !important;\n    }\n\n    /* Штатный переключатель светлого/тёмного чтения. checked имеет\n     * исходное значение Betterbird; размеры, положение ползунка,\n     * смена луны/солнца и видимость остаются под управлением клиента. */\n    #darkReaderToggle #disableDarkReader {\n      color: var(--f11-secondary) !important;\n      background-color: var(--f11-field) !important;\n      border-color: var(--f11-line) !important;\n    }\n    #darkReaderToggle #disableDarkReader::before {\n      background-color: var(--f11-secondary) !important;\n      border-color: var(--f11-line) !important;\n      box-shadow: none !important;\n    }\n    #darkReaderToggle #disableDarkReader::after {\n      stroke: var(--f11-secondary) !important;\n      fill: color-mix(in srgb, var(--f11-secondary) 20%, transparent) !important;\n    }\n    #darkReaderToggle #disableDarkReader:enabled:hover {\n      background-color: var(--f11-hover) !important;\n    }\n    #darkReaderToggle #disableDarkReader:not(:checked):enabled:hover::before {\n      background-color: var(--f11-text) !important;\n    }\n    #darkReaderToggle #disableDarkReader:not(:checked):enabled:hover::after {\n      stroke: var(--f11-text) !important;\n      fill: color-mix(in srgb, var(--f11-text) 20%, transparent) !important;\n    }\n    #darkReaderToggle #disableDarkReader:checked {\n      background-color: var(--f11-selection-idle) !important;\n    }\n    #darkReaderToggle #disableDarkReader:checked::before {\n      background-color: var(--f11-accent) !important;\n    }\n    #darkReaderToggle #disableDarkReader:checked::after {\n      stroke: var(--f11-accent) !important;\n      fill: color-mix(in srgb, var(--f11-accent) 20%, transparent) !important;\n    }\n    #darkReaderToggle #disableDarkReader:checked:enabled:hover {\n      background-color: var(--f11-selection) !important;\n    }\n    #darkReaderToggle #disableDarkReader:enabled:active,\n    #darkReaderToggle #disableDarkReader:checked:enabled:active {\n      background-color: var(--f11-pressed) !important;\n    }\n    #darkReaderToggle #disableDarkReader:focus-visible {\n      outline: 2px solid var(--f11-accent) !important;\n      outline-offset: 2px !important;\n    }\n    #darkReaderToggle #disableDarkReader:disabled {\n      opacity: 0.45 !important;\n      cursor: default !important;\n    }\n  }\n#darkReaderToggle{display:block}.dark-reader-toggle::after{font-size:12px;color:var(--f11-secondary)}:root{--icon-moon-xs:\"☾\";--icon-sun-xs:\"☀\"}</style></head><body><header xmlns:html=\"http://www.w3.org/1999/xhtml\" id=\"messageHeader\" class=\"message-header-container message-header-large-subject message-header-hide-label-column message-header-show-recipient-avatar message-header-show-sender-full-address\">\n  <!-- From + buttons -->\n  <div id=\"headerSenderToolbarContainer\" class=\"message-header-row header-row-reverse message-header-wrap items-center\">\n    <div id=\"header-view-toolbox\" role=\"toolbar\" class=\"header-buttons-container\">\n      <!-- NOTE: Temporarily keep the hbox to allow extensions to add custom sets of\n        toolbar buttons. This can be later removed once a new API that doesn't rely\n        on XUL currentset is in place. -->\n      <hbox id=\"header-view-toolbar\" class=\"header-buttons-container themeable-brighttext\">\n      <button id=\"hdrReplyToSenderButton\" label=\"Native label\" tooltiptext=\"Native label\" class=\"toolbarbutton-1 message-header-view-button hdrReplyToSenderButton\" hidden=\"hidden\">Native label</button>\n\n      <toolbaritem id=\"hdrSmartReplyButton\" label=\"Native label\">\n        <!-- This button is a dummy and should only be shown when customizing\n              the toolbar to distinguish the smart reply button from the reply\n              to sender button. -->\n        <button id=\"hdrDummyReplyButton\" label=\"Native label\" hidden=\"hidden\" class=\"toolbarbutton-1 message-header-view-button hdrDummyReplyButton\">Native label</button>\n\n        <button id=\"hdrReplyButton\" label=\"Native label\" tooltiptext=\"Native label\" class=\"toolbarbutton-1 message-header-view-button hdrReplyButton\">Ответить</button>\n\n        <button is=\"toolbarbutton-menu-button\" id=\"hdrReplyAllButton\" type=\"menu\" label=\"Native label\" tooltiptext=\"Native label\" class=\"toolbarbutton-1 message-header-view-button hdrReplyButton hdrReplyAllButton\" hidden=\"hidden\">Native label</button>\n\n        <button is=\"toolbarbutton-menu-button\" id=\"hdrReplyListButton\" type=\"menu\" label=\"Native label\" tooltiptext=\"Native label\" class=\"toolbarbutton-1 message-header-view-button hdrReplyButton hdrReplyListButton\" hidden=\"hidden\">Native label</button>\n\n        <button is=\"toolbarbutton-menu-button\" id=\"hdrFollowupButton\" label=\"Native label\" type=\"menu\" tooltiptext=\"Native label\" class=\"toolbarbutton-1 message-header-view-button hdrFollowupButton\" hidden=\"hidden\">Native label</button>\n      </toolbaritem>\n\n      <button id=\"hdrForwardButton\" label=\"Native label\" tooltiptext=\"Native label\" class=\"toolbarbutton-1 message-header-view-button hdrForwardButton\">Переслать</button>\n      <button id=\"hdrArchiveButton\" label=\"Native label\" tooltiptext=\"Native label\" class=\"toolbarbutton-1 message-header-view-button hdrArchiveButton\">Архивировать</button>\n      <button id=\"hdrJunkButton\" data-l10n-id=\"header-spam-button\" observes=\"cmd_markAsJunk\" class=\"toolbarbutton-1 message-header-view-button hdrJunkButton\">Спам</button>\n      <button id=\"hdrTrashButton\" data-l10n-id=\"message-header-delete\" observes=\"cmd_delete\" class=\"toolbarbutton-1 message-header-view-button hdrTrashButton\">Удалить</button>\n      <button id=\"showCustomHeaders\" class=\"toolbarbutton-1 message-header-view-button check-button hdrCustomHeadersButton\" style=\"list-style-image: url(chrome://messenger/skin/icons/bullet-list.svg);fill: var(--toolbarbutton-icon-fill, currentColor);\" label=\"Native label\" tooltiptext=\"Native label\">Заголовки</button>\n      <button id=\"otherActionsButton\" type=\"menu\" label=\"Native label\" tooltiptext=\"Native label\" class=\"toolbarbutton-1 message-header-view-button hdrMoreButton\">Ещё</button>\n      <button id=\"starMessageButton\" role=\"checkbox\" aria-checked=\"false\" class=\"plain-button email-action-button email-action-flagged\" data-l10n-id=\"message-header-msg-flagged\">☆<img src=\"chrome://messenger/skin/icons/new/compact/star.svg\" alt=\"\">\n      </button>\n      </hbox>\n    </div>\n\n    <div id=\"expandedfromRow\" class=\"header-row-grow\">\n      <label id=\"expandedfromLabel\" class=\"message-header-label header-pill-label\" value=\"Native label\" valueFrom=\"Native label\" valueAuthor=\"Native label\">От:</label>\n      <div id=\"expandedfromBox\" is=\"multi-recipient-row\" data-header-name=\"from\" data-show-all=\"true\"><ul class=\"recipients-list\"><li class=\"header-recipient\" is=\"header-recipient\" tabindex=\"0\"><span class=\"recipient-avatar\" aria-hidden=\"true\">ИС</span><span class=\"recipient-single-line\">Ирина Смирнова &lt;irina.smirnova@example.org&gt;</span><span class=\"recipient-multi-line\"><span class=\"recipient-multi-line-name\">Ирина Смирнова</span><span class=\"recipient-multi-line-address\">irina.smirnova@example.org</span></span></li></ul></div>\n    </div>\n  </div>\n\n  <!-- To recipients + date -->\n  <div id=\"expandedtoRow\" class=\"message-header-row\">\n    <div class=\"header-row-grow\">\n      <label id=\"expandedtoLabel\" class=\"message-header-label header-pill-label\" value=\"Native label\">Кому:</label>\n      <div id=\"expandedtoBox\" is=\"multi-recipient-row\" data-header-name=\"to\"><ul class=\"recipients-list\"><li class=\"header-recipient\" is=\"header-recipient\" tabindex=\"0\"><span class=\"recipient-single-line\">Проектная группа &lt;project@example.org&gt;</span></li></ul></div>\n    </div>\n    <time id=\"dateLabel\" class=\"message-header-datetime\" aria-readonly=\"true\">20.10.2026, 09:42</time>\n  </div>\n\n  <!-- Cc recipients -->\n  <div id=\"expandedccRow\" class=\"message-header-row\" hidden=\"hidden\">\n    <label id=\"expandedccLabel\" class=\"message-header-label header-pill-label\" value=\"Native label\">Native label</label>\n    <div id=\"expandedccBox\" is=\"multi-recipient-row\" data-header-name=\"cc\"></div>\n  </div>\n\n  <!-- Bcc recipients -->\n  <div id=\"expandedbccRow\" class=\"message-header-row\" hidden=\"hidden\">\n    <label id=\"expandedbccLabel\" class=\"message-header-label header-pill-label\" value=\"Native label\">Native label</label>\n    <div id=\"expandedbccBox\" is=\"multi-recipient-row\" data-header-name=\"bcc\"></div>\n  </div>\n\n  <!-- Reply-to -->\n  <div id=\"expandedreply-toRow\" class=\"message-header-row\" hidden=\"hidden\">\n    <label id=\"expandedreply-toLabel\" class=\"message-header-label header-pill-label\" value=\"Native label\">Native label</label>\n    <div id=\"expandedreply-toBox\" is=\"multi-recipient-row\" data-header-name=\"reply-to\"></div>\n  </div>\n\n  <!-- Organization -->\n  <div id=\"expandedorganizationRow\" class=\"message-header-row\" hidden=\"hidden\">\n    <label id=\"expandedorganizationLabel\" class=\"message-header-label\" value=\"Native label\">Native label</label>\n    <div id=\"expandedorganizationBox\" is=\"simple-header-row\" data-header-name=\"organization\"></div>\n  </div>\n\n  <!-- Sender -->\n  <div id=\"expandedsenderRow\" class=\"message-header-row\" hidden=\"hidden\">\n    <label id=\"expandedsenderLabel\" class=\"message-header-label header-pill-label\" value=\"Native label\">Native label</label>\n    <div id=\"expandedsenderBox\" is=\"multi-recipient-row\" data-header-name=\"sender\"></div>\n  </div>\n\n  <!-- Newsgroups -->\n  <div id=\"expandednewsgroupsRow\" class=\"message-header-row\" hidden=\"hidden\">\n    <label id=\"expandednewsgroupsLabel\" class=\"message-header-label header-pill-label\" value=\"Native label\">Native label</label>\n    <div id=\"expandednewsgroupsBox\" is=\"header-newsgroups-row\" data-header-name=\"newsgroups\"></div>\n  </div>\n\n  <!-- Follow up -->\n  <div id=\"expandedfollowup-toRow\" class=\"message-header-row\" hidden=\"hidden\">\n    <label id=\"expandedfollowup-toLabel\" class=\"message-header-label header-pill-label\" value=\"Native label\">Native label</label>\n    <div id=\"expandedfollowup-toBox\" is=\"header-newsgroups-row\" data-header-name=\"followup-to\"></div>\n  </div>\n\n  <!-- Subject + security info + extra date label for hidden To variation -->\n  <div id=\"headerSubjectSecurityContainer\" class=\"message-header-row\">\n     <div id=\"expandedsubjectRow\" class=\"header-row-grow\">\n      <label id=\"expandedsubjectLabel\" class=\"message-header-label\" value=\"Native label\">Тема:</label>\n      <div id=\"expandedsubjectBox\" is=\"simple-header-row\" data-header-name=\"subject\">Обновлённый комплект чертежей</div>\n    </div>\n    <div id=\"expandedButtonsBox\">\n      <time id=\"dateLabelSubject\" class=\"message-header-datetime\" aria-readonly=\"true\" hidden=\"hidden\">20.10.2026, 09:42</time>\n      <div id=\"buttonsBox\">\n        <div id=\"cryptoBox\" hidden=\"hidden\">\n          <button id=\"encryptionTechBtn\" class=\"toolbarbutton-1 crypto-button themeable-brighttext button-focusable\" data-l10n-id=\"message-security-button\">\n            <span class=\"crypto-label\"></span>\n            <img id=\"encryptedHdrIcon\" hidden=\"hidden\" alt=\"\">\n            <img id=\"signedHdrIcon\" hidden=\"hidden\" alt=\"\">\n          </button>\n        </div>\n        <div xmlns=\"http://www.w3.org/1999/xhtml\" id=\"darkReaderToggle\">\n          <label for=\"disableDarkReader\" class=\"toggle-label\"><input id=\"disableDarkReader\" type=\"checkbox\" class=\"toggle-checkbox toggle-checkbox-sm dark-reader-toggle\">\n          </label>\n        </div>\n      </div>\n    </div>\n  </div>\n\n  <!-- Tags -->\n  <div id=\"expandedtagsRow\" class=\"message-header-row\" hidden=\"hidden\">\n    <label id=\"expandedtagsLabel\" class=\"message-header-label\" value=\"Native label\">Native label</label>\n    <div id=\"expandedtagsBox\" is=\"header-tags-row\" data-header-name=\"tags\"></div>\n  </div>\n\n  <!-- Date -->\n  <div id=\"expandeddateRow\" class=\"message-header-row\" hidden=\"hidden\">\n    <label id=\"expandeddateLabel\" class=\"message-header-label\" value=\"Native label\">Native label</label>\n    <div id=\"expandeddateBox\" is=\"simple-header-row\" data-header-name=\"date\"></div>\n  </div>\n\n  <!-- Message-ID -->\n  <div id=\"expandedmessage-idRow\" class=\"message-header-row\" hidden=\"hidden\">\n    <label id=\"expandedmessage-idLabel\" class=\"message-header-label header-pill-label\" value=\"Native label\">Native label</label>\n    <div id=\"expandedmessage-idBox\" is=\"multi-message-ids-row\" data-header-name=\"message-id\"></div>\n  </div>\n\n  <!-- In-Reply-To -->\n  <div id=\"expandedin-reply-toRow\" class=\"message-header-row\" hidden=\"hidden\">\n    <label id=\"expandedin-reply-toLabel\" class=\"message-header-label header-pill-label\" value=\"Native label\">Native label</label>\n    <div id=\"expandedin-reply-toBox\" is=\"multi-message-ids-row\" data-header-name=\"in-reply-to\"></div>\n  </div>\n\n  <!-- References -->\n  <div id=\"expandedreferencesRow\" class=\"message-header-row\" hidden=\"hidden\">\n    <label id=\"expandedreferencesLabel\" class=\"message-header-label header-pill-label\" value=\"Native label\">Native label</label>\n    <div id=\"expandedreferencesBox\" is=\"multi-message-ids-row\" data-header-name=\"references\"></div>\n  </div>\n\n  <!-- Content-Base -->\n  <div id=\"expandedcontent-baseRow\" class=\"message-header-row\" hidden=\"hidden\">\n    <label id=\"expandedcontent-baseLabel\" class=\"message-header-label\" value=\"Native label\">Native label</label>\n    <div id=\"expandedcontent-baseBox\" is=\"url-header-row\" data-header-name=\"content-base\"></div>\n  </div>\n\n  <!-- User-Agent -->\n  <div id=\"expandeduser-agentRow\" class=\"message-header-row\" hidden=\"hidden\">\n    <label id=\"expandeduser-agentLabel\" class=\"message-header-label\" value=\"Native label\">Native label</label>\n    <div id=\"expandeduser-agentBox\" is=\"simple-header-row\" data-header-name=\"user-agent\"></div>\n  </div>\n\n  <!-- List management -->\n  <div id=\"expandedlist-id\" class=\"message-header-row\" hidden=\"hidden\">\n    <div id=\"expandedlist-idLabel\" data-l10n-id=\"message-header-list-id\" class=\"message-header-label\"></div>\n    <div id=\"expandedlist-idBox\" is=\"list-id-header-row\" data-header-name=\"list-id\"></div>\n  </div>\n  <!-- List-Help -->\n  <div id=\"expandedlist-help\" class=\"message-header-row\" hidden=\"hidden\">\n    <div id=\"expandedlist-helpLabel\" data-l10n-id=\"message-header-list-help\" class=\"message-header-label\"></div>\n    <div id=\"expandedlist-helpBox\" is=\"multi-url-header-row\" data-header-name=\"list-help\"></div>\n  </div>\n  <!-- List-Unsubscribe -->\n  <div id=\"expandedlist-unsubscribe\" class=\"message-header-row\" hidden=\"hidden\">\n    <div id=\"expandedlist-unsubscribeLabel\" data-l10n-id=\"message-header-list-unsubscribe\" class=\"message-header-label\"></div>\n    <div id=\"expandedlist-unsubscribeBox\" is=\"multi-url-header-row\" data-header-name=\"list-unsubscribe\"></div>\n  </div>\n  <!-- List-Subscribe -->\n  <div id=\"expandedlist-subscribe\" class=\"message-header-row\" hidden=\"hidden\">\n    <div id=\"expandedlist-subscribeLabel\" data-l10n-id=\"message-header-list-subscribe\" class=\"message-header-label\"></div>\n    <div id=\"expandedlist-subscribeBox\" is=\"multi-url-header-row\" data-header-name=\"list-subscribe\"></div>\n  </div>\n  <!-- List-Post -->\n  <div id=\"expandedlist-post\" class=\"message-header-row\" hidden=\"hidden\">\n    <div id=\"expandedlist-postLabel\" data-l10n-id=\"message-header-list-post\" class=\"message-header-label\"></div>\n    <div id=\"expandedlist-postBox\" is=\"multi-url-header-row\" data-header-name=\"list-post\"></div>\n  </div>\n  <!-- List-Owner -->\n  <div id=\"expandedlist-owner\" class=\"message-header-row\" hidden=\"hidden\">\n    <div id=\"expandedlist-ownerLabel\" data-l10n-id=\"message-header-list-owner\" class=\"message-header-label\"></div>\n    <div id=\"expandedlist-ownerBox\" is=\"multi-url-header-row\" data-header-name=\"list-owner\"></div>\n  </div>\n  <!-- List-Archive -->\n  <div id=\"expandedlist-archive\" class=\"message-header-row\" hidden=\"hidden\">\n    <div id=\"expandedlist-archiveLabel\" data-l10n-id=\"message-header-list-archive\" class=\"message-header-label\"></div>\n    <div id=\"expandedlist-archiveBox\" is=\"multi-url-header-row\" data-header-name=\"list-archive\"></div>\n  </div>\n  <!-- Archived-At -->\n  <div id=\"expandedarchived-at\" class=\"message-header-row\" hidden=\"hidden\">\n    <div id=\"expandedarchived-atLabel\" data-l10n-id=\"message-header-archived-at\" class=\"message-header-label\"></div>\n    <div id=\"expandedarchived-atBox\" is=\"multi-url-header-row\" data-header-name=\"archived-at\"></div>\n  </div>\n\n  <!-- All extra headers will be dynamically added here. -->\n  <div id=\"extraHeadersArea\" class=\"message-header-extra-container\"></div>\n\n</header><div class=\"message-body\"><p>Добрый день, коллеги!</p><p>Направляю обновлённый комплект чертежей. Замечания по вторичным цепям учтены, изменения отмечены в ведомости.</p><p>Проверьте, пожалуйста, схемы управления и сигнализации.</p><p>С уважением,<br>Ирина</p></div></body></html>";
+const rows=document.getElementById('rows');
+for(const [sender,subject,time,count,initials,unread,selected,snip] of messages){const row=document.createElement('div');row.className='row'+(unread?' unread':'')+(selected?' sel':'');for(const [tag,cls,value] of [['span','avatar',initials],['span','sender',sender],['time','',time],['span','subject',subject],['span','replycount',count?'⌄ '+count:''],['span','snip',snip]]){const e=document.createElement(tag);e.className=cls;e.textContent=value;if(cls==='sender')e.title=value;if(cls==='replycount'&&!count)e.style.visibility='hidden';row.append(e)}rows.append(row)}
+const fields={"accent": ["Акцент", "#0f6cbd", "#8bc7ff"], "shell": ["Верхняя и нижняя панели", "#f3f4f6", "#101217"], "paper": ["Почта", "#ffffff", "#0d0e11"], "raised": ["Меню", "#fafbfc", "#1b1d24"], "field": ["Поля ввода", "#ffffff", "#191c23"], "hover": ["Наведение", "#e9edf2", "#242935"], "pressed": ["Нажатие", "#dfe5ec", "#2b3543"], "line": ["Разделители", "#e2e6ec", "#292e38"], "control-line": ["Границы ввода", "#818a98", "#545c6b"], "sidebar": ["Боковая панель", "#f3f4f6", "#0d0e11"], "tabs-background": ["Полоса вкладок", "#f3f4f6", "#101217"], "text": ["Основной текст", "#1b1b1b", "#e6e8ef"], "secondary": ["Вторичный текст", "#565f6c", "#a3a9bb"], "on-accent": ["Текст на акценте", "#ffffff", "#0d0e11"], "selection": ["Выделение", "#e3eefb", "#303f50"], "selection-idle": ["Неактивное выделение", "#e8ecf2", "#242935"]};
+const defaults=JSON.parse(JSON.stringify(fields));let settingsSource='';
+const swatches=document.getElementById('swatches'),theme=document.getElementById('theme');
+function activeIndex(){return theme.value==='light'?1:2}
+function contrast(a,b){const lum=c=>{const v=c.slice(1).match(/../g).map(h=>parseInt(h,16)/255).map(s=>s<=.04045?s/12.92:((s+.055)/1.055)**2.4);return .2126*v[0]+.7152*v[1]+.0722*v[2]};const [x,y]=[lum(a),lum(b)].sort((a,b)=>b-a);return (x+.05)/(y+.05)}
+function checkContrast(){let i=activeIndex();const score=Math.min(...['paper','shell','selection'].flatMap(bg=>['text','secondary'].map(t=>contrast(fields[t][i],fields[bg][i])))),contrastNode=document.getElementById('contrast');contrastNode.textContent='Мин. контраст текста: '+score.toFixed(2)+':1'+(score>=4.5?' ✓':' — ниже 4.5:1');contrastNode.title='Оценивается только основной и вторичный текст на трёх поверхностях. Это не полный аудит доступности.'}
+document.getElementById('threadPaneQuickFilterButton').addEventListener('click',e=>{const b=e.currentTarget;b.setAttribute('aria-pressed',String(b.getAttribute('aria-pressed')!=='true'));});
+function syncSummary(){for(const id of ['summaryPreview','messagePreview']){const d=document.getElementById(id).contentDocument;if(!d)continue;d.documentElement.style.setProperty('--f11-color-scheme',theme.value);d.documentElement.style.colorScheme=theme.value;for(const[k,v]of Object.entries(fields))d.documentElement.style.setProperty('--f11-'+k,`light-dark(${v[1]}, ${v[2]})`)}}
+function apply(){for(const [k,v]of Object.entries(fields))document.documentElement.style.setProperty('--f11-'+k,`light-dark(${v[1]}, ${v[2]})`);syncSummary();checkContrast()}
+function fill(){swatches.replaceChildren();for(const [key,v]of Object.entries(fields)){const label=document.createElement('label'),input=document.createElement('input');input.type='color';input.value=v[activeIndex()];input.setAttribute('aria-label',v[0]);input.addEventListener('input',()=>{fields[key][activeIndex()]=input.value;apply()});label.append(input,document.createTextNode(v[0]));swatches.append(label)}checkContrast()}
+theme.addEventListener('change',()=>{document.documentElement.style.setProperty('--f11-color-scheme',theme.value);document.documentElement.style.colorScheme=theme.value;syncSummary();fill()});
+document.getElementById('editPalette').addEventListener('click',()=>{const e=document.getElementById('editor');e.hidden=!e.hidden;document.getElementById('editPalette').setAttribute('aria-expanded',String(!e.hidden));if(!e.hidden)fill()});
+document.getElementById('listMode').addEventListener('change',e=>rows.className='rows '+e.target.value);
+document.getElementById('readMode').addEventListener('change',e=>{document.getElementById('reader').className='reader '+(e.target.value==='summary'?'native-summary':'original');document.getElementById('readerLabel').textContent=e.target.value==='summary'?'Штатный сводный просмотр':'Одиночное письмо';});
+for(const b of document.querySelectorAll('.demo'))b.addEventListener('click',()=>document.getElementById('notice').textContent='Это дизайн-макет. Почтовые команды работают в самом Thunderbird.');
+document.getElementById('reset').addEventListener('click',()=>{for(const k of Object.keys(fields))fields[k]=[...defaults[k]];apply();fill()});
+document.getElementById('export').addEventListener('click',()=>{let source=settingsSource;if(!source){document.getElementById('notice').textContent='Исходный шаблон настроек не загружен.';return}for(const [k,v] of Object.entries(fields)){const re=new RegExp('(^\\s*--f11-'+k+':\\s*)light-dark\\([^;]+\\)','m');source=source.replace(re,'$1light-dark('+v[1]+', '+v[2]+')')}source=source.replace(/(^\s*--f11-color-scheme:\s*)[^;]+/m,'$1'+theme.value);const url=URL.createObjectURL(new Blob([source],{type:'text/css;charset=utf-8'})),a=document.createElement('a');a.href=url;a.download='settings.css';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);document.getElementById('notice').textContent='Настройки экспортированы. Замените settings.css в папке скина и перезапустите Thunderbird.'});
+/* Полный локальный шаблон встроен ниже при сборке: file:// не требует fetch. */
+settingsSource="/* Arctic Bird 0.3.8\n * ================================================================\n *                     НАСТРОЙКА ОФОРМЛЕНИЯ\n * ================================================================\n * light-dark(СВЕТЛАЯ, ТЁМНАЯ): меняйте одну или обе половины пары.\n * Например: --f11-accent: light-dark(#0f6cbd, #8bc7ff);\n * Сохраните файл и полностью перезапустите Thunderbird.\n * CSS-файлы сохраняйте как обычный UTF-8, без расширения .txt.\n *\n * Это общие токены для оболочки и адаптеров бесед. Thunderbird не\n * наследует CSS-переменные между документами: поэтому settings.css\n * импортируется и из userChrome.css, и из userContent.css.\n */\n:root {\n  /* Режим: light dark = автоматически; dark = тёмный; light = светлый.\n   * Принудительный режим относится к областям, оформленным этим скином. */\n  --f11-color-scheme: dark;\n\n  /* 1. ОСНОВНЫЕ ПОВЕРХНОСТИ */\n  --f11-shell: light-dark(#f3f4f6, #101217);       /* верхняя и нижняя панели */\n  --f11-paper: light-dark(#ffffff, #0d0e11);       /* список и чтение */\n  --f11-raised: light-dark(#fafbfc, #1b1d24);      /* меню и карточки */\n  --f11-field: light-dark(#ffffff, #191c23);       /* поиск и ввод */\n  --f11-hover: light-dark(#e9edf2, #242935);       /* наведение */\n  --f11-pressed: light-dark(#dfe5ec, #2b3543);     /* нажатие */\n  --f11-line: light-dark(#e2e6ec, #292e38);        /* разделители */\n  --f11-control-line: light-dark(#818a98, #545c6b); /* границы ввода */\n\n  /* Палитра тёмной схемы — Brackets Refined — Arctic для Zed.\n   * Боковая панель и почта имеют единый фон, как на скриншоте. */\n  --f11-sidebar: light-dark(#f3f4f6, #0d0e11);\n  --f11-tabs-background: light-dark(#f3f4f6, #101217);\n  --f11-tab-active: var(--f11-paper);\n  --f11-tab-radius: 8px;\n  /* Общая строка вкладок и поиска. Ниже 1100 CSS px поиск переходит вниз. */\n  --f11-header-height: 36px;\n  --f11-header-tools-width: clamp(240px, 28vw, 420px);\n\n  /* 2. ТЕКСТ И АКЦЕНТ */\n  --f11-text: light-dark(#1b1b1b, #e6e8ef);\n  --f11-secondary: light-dark(#565f6c, #a3a9bb);\n  --f11-accent: light-dark(#0f6cbd, #8bc7ff);\n  --f11-on-accent: light-dark(#ffffff, #0d0e11);\n  --f11-selection: light-dark(#e3eefb, #303f50);\n  --f11-selection-idle: light-dark(#e8ecf2, #242935);\n\n  /* 3. ГЕОМЕТРИЯ — высоту строк списка здесь не меняем.\n   * Используйте штатное меню «Вид → Плотность». */\n  --f11-font: \"Segoe UI Variable Text\", \"Segoe UI\", sans-serif;\n  --f11-radius: 6px;             /* кнопки, вкладки, строки */\n  --f11-card-radius: 8px;        /* карточки бесед и меню */\n  --f11-folder-inline: 6px;      /* боковые поля дерева папок */\n  --f11-reader-padding: 16px;\n  --f11-subject-size: 1.3rem;\n\n  /* 4. ШТАТНЫЙ СПИСОК СООБЩЕНИЙ\n   * 0px + transparent = плоские строки (по умолчанию).\n   * Для карточек: radius 8px, border var(--f11-line).\n   * Это форма строк; режим «Карточки / Таблица» выбирается в Thunderbird. */\n  --f11-list-radius: 0px;\n  --f11-list-border: transparent;\n\n  /* Можно использовать системный акцент Windows. Раскомментируйте\n   * ВСЕ ТРИ строки. При произвольном системном цвете контраст проверьте.\n  --f11-accent: AccentColor;\n  --f11-on-accent: AccentColorText;\n  --f11-selection: color-mix(in srgb, AccentColor 15%, var(--f11-paper));\n   */\n}\n";
+document.getElementById("summaryPreview").addEventListener("load",syncSummary);
+document.getElementById("messagePreview").addEventListener("load",syncSummary);
+document.getElementById('toggleRail').addEventListener('click',()=>{const off=document.querySelector('.desktop').classList.toggle('rail-hidden');document.getElementById('spacesPinnedButton').hidden=!off;document.documentElement.toggleAttribute('spacestoolbar',!off);document.getElementById('spacesToolbar').hidden=off;document.getElementById('spacesToolbarReveal').hidden=!off;document.getElementById('spacesButtonMenuPopup').hidden=true});
+document.getElementById('spacesPinnedButton').addEventListener('click',()=>{const m=document.getElementById('spacesButtonMenuPopup'),r=document.getElementById('spacesPinnedButton').getBoundingClientRect();m.style.top=(r.bottom+window.scrollY+4)+'px';m.style.left=(r.left+window.scrollX)+'px';m.style.right='auto';m.hidden=!m.hidden});
+fill();
+</script>
+</body></html>

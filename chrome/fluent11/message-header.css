@@ -1,0 +1,138 @@
+/* Arctic Bird 0.3.14 — иерархия шапки и переключатель режима чтения, только CSS.
+ * Штатные команды, порядок полей и содержимое письма не меняются. */
+@-moz-document url-prefix("about:message"),
+  url-prefix("chrome://messenger/content/aboutMessage.xhtml") {
+  @media screen and (forced-colors: none) and (prefers-contrast: no-preference) {
+    /* Первый уровень: тема. Размер берётся из прежнего settings.css. */
+    #messageHeader #expandedsubjectBox {
+      color: var(--f11-text) !important;
+      font-size: var(--f11-subject-size, 1.3rem) !important;
+      font-weight: 700 !important;
+      line-height: 1.35 !important;
+      margin-block: 3px !important;
+      /* Нативное ограничение длинной темы и её прокрутка сохраняются. */
+    }
+
+    /* Второй уровень: имя отправителя. Используем уже заполненные клиентом
+     * spans, чтобы адрес можно было оформить отдельно без разбора текста.
+     * Две строки показываются и при компактном варианте штатной шапки. */
+    #messageHeader #expandedfromBox .recipient-single-line {
+      display: none !important;
+    }
+    #messageHeader #expandedfromBox .recipient-multi-line {
+      display: inline-flex !important;
+      flex-direction: column !important;
+      gap: 2px !important;
+      vertical-align: middle !important;
+      min-inline-size: 0 !important;
+    }
+    #messageHeader #expandedfromBox .header-recipient {
+      color: var(--f11-text) !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      min-inline-size: 0 !important;
+      max-inline-size: 100% !important;
+      box-sizing: border-box !important;
+    }
+    #messageHeader #expandedfromBox :is(.recipient-avatar, .recipient-address-book-button) {
+      flex-shrink: 0 !important;
+    }
+    #messageHeader #expandedfromBox .recipient-multi-line-name {
+      color: var(--f11-text) !important;
+      font-size: 1.05em !important;
+      font-weight: 600 !important;
+      line-height: 1.4 !important;
+      overflow-wrap: anywhere !important;
+    }
+
+    /* Третий уровень: адрес, получатели, подписи полей и оба варианта даты.
+     * Цвет из палитры вместо opacity, чтобы контраст не зависел от вложенности. */
+    #messageHeader #expandedfromBox .recipient-multi-line-address {
+      color: var(--f11-secondary) !important;
+      font-size: 0.95em !important;
+      font-weight: 400 !important;
+      line-height: 1.4 !important;
+      opacity: 1 !important;
+      overflow-wrap: anywhere !important;
+    }
+    #messageHeader #expandedfromBox .recipient-multi-line-address:empty {
+      display: none !important;
+    }
+    #messageHeader :is(#expandedtoBox, #expandedccBox, #expandedbccBox,
+      #expandedreply-toBox, #expandedsenderBox) .header-recipient {
+      color: var(--f11-secondary) !important;
+      font-size: 0.95em !important;
+      font-weight: 400 !important;
+    }
+    #messageHeader :is(.message-header-label, .message-header-datetime) {
+      color: var(--f11-secondary) !important;
+      font-size: 0.95em !important;
+      font-weight: 400 !important;
+    }
+    #messageHeader .message-header-datetime {
+      font-variant-numeric: tabular-nums !important;
+    }
+
+    /* Адреса остаются интерактивными; акцент виден при наведении и фокусе. */
+    #messageHeader .header-recipient:is(:hover, :focus-visible) {
+      background-color: var(--f11-hover) !important;
+    }
+    #messageHeader .header-recipient:focus-visible {
+      outline: 2px solid var(--f11-accent) !important;
+      outline-offset: 1px !important;
+    }
+
+    /* Штатный переключатель светлого/тёмного чтения. checked имеет
+     * исходное значение Betterbird; размеры, положение ползунка,
+     * смена луны/солнца и видимость остаются под управлением клиента. */
+    #darkReaderToggle #disableDarkReader {
+      color: var(--f11-secondary) !important;
+      background-color: var(--f11-field) !important;
+      border-color: var(--f11-line) !important;
+    }
+    #darkReaderToggle #disableDarkReader::before {
+      background-color: var(--f11-secondary) !important;
+      border-color: var(--f11-line) !important;
+      box-shadow: none !important;
+    }
+    #darkReaderToggle #disableDarkReader::after {
+      stroke: var(--f11-secondary) !important;
+      fill: color-mix(in srgb, var(--f11-secondary) 20%, transparent) !important;
+    }
+    #darkReaderToggle #disableDarkReader:enabled:hover {
+      background-color: var(--f11-hover) !important;
+    }
+    #darkReaderToggle #disableDarkReader:not(:checked):enabled:hover::before {
+      background-color: var(--f11-text) !important;
+    }
+    #darkReaderToggle #disableDarkReader:not(:checked):enabled:hover::after {
+      stroke: var(--f11-text) !important;
+      fill: color-mix(in srgb, var(--f11-text) 20%, transparent) !important;
+    }
+    #darkReaderToggle #disableDarkReader:checked {
+      background-color: var(--f11-selection-idle) !important;
+    }
+    #darkReaderToggle #disableDarkReader:checked::before {
+      background-color: var(--f11-accent) !important;
+    }
+    #darkReaderToggle #disableDarkReader:checked::after {
+      stroke: var(--f11-accent) !important;
+      fill: color-mix(in srgb, var(--f11-accent) 20%, transparent) !important;
+    }
+    #darkReaderToggle #disableDarkReader:checked:enabled:hover {
+      background-color: var(--f11-selection) !important;
+    }
+    #darkReaderToggle #disableDarkReader:enabled:active,
+    #darkReaderToggle #disableDarkReader:checked:enabled:active {
+      background-color: var(--f11-pressed) !important;
+    }
+    #darkReaderToggle #disableDarkReader:focus-visible {
+      outline: 2px solid var(--f11-accent) !important;
+      outline-offset: 2px !important;
+    }
+    #darkReaderToggle #disableDarkReader:disabled {
+      opacity: 0.45 !important;
+      cursor: default !important;
+    }
+  }
+}

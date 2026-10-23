@@ -1,0 +1,102 @@
+/* Arctic Bird 0.3.8 — верхняя строка с отдельной ячейкой выбора разделов.
+ * Сетка раскрывает HTML-обёртки display:contents; узлы и обработчики
+ * приложения не перемещаются. В режиме настройки — штатная компоновка. */
+@-moz-document url("chrome://messenger/content/messenger.xhtml") {
+  @media screen and (forced-colors: none) and (prefers-contrast: no-preference) {
+    :root:not(.customizingUnifiedToolbar):has(#titlebar > #tabs-toolbar) #titlebar {
+      display: grid !important;
+      grid-template-columns: auto minmax(140px, 1fr) var(--f11-header-tools-width) auto auto auto !important;
+      grid-template-areas: "menubar menubar menubar menubar menubar menubar" "spaces tabs tools notice appmenu caption" !important;
+      align-items: stretch !important;
+      background-color: var(--f11-shell) !important;
+      min-inline-size: 0 !important;
+    }
+    /* Общая линия второго grid-ряда заполняет промежутки под Spaces,
+     * уведомлениями и меню, в том числе когда поиск переходит ниже.
+     * Она не занимает отдельную строку и не перехватывает мышь. */
+    :root:not(.customizingUnifiedToolbar):has(#titlebar > #tabs-toolbar) #titlebar::after {
+      content: "";
+      grid-column: 1 / -1;
+      grid-row: 2;
+      align-self: end;
+      block-size: 1px;
+      background-color: var(--f11-line);
+      pointer-events: none;
+      z-index: 0;
+    }
+    :root:not(.customizingUnifiedToolbar):has(#titlebar > #tabs-toolbar) #titlebar > unified-toolbar,
+    :root:not(.customizingUnifiedToolbar):has(#titlebar > #tabs-toolbar) #unifiedToolbarContainer,
+    :root:not(.customizingUnifiedToolbar):has(#titlebar > #tabs-toolbar) #unifiedToolbar {
+      display: contents !important;
+    }
+    :root:not(.customizingUnifiedToolbar):has(#titlebar > #tabs-toolbar) #toolbar-menubar { grid-area: menubar !important; }
+    :root:not(.customizingUnifiedToolbar):has(#titlebar > #tabs-toolbar) #titlebar > #tabs-toolbar {
+      grid-area: tabs !important;
+      /* Активная вкладка закрывает общую линию своим фоном. */
+      position: relative !important;
+      z-index: 1 !important;
+      display: flex !important;
+      visibility: visible !important;
+      align-items: stretch !important;
+      min-inline-size: 0 !important;
+      min-block-size: var(--f11-header-height) !important;
+      padding-block: 0 !important;
+      box-sizing: border-box !important;
+      -moz-window-dragging: drag;
+    }
+    :root:not(.customizingUnifiedToolbar):has(#titlebar > #tabs-toolbar) #spacesPinnedButton {
+      grid-area: spaces !important;
+      align-self: center !important;
+      justify-self: center !important;
+      -moz-window-dragging: no-drag;
+    }
+    :root:not(.customizingUnifiedToolbar):has(#titlebar > #tabs-toolbar) #unifiedToolbarContent {
+      grid-area: tools !important;
+      display: flex !important;
+      align-items: center !important;
+      min-inline-size: 0 !important;
+      min-block-size: 32px !important;
+      margin: 0 !important;
+      padding: 1px 4px 1px 8px !important;
+      border-block-end: 1px solid var(--f11-line) !important;
+      box-sizing: border-box !important;
+      -moz-window-dragging: drag;
+    }
+    :root:not(.customizingUnifiedToolbar):has(#titlebar > #tabs-toolbar) #unifiedToolbarContent .spacer { display: none !important; }
+    :root:not(.customizingUnifiedToolbar):has(#titlebar > #tabs-toolbar) #unifiedToolbarContent .search-bar {
+      flex: 1 1 auto !important;
+      min-inline-size: 5em !important;
+    }
+    :root:not(.customizingUnifiedToolbar):has(#titlebar > #tabs-toolbar) #notification-popup-box { grid-area: notice !important; align-self: center; }
+    :root:not(.customizingUnifiedToolbar):has(#titlebar > #tabs-toolbar) #button-appmenu {
+      grid-area: appmenu !important;
+      align-self: center !important;
+      margin-block: 0 !important;
+    }
+    :root:not(.customizingUnifiedToolbar):has(#titlebar > #tabs-toolbar) #unifiedToolbarContainer > .titlebar-buttonbox-container {
+      grid-area: caption !important;
+      align-self: stretch !important;
+      border-block-end: 1px solid var(--f11-line) !important;
+      -moz-window-dragging: no-drag;
+    }
+    :root:not(.customizingUnifiedToolbar):has(#titlebar > #tabs-toolbar) :is(.tabmail-tab, #alltabs-button, #spacesPinnedButton, #button-appmenu, #notification-popup-box) { -moz-window-dragging: no-drag; }
+    #navigation-toolbox #tabmail-tabs, #navigation-toolbox #tabmail-arrowscrollbox { align-items: stretch !important; align-self: stretch !important; }
+    #navigation-toolbox #tabmail-arrowscrollbox::part(scrollbox) { align-items: stretch !important; }
+    #navigation-toolbox .tabmail-tab { min-block-size: var(--f11-header-height) !important; }
+    #navigation-toolbox .tabmail-tab, #navigation-toolbox .tab-stack {
+      align-self: stretch !important;
+      block-size: auto !important;
+      max-block-size: none !important;
+      margin-block: 0 !important;
+      padding-block: 0 !important;
+    }
+    /* Нижняя граница контейнера занимает ещё 1px. */
+    :root:not(.customizingUnifiedToolbar):has(#titlebar > #tabs-toolbar) .titlebar-button { min-block-size: calc(var(--f11-header-height) - 1px) !important; padding-block: 0 !important; }
+    @media (max-width: 1100px) {
+      :root:not(.customizingUnifiedToolbar):has(#titlebar > #tabs-toolbar) #titlebar {
+        grid-template-columns: auto minmax(140px, 1fr) auto auto auto !important;
+        grid-template-areas: "menubar menubar menubar menubar menubar" "spaces tabs notice appmenu caption" "tools tools tools tools tools" !important;
+      }
+    }
+  }
+}

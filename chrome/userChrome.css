@@ -1,0 +1,23 @@
+/* Arctic Bird 0.3.13 — основной файл интерфейса.
+ * Все @import должны оставаться ПЕРЕД любыми обычными правилами.
+ * Настройка цветов: fluent11/settings.css. */
+@import url("fluent11/settings.css");
+@import url("fluent11/core.css");
+@import url("fluent11/folder-icons.css");
+@import url("fluent11/surfaces.css");
+@import url("fluent11/compose.css");
+@import url("fluent11/mail-controls.css");
+@import url("fluent11/message-header.css");
+@import url("fluent11/internal-pages.css");
+@import url("fluent11/calendar.css");
+@import url("fluent11/tabs.css");
+@import url("fluent11/compact-header.css");
+@import url("fluent11/window-details.css");
+@import url("fluent11/summary.css");
+@import url("fluent11/conversations.css");
+@import url("fluent11/interface-icons.css");
+@import url("fluent11/mail-cards.css");
+
+/* Необязательно: включайте только после чтения README-RU.md.
+@import url("fluent11/mica.css");
+*/

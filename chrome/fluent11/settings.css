@@ -1,0 +1,69 @@
+/* Arctic Bird 0.3.8
+ * ================================================================
+ *                     НАСТРОЙКА ОФОРМЛЕНИЯ
+ * ================================================================
+ * light-dark(СВЕТЛАЯ, ТЁМНАЯ): меняйте одну или обе половины пары.
+ * Например: --f11-accent: light-dark(#0f6cbd, #8bc7ff);
+ * Сохраните файл и полностью перезапустите Thunderbird.
+ * CSS-файлы сохраняйте как обычный UTF-8, без расширения .txt.
+ *
+ * Это общие токены для оболочки и адаптеров бесед. Thunderbird не
+ * наследует CSS-переменные между документами: поэтому settings.css
+ * импортируется и из userChrome.css, и из userContent.css.
+ */
+:root {
+  /* Режим: light dark = автоматически; dark = тёмный; light = светлый.
+   * Принудительный режим относится к областям, оформленным этим скином. */
+  --f11-color-scheme: dark;
+
+  /* 1. ОСНОВНЫЕ ПОВЕРХНОСТИ */
+  --f11-shell: light-dark(#f3f4f6, #101217);       /* верхняя и нижняя панели */
+  --f11-paper: light-dark(#ffffff, #0d0e11);       /* список и чтение */
+  --f11-raised: light-dark(#fafbfc, #1b1d24);      /* меню и карточки */
+  --f11-field: light-dark(#ffffff, #191c23);       /* поиск и ввод */
+  --f11-hover: light-dark(#e9edf2, #242935);       /* наведение */
+  --f11-pressed: light-dark(#dfe5ec, #2b3543);     /* нажатие */
+  --f11-line: light-dark(#e2e6ec, #292e38);        /* разделители */
+  --f11-control-line: light-dark(#818a98, #545c6b); /* границы ввода */
+
+  /* Палитра тёмной схемы — Brackets Refined — Arctic для Zed.
+   * Боковая панель и почта имеют единый фон, как на скриншоте. */
+  --f11-sidebar: light-dark(#f3f4f6, #0d0e11);
+  --f11-tabs-background: light-dark(#f3f4f6, #101217);
+  --f11-tab-active: var(--f11-paper);
+  --f11-tab-radius: 8px;
+  /* Общая строка вкладок и поиска. Ниже 1100 CSS px поиск переходит вниз. */
+  --f11-header-height: 36px;
+  --f11-header-tools-width: clamp(240px, 28vw, 420px);
+
+  /* 2. ТЕКСТ И АКЦЕНТ */
+  --f11-text: light-dark(#1b1b1b, #e6e8ef);
+  --f11-secondary: light-dark(#565f6c, #a3a9bb);
+  --f11-accent: light-dark(#0f6cbd, #8bc7ff);
+  --f11-on-accent: light-dark(#ffffff, #0d0e11);
+  --f11-selection: light-dark(#e3eefb, #303f50);
+  --f11-selection-idle: light-dark(#e8ecf2, #242935);
+
+  /* 3. ГЕОМЕТРИЯ — высоту строк списка здесь не меняем.
+   * Используйте штатное меню «Вид → Плотность». */
+  --f11-font: "Segoe UI Variable Text", "Segoe UI", sans-serif;
+  --f11-radius: 6px;             /* кнопки, вкладки, строки */
+  --f11-card-radius: 8px;        /* карточки бесед и меню */
+  --f11-folder-inline: 6px;      /* боковые поля дерева папок */
+  --f11-reader-padding: 16px;
+  --f11-subject-size: 1.3rem;
+
+  /* 4. ШТАТНЫЙ СПИСОК СООБЩЕНИЙ
+   * 0px + transparent = плоские строки (по умолчанию).
+   * Для карточек: radius 8px, border var(--f11-line).
+   * Это форма строк; режим «Карточки / Таблица» выбирается в Thunderbird. */
+  --f11-list-radius: 0px;
+  --f11-list-border: transparent;
+
+  /* Можно использовать системный акцент Windows. Раскомментируйте
+   * ВСЕ ТРИ строки. При произвольном системном цвете контраст проверьте.
+  --f11-accent: AccentColor;
+  --f11-on-accent: AccentColorText;
+  --f11-selection: color-mix(in srgb, AccentColor 15%, var(--f11-paper));
+   */
+}

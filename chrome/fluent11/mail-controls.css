@@ -1,0 +1,131 @@
+/* Arctic Bird 0.3.8 — Quick Filter, карточки писем и панель вложений.
+ * Только оболочка почты; содержимое писем и реальные файлы не изменяются. */
+@-moz-document url("chrome://messenger/content/messenger.xhtml"),
+  url-prefix("about:3pane"), url-prefix("about:message") {
+  @media screen and (forced-colors: none) and (prefers-contrast: no-preference) {
+    /* Кнопка в заголовке списка и её вариант в универсальной панели.
+     * aria-pressed остаётся штатным источником выбранного состояния. */
+    :is(#threadPaneQuickFilterButton, button[is="quick-filter-bar-toggle"]) {
+      --button-hover-text-color: var(--f11-text) !important;
+      --button-pressed-shadow: none !important;
+      --button-pressed-indicator-shadow: none !important;
+      color: var(--f11-text) !important;
+      background-color: transparent !important;
+      border-color: var(--f11-line) !important;
+      box-shadow: none !important;
+    }
+    :is(#threadPaneQuickFilterButton, button[is="quick-filter-bar-toggle"]):enabled:hover {
+      background-color: var(--f11-hover) !important;
+    }
+    :is(#threadPaneQuickFilterButton, button[is="quick-filter-bar-toggle"])[aria-pressed="true"]:enabled {
+      background-color: var(--f11-selection-idle) !important;
+    }
+    :is(#threadPaneQuickFilterButton, button[is="quick-filter-bar-toggle"])[aria-pressed="true"]:enabled:hover {
+      background-color: var(--f11-selection) !important;
+    }
+    :is(#threadPaneQuickFilterButton, button[is="quick-filter-bar-toggle"]):enabled:hover:active {
+      background-color: var(--f11-pressed) !important;
+    }
+    :is(#threadPaneQuickFilterButton, button[is="quick-filter-bar-toggle"])::before {
+      background-color: transparent !important;
+      border-color: var(--f11-line) !important;
+      box-shadow: none !important;
+    }
+    :is(#threadPaneQuickFilterButton, button[is="quick-filter-bar-toggle"])[aria-pressed="true"]::before {
+      background-color: var(--f11-accent) !important;
+      border-color: var(--f11-accent) !important;
+    }
+    :is(#threadPaneQuickFilterButton, button[is="quick-filter-bar-toggle"]):disabled {
+      color: var(--f11-secondary) !important;
+    }
+    :is(#threadPaneQuickFilterButton, button[is="quick-filter-bar-toggle"]):disabled::before {
+      background-color: transparent !important;
+      border-color: var(--f11-line) !important;
+    }
+    :is(#threadPaneQuickFilterButton, button[is="quick-filter-bar-toggle"]):focus-visible {
+      outline: 2px solid var(--f11-accent) !important;
+      outline-offset: 2px !important;
+    }
+
+    /* Карточки: дата и меню занимают собственное место справа,
+     * длинный отправитель сжимается внутри оставшейся ширины.
+     * Сохраняем нативные строки, плотность, значки и заголовки групп. */
+    #threadTree[rows="thread-card"] .card-layout:not([data-properties~="dummy"]) .card-container {
+      grid-template-columns: auto minmax(0, 1fr) !important;
+    }
+    #threadTree[rows="thread-card"] .card-container > .thread-card-column {
+      min-inline-size: 0 !important;
+    }
+    #threadTree[rows="thread-card"] .thread-card-row:has(> .sender):has(> .date) {
+      min-inline-size: 0 !important;
+      flex-wrap: nowrap !important;
+    }
+    #threadTree[rows="thread-card"] .thread-card-row > .sender {
+      flex: 1 1 0% !important;
+      min-inline-size: 0 !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+      white-space: nowrap !important;
+    }
+    #threadTree[rows="thread-card"] .thread-card-row > .date {
+      flex: 0 0 auto !important;
+      margin-inline-start: 10px !important;
+      white-space: nowrap !important;
+      text-align: end !important;
+    }
+    #threadTree[rows="thread-card"] .thread-card-row > .tree-button-more {
+      flex: 0 0 auto !important;
+    }
+
+    /* Список чтения, в обоих положениях панели Betterbird (top/bottom).
+     * Не затрагиваем attachmentBucket и drag/drop окна создания письма. */
+    #attachmentView, #attachmentList {
+      background-color: var(--f11-paper) !important;
+      color: var(--f11-text) !important;
+      border-color: var(--f11-line) !important;
+    }
+    #attachmentBar {
+      background-color: var(--f11-shell) !important;
+      color: var(--f11-text) !important;
+      border-color: var(--f11-line) !important;
+    }
+    #attachmentList .attachmentItem {
+      background-color: transparent !important;
+      color: var(--f11-text) !important;
+      border-color: transparent !important;
+    }
+    #attachmentList .attachmentItem:hover {
+      background-color: var(--f11-hover) !important;
+      border-color: var(--f11-line) !important;
+    }
+    #attachmentList .attachmentItem[selected="true"] {
+      background-color: var(--f11-selection-idle) !important;
+      border-color: var(--f11-line) !important;
+    }
+    #attachmentList:focus .attachmentItem[selected="true"],
+    #attachmentList:focus-within .attachmentItem[selected="true"],
+    #attachmentList .attachmentItem[selected="true"]:hover {
+      background-color: var(--f11-selection) !important;
+    }
+    #attachmentList .attachmentcell-size, #attachmentSize {
+      color: var(--f11-secondary) !important;
+      opacity: 1 !important;
+    }
+    #attachmentList:focus .attachmentItem[current="true"],
+    #attachmentList:focus-within .attachmentItem[current="true"] {
+      outline: 1px solid var(--f11-accent) !important;
+      outline-offset: -1px !important;
+    }
+    #attachmentName { color: var(--f11-text) !important; }
+    #attachmentName:hover {
+      background-color: var(--f11-hover) !important;
+      color: var(--f11-text) !important;
+    }
+    #attachmentName[selected="true"] {
+      background-color: var(--f11-selection) !important;
+      color: var(--f11-text) !important;
+    }
+    #attachmentToggle:not([disabled]):hover { background-color: var(--f11-hover) !important; }
+    #attachmentToggle:not([disabled]):hover:active { background-color: var(--f11-pressed) !important; }
+  }
+}

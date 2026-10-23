@@ -1,0 +1,115 @@
+/* Arctic Bird 0.3.16 — единый тон значков штатного интерфейса, только CSS.
+ * Цвет задаётся значкам, а не тексту кнопок или содержимому писем.
+ * Метки, ошибки, криптография, календари и аватары исключены. */
+@-moz-document url("chrome://messenger/content/messenger.xhtml"),
+  url-prefix("about:3pane"), url-prefix("about:message"),
+  url-prefix("about:addressbook"), url-prefix("about:preferences"),
+  url-prefix("about:accountsettings"), url-prefix("about:addons"),
+  url-prefix("chrome://messenger/content/about3Pane.xhtml"),
+  url-prefix("chrome://messenger/content/aboutMessage.xhtml"),
+  url-prefix("chrome://messenger/content/addressbook/"),
+  url-prefix("chrome://messenger/content/preferences/"),
+  url("chrome://messenger/content/AccountManager.xhtml"),
+  url-prefix("chrome://messenger/content/am-"),
+  url-prefix("chrome://messenger/content/msgAccountCentral.xhtml"),
+  url("chrome://messenger/content/messengercompose/messengercompose.xhtml"),
+  url-prefix("chrome://calendar/content/") {
+  @media screen and (forced-colors: none) and (prefers-contrast: no-preference) {
+    :root {
+      --f11-ui-icon-tone: var(--f11-secondary);
+    }
+
+    /* Собственное наследуемое состояние; подписи и нативные состояния
+     * контролов не перекрашиваются. Каждый контрол начинает с серого. */
+    :where(button, toolbarbutton, menu, menuitem, .tabmail-tab,
+      .bookRow, .listRow, .category) {
+      --f11-ui-icon-tone: var(--f11-secondary);
+    }
+    :where(button, toolbarbutton, menu, menuitem, .tabmail-tab,
+      .bookRow, .listRow, .category):is(:hover, :focus-visible, [_moz-menuactive="true"]) {
+      --f11-ui-icon-tone: var(--f11-text);
+    }
+    :where(button, toolbarbutton, menu, menuitem, .tabmail-tab,
+      .bookRow, .listRow, .category):is(.current, .selected,
+      [selected="true"], [checked="true"], [aria-pressed="true"], [aria-selected="true"], [active="true"]) {
+      --f11-ui-icon-tone: var(--f11-accent);
+    }
+    /* На голубой основной кнопке нужен тёмный, контрастный значок. */
+    :where(button, toolbarbutton):is(.primary, .button-primary, .primary-button, [default="true"]) {
+      --f11-ui-icon-tone: var(--f11-on-accent);
+    }
+    :where(button, toolbarbutton, menu, menuitem):is(:disabled, [disabled]:not([disabled="false"]), [aria-disabled="true"]) {
+      --f11-ui-icon-tone: color-mix(in srgb, var(--f11-secondary) 45%, transparent);
+    }
+
+    /* Только реальные классы служебных значков. .icon не используется:
+     * этим классом также помечены папки, метки и состояния сообщений.
+     * Цветные пункты меток Betterbird имеют inline style="color: …". */
+    :root :is(.toolbarbutton-icon, .button-icon, .search-button-icon,
+      .menu-icon, .menu-iconic-icon, .tab-close-icon, .category-icon,
+      .sidebar-footer-icon, .bookRow-icon, .listRow-icon,
+      .tab-icon-image:is([src^="chrome://"], :not([src])),
+      .spaces-toolbar-button > img, .spaces-toolbar-statusbar-button > img,
+      .spaces-toolbar-pinned-button > img):not(:is(
+        [data-tag-key], [tag], :is(menu, menuitem, toolbarbutton)[style*="color:"], .tagMenuItem,
+        .notificationbox-stack, notification, .notification-button,
+        .warning, .error, .critical, .success, .crypto-button,
+        .tls-error, .requesting, .drop-error, .drop-loading, [data-has-error], [data-is-busy],
+        #cryptoBox, #button-security, #button-encryption, #button-signing,
+        #calendar-list, #calendarList, .calendar-event-box) *),
+    :root :is(#spacesPinnedButton, #spacesButtonMenuPopup, #spacesToolbarAddonsPopup)
+      :is(.menu-icon, .toolbarbutton-icon) {
+      color: var(--f11-ui-icon-tone) !important;
+      -moz-context-properties: fill, stroke, fill-opacity, stroke-opacity;
+      fill: color-mix(in srgb, var(--f11-ui-icon-tone) 20%, transparent) !important;
+      stroke: var(--f11-ui-icon-tone) !important;
+    }
+    /* Этот SVG рисуется заливкой, поэтому не ослабляем крестик до 20%. */
+    :root .tab-close-icon {
+      fill: var(--f11-ui-icon-tone) !important;
+    }
+
+    /* Betterbird Headers: bullet-list.svg использует только context-fill.
+     * Общая 20%-ная заливка для контурных значков делает его слишком тёмным.
+     * Состояния берутся из общего тона, включая disabled. */
+    :root #showCustomHeaders.message-header-view-button .toolbarbutton-icon {
+      fill: var(--f11-ui-icon-tone) !important;
+      fill-opacity: 1 !important;
+    }
+
+    /* Кнопки с фоновой SVG и значки без отдельного img. Эти свойства
+     * влияют на контекст SVG, не на цвет текста/фона самого контрола. */
+    :root :is(#folderPaneHeaderBar, #threadPaneHeaderBar, #booksPaneHeaderBar,
+      #cardsPaneHeader, #status-bar, #calendar-nav-control, #calendar-view-toolbar, #task-actions-toolbar)
+      :is(button.icon-button, button.button-flat, toolbarbutton):not(:is(
+        .warning, .error, .critical, [data-tag-key],
+        #button-security, #button-encryption, #button-signing)) {
+      -moz-context-properties: fill, stroke;
+      fill: color-mix(in srgb, var(--f11-ui-icon-tone) 20%, transparent) !important;
+      stroke: var(--f11-ui-icon-tone) !important;
+    }
+    :root :is(.btn-hub, .btn-link)::before {
+      color: var(--f11-ui-icon-tone) !important;
+      fill: color-mix(in srgb, var(--f11-ui-icon-tone) 20%, transparent) !important;
+      stroke: var(--f11-ui-icon-tone) !important;
+    }
+    :root #accountLogo {
+      color: var(--f11-secondary) !important;
+    }
+
+    /* Фоновая папка при наведении тоже светлеет. Выбор, новые письма,
+     * метки и важные состояния продолжают использовать folder-icons.css. */
+    :root #folderTree li:not(.selected, .new-messages, [data-tag-key],
+      .tls-error, [data-has-error], [data-is-busy]) > .container:hover > .icon {
+      --icon-color: var(--f11-text) !important;
+    }
+
+    /* Логотипы расширений/сайтов имеют собственные цвета внутри SVG/PNG.
+     * Grayscale только на картинке сохраняет детали, alpha и цвет badge. */
+    :root #unifiedToolbarContent button[is="extension-action-button"] .button-icon,
+    :root #spacesToolbar .spaces-addon-button > img,
+    :root .tab-icon-image[src]:not([src^="chrome://"]) {
+      filter: grayscale(1) !important;
+    }
+  }
+}
