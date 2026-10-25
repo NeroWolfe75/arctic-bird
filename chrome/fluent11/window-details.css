@@ -1,4 +1,4 @@
-/* Arctic Bird 0.3.17 — рамка окна, меню пространств и строка состояния. */
+/* Arctic Bird 0.3.18 — рамка окна, меню пространств и строка состояния. */
 @-moz-document url("chrome://messenger/content/messenger.xhtml") {
   @media screen and (forced-colors: none) and (prefers-contrast: no-preference) {
     /* Наложение по внутреннему краю не меняет размеры панелей и не
@@ -12,6 +12,13 @@
       border-radius: inherit;
       pointer-events: none;
       z-index: 2147483647;
+    }
+
+    /* Верхний край рисуем самой верхней панелью: в Windows линия
+     * fixed-наложения на границе заголовка может быть обрезана.
+     * Граница занимает только заданную толщину, 0px отключает её. */
+    :root:not([sizemode="fullscreen"]) #navigation-toolbox {
+      border-block-start: var(--f11-window-border-width, 1px) solid var(--f11-line) !important;
     }
 
     #spacesButtonMenuPopup, #spacesToolbarAddonsPopup {
