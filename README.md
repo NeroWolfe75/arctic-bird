@@ -2,7 +2,7 @@
 
 A refined dark CSS theme for **Betterbird and Thunderbird**, designed around near-black surfaces, quiet separators, monochrome icons and restrained blue accents. The Arctic palette comes from **Brackets Refined — Arctic for Zed**.
 
-[Русский](README-RU.md) · Version **0.3.16** · Windows 11
+[Русский](README-RU.md) · Version **0.3.17** · Windows 11
 
 ![Arctic theme: compact top tabs, folder pane, message cards and reading pane](docs/images/arctic-overview.png)
 
@@ -54,6 +54,18 @@ The shipped default is `0px`. Select the native **Cards** message-list layout in
 | Accent | `#8BC7FF` |
 
 Open [Preview.html](Preview.html) in a browser for an optional palette editor and [Internal-Preview.html](Internal-Preview.html) for internal-page demos. These are design mockups, not running mail clients. The palette editor does not import an existing settings file; back up your settings before using its export.
+
+### Window outline
+
+The main mail window has a 1 CSS pixel inner outline in the panel-divider color (`--f11-line`). In `chrome/fluent11/settings.css`, set:
+
+```css
+--f11-window-border-width: 1px; /* on; use 0px to turn off */
+```
+
+Restart the application after changing it. The overlay does not take layout space or intercept pointer input. It remains visible in maximized mode and is hidden in fullscreen. It decorates the client area; it does not replace the Windows-managed outer border. Compose windows and separate dialogs are outside this setting's scope.
+
+When updating from 0.3.16, replace only `chrome/fluent11/window-details.css`. Add the setting above inside your existing settings.css `:root` block; keep your other settings. The fallback is 1px if the setting is absent. Native Windows rendering of this new outline still needs verification.
 
 ## Update or remove
 
