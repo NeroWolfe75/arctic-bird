@@ -1,4 +1,4 @@
-/* Arctic Bird 0.3.16 — единый тон значков штатного интерфейса, только CSS.
+/* Arctic Bird 0.3.19 — единый тон значков штатного интерфейса, только CSS.
  * Цвет задаётся значкам, а не тексту кнопок или содержимому писем.
  * Метки, ошибки, криптография, календари и аватары исключены. */
 @-moz-document url("chrome://messenger/content/messenger.xhtml"),
@@ -110,6 +110,17 @@
     :root #spacesToolbar .spaces-addon-button > img,
     :root .tab-icon-image[src]:not([src^="chrome://"]) {
       filter: grayscale(1) !important;
+    }
+    /* Сплошные close.svg требуют полной заливки. Специфичность не ниже
+     * общего правила значков выше; соседние контурные SVG не меняются. */
+    :root #today-closer.close-icon,
+    :root #today-closer.close-icon .toolbarbutton-icon,
+    :root #navigation-toolbox .tabmail-tab .tab-close-icon {
+      color: var(--f11-ui-icon-tone) !important;
+      -moz-context-properties: fill, fill-opacity, stroke;
+      fill: var(--f11-ui-icon-tone) !important;
+      fill-opacity: 1 !important;
+      stroke: var(--f11-ui-icon-tone) !important;
     }
   }
 }

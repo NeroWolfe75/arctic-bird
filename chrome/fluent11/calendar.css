@@ -1,4 +1,4 @@
-/* Arctic Bird 0.3.8 — календарь, задачи, Today Pane и окна событий.
+/* Arctic Bird 0.3.19 — календарь, задачи, Today Pane и окна событий.
  * Цвета отдельных календарей/категорий и состояния overdue/inprogress
  * сохраняются. Не меняем геометрию календарной сетки и виртуальных деревьев. */
 @-moz-document url("chrome://messenger/content/messenger.xhtml"),
@@ -137,6 +137,61 @@
     }
     #unifinder-search-field:focus-visible, #task-text-filter-field:focus-visible,
     #view-task-edit-field:focus-visible, #unifinder-task-edit-field:focus-visible {
+      outline: 1px solid var(--f11-accent) !important;
+      outline-offset: 1px !important;
+    }
+    /* Today Pane: убираем локальную серую заливку блока даты и градиент
+     * внешней обёртки, не затрагивая размеры и обработчики навигации. */
+    :root #today-pane-panel > vbox {
+      background-color: var(--f11-paper) !important;
+      background-image: none !important;
+    }
+    :root #today-pane-panel :is(#mini-day-box, #mini-day-image) {
+      background-color: var(--f11-shell) !important;
+      background-image: none !important;
+      color: var(--f11-text) !important;
+      border-color: var(--f11-line) !important;
+    }
+    :root #today-pane-panel :is(.miniday-nav-buttons, #miniday-dropdown-button, #today-closer) {
+      color: var(--f11-secondary) !important;
+      --toolbarbutton-background-color-hover: var(--f11-hover);
+      --toolbarbutton-background-color-active: var(--f11-pressed);
+      --toolbarbutton-hover-bordercolor: var(--f11-line);
+      --toolbarbutton-active-bordercolor: var(--f11-line);
+      --toolbarbutton-hover-boxshadow: none;
+      --toolbarbutton-active-boxshadow: none;
+    }
+    :root #today-pane-panel :is(.miniday-nav-buttons, #miniday-dropdown-button, #today-closer):not([disabled]):hover {
+      color: var(--f11-text) !important;
+      background-color: var(--f11-hover) !important;
+      border-color: var(--f11-line) !important;
+      box-shadow: none !important;
+    }
+    :root #today-pane-panel :is(.miniday-nav-buttons, #miniday-dropdown-button, #today-closer):not([disabled]):hover:active {
+      background-color: var(--f11-pressed) !important;
+    }
+    /* Фон строк и ENABLE; .calendar-color и значки ошибок не перекрашиваем. */
+    :root #calendar-list > li {
+      background-color: transparent !important;
+      color: var(--f11-text) !important;
+    }
+    :root #calendar-list > li:hover { background-color: var(--f11-hover) !important; }
+    :root #calendar-list > li:is(.selected, [selected="true"], [aria-selected="true"]) {
+      background-color: var(--f11-selection-idle) !important;
+    }
+    :root #calendar-list .calendar-enable-button {
+      background-color: var(--f11-field) !important;
+      color: var(--f11-text) !important;
+      border-color: var(--f11-line) !important;
+      box-shadow: none !important;
+    }
+    :root #calendar-list .calendar-enable-button:enabled:hover {
+      background-color: var(--f11-hover) !important;
+    }
+    :root #calendar-list .calendar-enable-button:enabled:active {
+      background-color: var(--f11-pressed) !important;
+    }
+    :root #calendar-list .calendar-enable-button:focus-visible {
       outline: 1px solid var(--f11-accent) !important;
       outline-offset: 1px !important;
     }

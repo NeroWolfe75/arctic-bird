@@ -1,4 +1,4 @@
-/* Arctic Bird 0.3.8 — контурные вкладки по пользовательскому референсу.
+/* Arctic Bird 0.3.19 — контурные вкладки по пользовательскому референсу.
  * Горизонтальная полоса; вертикальные вкладки Betterbird остаются штатными.
  * Не меняем порядок панелей, перетаскивание, overflow и кнопки окна. */
 @-moz-document url("chrome://messenger/content/messenger.xhtml") {
@@ -80,10 +80,22 @@
       background: transparent !important;
       box-shadow: none !important;
     }
-    #navigation-toolbox .tabmail-tab:focus-visible .tab-content {
+    #navigation-toolbox .tabmail-tab:focus-visible:not(:has(.tab-close-button:hover)) .tab-content {
       outline: 1px solid var(--f11-accent) !important;
       outline-offset: -3px !important;
       border-radius: var(--f11-tab-radius) var(--f11-tab-radius) 0 0;
+    }
+    /* Нативный :focus не должен обводить вкладку после mouse-down.
+     * Клавиатурный фокус оформляется отдельно на содержимом и крестике. */
+    #navigation-toolbox .tabmail-tab,
+    #navigation-toolbox .tabmail-tab:not(:focus-visible) .tab-content,
+    #navigation-toolbox .tabmail-tab:has(.tab-close-button:hover) .tab-content,
+    #navigation-toolbox .tab-close-button:not(:focus-visible) {
+      outline: none !important;
+    }
+    #navigation-toolbox .tab-close-button:focus-visible {
+      outline: 1px solid var(--f11-accent) !important;
+      outline-offset: -2px !important;
     }
     #navigation-toolbox .tab-close-button {
       color: var(--f11-secondary) !important;

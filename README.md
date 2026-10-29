@@ -2,7 +2,7 @@
 
 A refined dark CSS theme for **Betterbird and Thunderbird**, designed around near-black surfaces, quiet separators, monochrome icons and restrained blue accents. The Arctic palette comes from **Brackets Refined — Arctic for Zed**.
 
-[Русский](README-RU.md) · Version **0.3.18** · Windows 11
+[Русский](README-RU.md) · Version **0.3.19** · Windows 11
 
 ![Arctic theme: compact top tabs, folder pane, message cards and reading pane](docs/images/arctic-overview.png)
 
@@ -66,6 +66,10 @@ The main mail window has a 1 CSS pixel inner outline in the panel-divider color 
 Restart the application after changing it. The side/bottom overlay does not take layout space or intercept pointer input. The top edge uses a toolbar border, adding only the configured thickness to the top toolbar. It remains visible in maximized mode and is hidden in fullscreen. It decorates the client area; it does not replace the Windows-managed outer border. Compose windows and separate dialogs are outside this setting's scope.
 
 When updating from 0.3.16 or 0.3.17, replace only `chrome/fluent11/window-details.css`. Add the setting above inside your existing settings.css `:root` block; keep your other settings. The fallback is 1px if the setting is absent. Native Windows rendering of this new outline still needs verification.
+
+### Updating from 0.3.18
+
+Replace `calendar.css`, `compose.css`, `interface-icons.css` and `tabs.css` inside `chrome/fluent11/`, keeping your settings.css. Version 0.3.19 styles the Today Pane date block and close icon, calendar rows and Enable button, and Betterbird's compose dark-mode toggle. Mouse clicks on a tab's close button no longer use the whole-tab focus outline; keyboard focus remains visible. Native Windows rendering still needs visual verification.
 
 ## Update or remove
 

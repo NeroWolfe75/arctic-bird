@@ -1,4 +1,4 @@
-/* Arctic Bird 0.3.8 — оболочка окна создания письма.
+/* Arctic Bird 0.3.19 — оболочка окна создания письма.
  * Только цвета и границы. Не меняем поля, размеры и отправку письма. */
 @-moz-document url("chrome://messenger/content/messengercompose/messengercompose.xhtml") {
   @media screen and (forced-colors: none) and (prefers-contrast: no-preference) {
@@ -102,5 +102,56 @@
       border-color: var(--f11-line) !important;
     }
     #languageStatusButton { color: var(--f11-secondary) !important; }
+    /* Betterbird: только оформление переключателя, штатные content,
+     * размеры, translate, видимость и mail.dark-reader-compose не меняем. */
+    #darkReaderToggleCompose #disableDarkReaderCompose {
+      color: var(--f11-secondary) !important;
+      background-color: var(--f11-field) !important;
+      border-color: var(--f11-line) !important;
+    }
+    #darkReaderToggleCompose #disableDarkReaderCompose::before {
+      background-color: var(--f11-secondary) !important;
+      border-color: var(--f11-line) !important;
+      box-shadow: none !important;
+    }
+    #darkReaderToggleCompose #disableDarkReaderCompose::after {
+      stroke: var(--f11-secondary) !important;
+      fill: color-mix(in srgb, var(--f11-secondary) 20%, transparent) !important;
+    }
+    #darkReaderToggleCompose #disableDarkReaderCompose:enabled:hover {
+      background-color: var(--f11-hover) !important;
+    }
+    #darkReaderToggleCompose #disableDarkReaderCompose:not(:checked):enabled:hover::before {
+      background-color: var(--f11-text) !important;
+    }
+    #darkReaderToggleCompose #disableDarkReaderCompose:not(:checked):enabled:hover::after {
+      stroke: var(--f11-text) !important;
+      fill: color-mix(in srgb, var(--f11-text) 20%, transparent) !important;
+    }
+    #darkReaderToggleCompose #disableDarkReaderCompose:checked {
+      background-color: var(--f11-selection-idle) !important;
+    }
+    #darkReaderToggleCompose #disableDarkReaderCompose:checked::before {
+      background-color: var(--f11-accent) !important;
+    }
+    #darkReaderToggleCompose #disableDarkReaderCompose:checked::after {
+      stroke: var(--f11-accent) !important;
+      fill: color-mix(in srgb, var(--f11-accent) 20%, transparent) !important;
+    }
+    #darkReaderToggleCompose #disableDarkReaderCompose:checked:enabled:hover {
+      background-color: var(--f11-selection) !important;
+    }
+    #darkReaderToggleCompose #disableDarkReaderCompose:enabled:active,
+    #darkReaderToggleCompose #disableDarkReaderCompose:checked:enabled:active {
+      background-color: var(--f11-pressed) !important;
+    }
+    #darkReaderToggleCompose #disableDarkReaderCompose:focus-visible {
+      outline: 2px solid var(--f11-accent) !important;
+      outline-offset: 2px !important;
+    }
+    #darkReaderToggleCompose #disableDarkReaderCompose:disabled {
+      opacity: 0.45 !important;
+      cursor: default !important;
+    }
   }
 }
